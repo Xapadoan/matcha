@@ -8,7 +8,12 @@ var connection = mysql.createConnection({
 	password : data['root_password']
 });
 
-connection.connect();
+connection.connect((err) => {
+	if (err) {
+		console.error("Mysql : Connection failed: " + err.stack);
+		console.error("This is most likely an error in settings : check 'database.json'");
+	}
+});
 connection.query('CREATE DATABASE IF NOT EXISTS ' + data['name']);
 connection.query('USE ' + data['name']);
 connection.query('CREATE TABLE IF NOT EXISTS users (id INT(9) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL, username VARCHAR(100) NOT NULL, lastname VARCHAR(100) NOT NULL, firstname VARCHAR(100) NOT NULL, email VARCHAR(255) NOT NULL, password VARCHAR(255) NOT NULL)');

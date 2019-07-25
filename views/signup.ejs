@@ -6,6 +6,13 @@
     <body>
         <h1>Créer un compte !</h1>
         <p>Vous pouvez créer votre compte ici !</p>
-        <p>Pas encore disponible.</p>
+        <p>En cours de traitement.</p>
+        <form name='signup_form' method="POST">
+            <input name='Username' type='text' maxlength="32" minlength="1" placeholder="Pseudo" />
+            <input name='Mail' type="email" maxlength="100" minlength="5" placeholder="E-Mail" />
+            <input name='Pasword' type='password' maxlength="32" minlength="1" placeholder="Mot de passe"/>
+            <input name='Csrf' type='hidden' value="csrf_token"/>
+            <button>Créer un compte</button>
+        </form>
     </body>
 </html>

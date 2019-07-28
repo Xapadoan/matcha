@@ -1,5 +1,4 @@
 var mysql	= require('mysql');
-
 var data = require('./database.json');
 
 var connection = mysql.createConnection({

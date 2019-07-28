@@ -1,0 +1,11 @@
+<head>
+	<title><% if (typeof locals.title != 'undefined') {%>
+		<%= locals.title %> | 
+		<% } %> Matcha</title>
+	<meta charset="utf-8" />
+	<% if (typeof locals.stylesheets != 'undefined') {
+		for (let i = 0; i < locals.stylesheets.length; i++) {
+			%><link rel='stylesheet' type="text/css" href='<%= locals.stylesheets[i] %>' /><%
+		}
+	} %>
+</head>

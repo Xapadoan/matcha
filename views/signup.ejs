@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang='fr'>
-    <head>
-        <title>Matcha | Créer un compte</title>
-    </head>
+    <%- include('head.ejs'); %>
     <body>
         <h1>Créer un compte !</h1>
         <p>Vous pouvez créer votre compte ici !</p>
         <p>En cours de traitement.</p>
         <form name='signup_form' method="POST">
-            <input name='Username' type='text' maxlength="32" minlength="1" placeholder="Pseudo" />
+            <input name='Username' type='text' maxlength="100" minlength="1" placeholder="Pseudo" />
+            <input name='FirstName' type="text" maxlength="100" minlength="1" placeholder="Prénom" />
+            <input name='LastName' type="text" maxlength="100" minlength="1" placeholder="Nom de Famille" />
             <input name='Mail' type="email" maxlength="100" minlength="5" placeholder="E-Mail" />
-            <input name='Pasword' type='password' maxlength="32" minlength="1" placeholder="Mot de passe"/>
+            <input name='Password' type='password' maxlength="32" minlength="1" placeholder="Mot de passe"/>
             <input name='Csrf' type='hidden' value="csrf_token"/>
             <button>Créer un compte</button>
         </form>

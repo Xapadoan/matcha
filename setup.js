@@ -4,6 +4,7 @@ var data = require('./database.json');
 var connection = mysql.createConnection({
 	host     : data['host'],
 	user     : data['root'],
+	port : data['port'],
 	password : data['root_password']
 });
 

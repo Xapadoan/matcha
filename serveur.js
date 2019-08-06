@@ -1,6 +1,8 @@
 var express = require('express');
+var bcrypt = require('bcrypt');
 var settings = require("./server_settings.json");
 var memberManager = require("./memberManager.js");
+
 
 var app = express();
 
@@ -25,14 +27,17 @@ app.get('/signup', (req, res) => {
 
 app.post('/signup', (req, res) => {
 	let token = req.body.Csrf;
-	memberManager.createUser(req.body.Username, req.body.LastName, req.body.FirstName, req.body.Mail, req.body.Password);
-	res.render('signup_step1.ejs', {
-		stylesheets : ['css/signup_step1.css'],
-		username: username,
-		password: password,
-		mail: mail,
-		token: token
-	});
+	if (memberManager.createUser(req.body.Username, req.body.LastName, req.body.FirstName, req.body.Mail, req.body.Password) === false) {
+		res.render('signup.ejs', {
+			error: 'Le pseudo et l\'addresse mail doivent être uniques',
+			stylesheets: ['css/signup.css']
+		});
+	} else {
+		res.render('signup_step1.ejs', {
+			username: req.body.Username,
+			mail: req.body.Mail,
+		});
+	}
 });
 
 app.listen(settings['port']);

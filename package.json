@@ -4,6 +4,7 @@
     "private": true,
     "dependencies": {
         "bcrypt": "^3.0.6",
+        "csurf": "^1.10.0",
         "ejs": "~2.1.4",
         "ent": "~2.2.0",
         "express": "^4.17.1",

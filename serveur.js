@@ -21,16 +21,19 @@ app.get('/login', (req, res) => {
 
 app.get('/signup', (req, res) => {
 	res.render('signup.ejs', {
-		stylesheets: ['css/signup.css']
 	});
 });
 
 app.post('/signup', (req, res) => {
 	let token = req.body.Csrf;
-	if (memberManager.createUser(req.body.Username, req.body.LastName, req.body.FirstName, req.body.Mail, req.body.Password) === false) {
+	if (memberManager.checkPassword(req.body.Password) !== true) {
+		res.render('signup.ejs', {
+			error: 'Le mot de passe doit contenir au moins 8 caractères dont une majuscule, une minuscule et un chiffre.',
+		});
+	}
+	else if (memberManager.createUser(req.body.Username, req.body.Lastname, req.body.Firstname, req.body.Mail, req.body.Password) === false) {
 		res.render('signup.ejs', {
 			error: 'Le pseudo et l\'addresse mail doivent être uniques',
-			stylesheets: ['css/signup.css']
 		});
 	} else {
 		res.render('signup_step1.ejs', {

@@ -1,7 +1,6 @@
 	let mysql	= require('mysql');
+	let bcrypt = require('bcrypt');
 	let data = require('./database.json');
-	var eventEmitter = require('events').EventEmitter;
-	let memberEvents = new eventEmitter();
 	
 	let connection = mysql.createConnection({
 		host     : data['host'],
@@ -18,40 +17,75 @@
 	});
 
 	function is_member_unique (username, mail) {
-		connection.query("SELECT COUNT(*) FROM " + data['name'] + ".users WHERE username = ? OR email = ?;", [
-			username,
-			mail
-		], (err, res) => {
-			if (err) {
-				console.error("Error while querying database : " + err.stack);
-			} else if (res) {
-				return (res[0]['COUNT(*)'] == 0);
+		return (new Promise ((resolve, reject) => {
+			if (typeof username == 'undefined' || typeof mail == 'undefined') {
+				console.log('Unique : undefined username or mail');
+				return reject('Undefined username or mail');
 			}
-		});
-	}
-
-		module.exports = {
-			createUser: function createUser (username, lastname, firstname, mail, password) {
-				if (!is_member_unique(username, mail)) {
-					return (false);
-				}
-				let bcrypt = require('bcrypt');
-				bcrypt.hash(password, 10, (err, hash) => {
-					if (err) {
-						console.error('Failed to serve Password. User')
+			connection.query("SELECT COUNT(*) FROM " + data['name'] + ".users WHERE username = ? OR email = ?;", [
+				username,
+				mail
+			], (err, res) => {
+				if (err) {
+					reject ('Error while querying the database');
+				} else if (res) {
+					let count = res[0]['COUNT(*)'];
+					if (count == 0) {
+						resolve (true);
 					} else {
-					connection.query("INSERT INTO " + data['name'] + ".users (username, lastname, firstname, email, password) VALUES (?, ?, ?, ?, ?);", [
-						username,
-						lastname,
-							firstname,
-							mail,
-							hash
-						], (err) => {
-							if (err) {
-								console.log("User creation failed : " + err.stack);
-							}
-						});
+						resolve (false);
+					}
 				}
 			});
+		}));
+	}
+
+	module.exports = {
+		checkPassword: function checkPassword (password) {
+			if (typeof password == 'undefined') {
+				return (false);
+			}
+			if (password.length > 7) {
+				if (RegExp('[A-Z]+').test(password) && RegExp('[a-z]+').test(password) && RegExp('[0-9]+').test(password)) {
+					return true;
+				}
+			}
+			return (false);
+		},
+		createUser: function createUser (username, lastname, firstname, mail, password) {
+			//Check parameters consistancy
+			if (typeof username != 'string' || username.length < 1 || typeof lastname != 'string' || lastname.length < 1 || typeof firstname != 'string' || firstname.length < 1 || typeof mail != 'string' || mail.length < 1 || typeof password != 'string' || password.length < 1) {
+				console.log('Not consistant partern');
+				return ('All fields must be filled')
+			}		
+			is_member_unique(username, mail).then((res) => {
+				console.log('resolved');
+				if (res == true) {
+					bcrypt.hash(password, 10, (err, hash) => {
+						if (err) {
+							console.error('Failed to serve Password');
+						} else {
+							console.log('Begin query');
+							connection.query("INSERT INTO " + data['name'] + ".users (username, lastname, firstname, email, password) VALUES (?, ?, ?, ?, ?);", [
+								username,
+								lastname,
+								firstname,
+								mail,
+								hash
+							], (err) => {
+								if (err) {
+									console.log("User creation failed : " + err.stack);
+								}
+							});
+						}
+					});
+				} else {
+					console.log('Not Unique');
+				}
+			}).catch ((reason) => {
+				console.log('createUser: ' + reason);
+				return (false);
+			});
+			return false;
 		}
 };

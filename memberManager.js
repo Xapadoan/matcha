@@ -63,6 +63,7 @@
 					if (res == true) {
 						bcrypt.hash(password, 10, (err, hash) => {
 							if (err) {
+								console.log('Bcrypt failed to serve hash : ' + err.stack);
 								reject('Fatal Error : Failed to serve Password');
 							} else {
 								connection.query("INSERT INTO " + data['name'] + ".users (username, lastname, firstname, email, password) VALUES (?, ?, ?, ?, ?);", [
@@ -73,6 +74,7 @@
 									hash
 								], (err) => {
 									if (err) {
+										console.log('Mysql : query failed : ' + err.stack);
 										reject("Fatal Error : User creation failed");
 									}
 								});
@@ -82,6 +84,7 @@
 						resolve('Error : Not Unique');
 					}
 				}).catch ((reason) => {
+					console.log('Failed to check member validity : ' + err.stack);
 					reject('createUser: ' + reason);
 				});
 				resolve(true);

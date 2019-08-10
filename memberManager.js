@@ -53,39 +53,39 @@
 			return (false);
 		},
 		createUser: function createUser (username, lastname, firstname, mail, password) {
-			//Check parameters consistancy
-			if (typeof username != 'string' || username.length < 1 || typeof lastname != 'string' || lastname.length < 1 || typeof firstname != 'string' || firstname.length < 1 || typeof mail != 'string' || mail.length < 1 || typeof password != 'string' || password.length < 1) {
-				console.log('Not consistant partern');
-				return ('All fields must be filled')
-			}		
-			is_member_unique(username, mail).then((res) => {
-				console.log('resolved');
-				if (res == true) {
-					bcrypt.hash(password, 10, (err, hash) => {
-						if (err) {
-							console.error('Failed to serve Password');
-						} else {
-							console.log('Begin query');
-							connection.query("INSERT INTO " + data['name'] + ".users (username, lastname, firstname, email, password) VALUES (?, ?, ?, ?, ?);", [
-								username,
-								lastname,
-								firstname,
-								mail,
-								hash
-							], (err) => {
-								if (err) {
-									console.log("User creation failed : " + err.stack);
-								}
-							});
-						}
-					});
-				} else {
-					console.log('Not Unique');
-				}
-			}).catch ((reason) => {
-				console.log('createUser: ' + reason);
-				return (false);
-			});
-			return false;
+			return (new Promise((resolve, reject) => {
+				//Check parameters consistancy
+				if (typeof username != 'string' || username.length < 1 || typeof lastname != 'string' || lastname.length < 1 || typeof firstname != 'string' || firstname.length < 1 || typeof mail != 'string' || mail.length < 1 || typeof password != 'string' || password.length < 1) {
+					console.log('Not consistant partern');
+					resolve ('Error : All fields must be filled')
+				}		
+				is_member_unique(username, mail).then((res) => {
+					if (res == true) {
+						bcrypt.hash(password, 10, (err, hash) => {
+							if (err) {
+								reject('Fatal Error : Failed to serve Password');
+							} else {
+								connection.query("INSERT INTO " + data['name'] + ".users (username, lastname, firstname, email, password) VALUES (?, ?, ?, ?, ?);", [
+									username,
+									lastname,
+									firstname,
+									mail,
+									hash
+								], (err) => {
+									if (err) {
+										reject("Fatal Error : User creation failed");
+									}
+								});
+							}
+						});
+					} else {
+						resolve('Error : Not Unique');
+					}
+				}).catch ((reason) => {
+					reject('createUser: ' + reason);
+				});
+				resolve(true);
+
+			}))
 		}
 };

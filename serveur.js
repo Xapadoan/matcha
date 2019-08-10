@@ -25,7 +25,6 @@ app.get('/signup', (req, res) => {
 });
 
 app.post('/signup', (req, res) => {
-	let token = req.body.Csrf;
 	if (memberManager.checkPassword(req.body.Password) !== true) {
 		res.render('signup.ejs', {
 			error: 'Le mot de passe doit contenir au moins 8 caractères dont une majuscule, une minuscule et un chiffre.',

@@ -26,15 +26,10 @@ app.get('/signup', (req, res) => {
 
 app.post('/signup', (req, res) => {
 	let token = req.body.Csrf;
-	if (memberManager.checkPassword(req.body.Password) !== true) {
-		res.render('signup.ejs', {
-			error: 'Le mot de passe doit contenir au moins 8 caractères dont une majuscule, une minuscule et un chiffre.',
-		});
-	}
-	memberManager.createUser(req.body.Username, req.body.Lastname, req.body.Firstname, req.body.Mail, req.body.Password).then((res) => {
-		if (res.indexOf("Error : ") >= 0) {
+	memberManager.createUser(req.body.Username, req.body.Lastname, req.body.Firstname, req.body.Mail, req.body.Password).then((result) => {
+		if (result !== true) {
 			res.render('signup.ejs', {
-				error: 'Le pseudo et l\'addresse mail doivent être uniques',
+				error: result,
 			});
 		} else {
 			res.render('signup_step1.ejs', {
@@ -43,6 +38,7 @@ app.post('/signup', (req, res) => {
 			});
 		}
 	}).catch((reason) => {
+		console.log(reason);
 		res.render('signup.ejs', {
 			error: 'Something went wrong we are trying to solve it'
 		});

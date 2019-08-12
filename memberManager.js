@@ -77,6 +77,7 @@
 										console.log('Mysql : query failed : ' + err.stack);
 										reject("Fatal Error : User creation failed");
 									}
+									resolve(true);
 								});
 							}
 						});
@@ -87,7 +88,6 @@
 					console.log('Failed to check member validity : ' + err.stack);
 					reject('createUser: ' + reason);
 				});
-				resolve(true);
 
 			}))
 		},

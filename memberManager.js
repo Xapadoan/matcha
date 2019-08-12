@@ -100,7 +100,17 @@
 							reject ('Failed to connect member');
 						}
 						if (results.length > 0) {
-							console.log(results[0].password);
+							bcrypt.compare(password, results[0].password, function(err, res) {
+								if (err) {
+									console.log(err.stack);
+									reject ('Somethimg went wrong, we are trying to solve it');
+								}
+								if (res === true) {
+									resolve (true);
+								} else {
+									resolve (false);
+								}
+							});
 							resolve(results);
 						} else {
 							resolve (false);

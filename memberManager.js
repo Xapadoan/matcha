@@ -96,7 +96,7 @@
 				if (username && password) {
 					connection.query('SELECT * FROM users WHERE username = ? AND password = ?', [username, password], function(error, results, fields) {
 						if (error) {
-							console.log(err.stack);
+							console.log(error.stack);
 							reject ('Failed to connect member');
 						}
 						if (results.length > 0) {

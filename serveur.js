@@ -43,7 +43,7 @@ app.post('/signup', (req, res) => {
 		});
 	}
 	memberManager.createUser(req.body.Username, req.body.Lastname, req.body.Firstname, req.body.Mail, req.body.Password).then((result) => {
-		if (result.indexOf("Error : ") >= 0) {
+		if (result !== true) {
 			res.render('signup.ejs', {
 				error: 'Le pseudo et l\'addresse mail doivent être uniques',
 			});

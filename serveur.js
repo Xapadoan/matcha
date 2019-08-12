@@ -4,7 +4,6 @@ var bcrypt = require('bcrypt');
 var settings = require("./server_settings.json");
 var memberManager = require("./memberManager.js");
 
-
 var app = express();
 
 //required to retrieve x-www-form-encoded in req.body
@@ -41,7 +40,7 @@ app.post('/login', (req, res) => {
 	memberManager.logg_user(req.body.username, req.body.password).then((result) => {
 		if (result !== false) {
 			req.session.username = result;
-			res.end(req.session.username + ' : OK');
+			res.redirect('/');
 		} else {
 			res.end('auth failed')
 		}

@@ -100,20 +100,13 @@
 							reject ('Failed to connect member');
 						}
 						if (results.length > 0) {
-							request.session.loggedin = true;
-							request.session.username = username;
-							response.redirect('/');
 							resolve(true);
 						} else {
-							response.send('Incorrect Username and/or Password!');
 							resolve (false);
 						}
-						response.end();
 					});
 				} else {
-					response.send('Please enter Username and Password!');
-					response.end();
-				}
+					resolve(false);				}
 			}));
 		}
 };

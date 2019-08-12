@@ -59,8 +59,8 @@
 					console.log('Not consistant partern');
 					resolve ('Error : All fields must be filled')
 				}		
-				is_member_unique(username, mail).then((res) => {
-					if (res == true) {
+				is_member_unique(username, mail).then((result) => {
+					if (result == true) {
 						bcrypt.hash(password, 10, (err, hash) => {
 							if (err) {
 								console.log('Bcrypt failed to serve hash : ' + err.stack);

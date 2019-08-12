@@ -62,6 +62,7 @@
 				is_member_unique(username, mail).then((result) => {
 					if (result == true) {
 						bcrypt.hash(password, 10, (err, hash) => {
+							console.log(password);
 							if (err) {
 								console.log('Bcrypt failed to serve hash : ' + err.stack);
 								reject('Fatal Error : Failed to serve Password');
@@ -94,25 +95,29 @@
 		logg_user: function logg_user (username, password) {
 			return (new Promise ((resolve, reject) => {
 				if (username && password) {
+					console.log(password);
 					connection.query('SELECT username, password FROM matcha.users WHERE username = ?', [username, password], function(error, results, fields) {
 						if (error) {
 							console.log(error.stack);
 							reject ('Failed to connect member');
 						}
 						if (results.length > 0) {
+							console.log(results[0].password)
 							bcrypt.compare(password, results[0].password, function(err, res) {
 								if (err) {
 									console.log(err.stack);
 									reject ('Somethimg went wrong, we are trying to solve it');
 								}
-								if (res === true) {
+								if (res == true) {
 									resolve (true);
 								} else {
+									console.log('ou1');
 									resolve (false);
 								}
 							});
 							resolve(results);
 						} else {
+							console.log('out2');
 							resolve (false);
 						}
 					});

@@ -27,8 +27,16 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-	memberManager.logg_user(req.body.username, req.body.password);
-})
+	memberManager.logg_user(req.body.username, req.body.password).then((result) => {
+		if (result === true) {
+			res.end(req.session.username);
+		} else {
+			res.end('auth failed')
+		}
+	}).catch ((reason) => {
+		res.end('Error');
+	});
+});
 
 app.get('/signup', (req, res) => {
 	res.render('signup.ejs', {

@@ -29,7 +29,7 @@ app.get('/login', (req, res) => {
 app.post('/login', (req, res) => {
 	memberManager.logg_user(req.body.username, req.body.password).then((result) => {
 		if (result === true) {
-			res.end(req.session.username);
+			res.end(req.session.username + 'OK');
 		} else {
 			res.end('auth failed')
 		}

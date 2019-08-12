@@ -90,5 +90,30 @@
 				resolve(true);
 
 			}))
+		},
+		logg_user: function logg_user (username, password) {
+			return (new Promise ((resolve, reject) => {
+				if (username && password) {
+					connection.query('SELECT * FROM users WHERE username = ? AND password = ?', [username, password], function(error, results, fields) {
+						if (error) {
+							console.log(err.stack);
+							reject ('Failed to connect member');
+						}
+						if (results.length > 0) {
+							request.session.loggedin = true;
+							request.session.username = username;
+							response.redirect('/');
+							resolve(true);
+						} else {
+							response.send('Incorrect Username and/or Password!');
+							resolve (false);
+						}
+						response.end();
+					});
+				} else {
+					response.send('Please enter Username and Password!');
+					response.end();
+				}
+			}));
 		}
 };

@@ -10,6 +10,12 @@ var app = express();
 app.use(express.urlencoded({extended: true}));
 //required to serve static files (stylesheets, images, ...)
 app.use(express.static('resources'));
+//required for session usage
+app.use(session({
+	secret: 'secret',
+	resave: true,
+	saveUninitialized: true
+}));
 
 app.get('/', (req, res) => {
 	res.render('index.ejs');
@@ -18,6 +24,10 @@ app.get('/', (req, res) => {
 app.get('/login', (req, res) => {
 	res.render('login.ejs');
 });
+
+app.post('/login', (req, res) => {
+	memberManager.logg_user(req.body.username, req.body.password);
+})
 
 app.get('/signup', (req, res) => {
 	res.render('signup.ejs', {

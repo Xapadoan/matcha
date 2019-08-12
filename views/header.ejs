@@ -35,6 +35,7 @@
 	<nav class="adaptative_nav_bar">
 		<a href="/">Acceuil</a>
 		<a href="/signup">Créer un compte</a>
+		<a href="/login">Se connecter</a>
 	</nav>
 </header>
 
@@ -46,4 +47,14 @@
 			elem.parentNode.removeChild(elem);
 		}, 5000);
 		</script><%
+} %>
+
+<% if (typeof locals.notification != 'undefined') {
+	%><p id="user_notification"><%= locals.notification %></p>
+	<script>
+	window.setTimeout(function() {
+		let elem = document.getElementById('user_notification');
+		elem.parentNode.removeChild(elem);
+	}, 5000);
+	</script><%
 } %>

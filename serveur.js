@@ -26,6 +26,17 @@ app.get('/login', (req, res) => {
 	res.render('login.ejs');
 });
 
+app.get('/logout', (req, res) => {
+	req.session.destroy((err) => {
+		if (err) {
+			console.log(err.stack);
+		}
+		res.render('index.ejs', {
+			notification: 'Vous etes maintenant deconnecté'
+		});
+	});
+});
+
 app.post('/login', (req, res) => {
 	memberManager.logg_user(req.body.username, req.body.password).then((result) => {
 		if (result !== false) {

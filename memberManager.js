@@ -97,7 +97,6 @@
 				if (username && password) {
 					console.log(password);
 					connection.query('SELECT username, password FROM matcha.users WHERE username = ?', [username], function(error, results, fields) {
-						console.log('query OK');
 						if (error) {
 							console.log(error.stack);
 							reject ('Failed to connect member');
@@ -110,19 +109,16 @@
 									reject ('Somethimg went wrong, we are trying to solve it');
 								}
 								if (res == true) {
-									resolve (true);
+									resolve (results[0].username);
 								} else {
-									console.log('ou1');
 									resolve (false);
 								}
 							});
 						} else {
-							console.log('out2');
 							resolve (false);
 						}
 					});
 				} else {
-					console.log('out3');
 					resolve(false);
 				}
 			}));

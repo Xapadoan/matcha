@@ -28,13 +28,14 @@ app.get('/login', (req, res) => {
 
 app.post('/login', (req, res) => {
 	memberManager.logg_user(req.body.username, req.body.password).then((result) => {
-		if (result === true) {
-			res.end(req.session.username + 'OK');
+		if (result !== false) {
+			req.session.username = result;
+			res.end(req.session.username + ' : OK');
 		} else {
 			res.end('auth failed')
 		}
 	}).catch ((reason) => {
-		res.end('Error');
+		res.end('Error : ' + reason);
 	});
 });
 

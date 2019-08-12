@@ -54,6 +54,7 @@ app.post('/signup', (req, res) => {
 			});
 		}
 	}).catch((reason) => {
+		console.log(reason);
 		res.render('signup.ejs', {
 			error: 'Something went wrong we are trying to solve it'
 		});

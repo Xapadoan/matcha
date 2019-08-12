@@ -94,13 +94,14 @@
 		logg_user: function logg_user (username, password) {
 			return (new Promise ((resolve, reject) => {
 				if (username && password) {
-					connection.query('SELECT * FROM matcha.users WHERE username = ? AND password = ?', [username, password], function(error, results, fields) {
+					connection.query('SELECT username, password FROM matcha.users WHERE username = ?', [username, password], function(error, results, fields) {
 						if (error) {
 							console.log(error.stack);
 							reject ('Failed to connect member');
 						}
 						if (results.length > 0) {
-							resolve(true);
+							console.log(results[0].password);
+							resolve(results);
 						} else {
 							resolve (false);
 						}

@@ -1,13 +1,5 @@
 {
     "name": "matcha",
-<<<<<<< HEAD
-    "version": "0.0.0",
-    "dependencies": {
-        "mysql": "~2.13.0"
-    },
-    "author": "asd"
-}
-=======
     "version": "0.1.0",
     "private": true,
     "dependencies": {
@@ -30,4 +22,3 @@
     "license": "None",
     "description": "Lust = $"
 }
->>>>>>> xapadoan

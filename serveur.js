@@ -43,7 +43,6 @@ app.get('/logout', (req, res) => {
 			}
 			res.render('index.ejs', {
 				notification: 'Vous etes maintenant deconnecté',
-				user: req.session.username
 			});
 		});
 	} else {

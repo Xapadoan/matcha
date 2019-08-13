@@ -4,7 +4,7 @@
     <body>
         <%- include('header.ejs') %>
         <h1><%= user %></h1>
-        <form id='extended_infos' name='user_infos' action='/complete'>
+        <form id='extended_infos' method="POST" name='user_infos' action='/complete'>
             Age : <input name="age" type='number' max="77" min='18' />
             Genre : <select name="gender">
                 <option value="Both">Les deux</option>

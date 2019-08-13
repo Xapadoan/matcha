@@ -3,7 +3,10 @@
 
 **N'oublie pas de supprimer le .git ignore et de mettre a jour les fichiers de configuration avant de push.**
 
-Pour cette version, on essaye de faire marcher la creation d'utilisateurs
+ca marche !!!!, pour la creationn d'utilisateurs, il ne reste plus qu'a :
+- mettre les photos
+- proteger les formulaires avec csrf
+- faire un affichage potable 
 
 ## Required packages
 

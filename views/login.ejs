@@ -2,8 +2,13 @@
 <html lang="fr">
     <%- include('head.ejs'); %>
     <body>
+        <%- include('header.ejs'); %>
         <h1>Connexion :</h1>
         <p>Vous pouvez vous connecter ici !</p>
-        <p>Pas encore disponible !</p>
+        <form action="login" method="POST">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button>Se connecter</button>
+        </form>
     </body>
 </html>

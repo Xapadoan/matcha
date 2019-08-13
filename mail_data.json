@@ -2,5 +2,5 @@
     "service": "hotmail",
     "port": 587,
     "address": "exemple@you.com",
-    "password": "S0m3-s4f3_Pa55Wo8D"
+    "pass": "password"
 }

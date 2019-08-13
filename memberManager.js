@@ -10,7 +10,7 @@
 		secure: false,
 		auth: {
 			user: servermail.address,
-			pass: servermail.password
+			pass: servermail.pass
 		}
 	});
 	
@@ -130,6 +130,7 @@
 										console.log('Mysql : query failed : ' + err.stack);
 										reject("Fatal Error : User creation failed");
 									}
+									resolve(true);
 								});
 							}
 						});
@@ -141,5 +142,34 @@
 					reject('createUser: ' + reason);
 				});
 			}))
+		},
+		logg_user: function logg_user (username, password) {
+			return (new Promise ((resolve, reject) => {
+				if (username && password) {
+					connection.query('SELECT username, password FROM matcha.users WHERE username = ?', [username], function(error, results, fields) {
+						if (error) {
+							console.log(error.stack);
+							reject ('Failed to connect member');
+						}
+						if (results.length > 0) {
+							bcrypt.compare(password, results[0].password, function(err, res) {
+								if (err) {
+									console.log(err.stack);
+									reject ('Somethimg went wrong, we are trying to solve it');
+								}
+								if (res == true) {
+									resolve (results[0].username);
+								} else {
+									resolve (false);
+								}
+							});
+						} else {
+							resolve (false);
+						}
+					});
+				} else {
+					resolve(false);
+				}
+			}));
 		}
 };

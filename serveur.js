@@ -1,8 +1,8 @@
 var express = require('express');
+var session = require('express-session');
 var bcrypt = require('bcrypt');
 var settings = require("./server_settings.json");
 var memberManager = require("./memberManager.js");
-
 
 var app = express();
 
@@ -10,13 +10,49 @@ var app = express();
 app.use(express.urlencoded({extended: true}));
 //required to serve static files (stylesheets, images, ...)
 app.use(express.static('resources'));
+//required for session usage
+app.use(session({
+	secret: 'secret',
+	resave: true,
+	saveUninitialized: true
+}));
 
 app.get('/', (req, res) => {
-	res.render('index.ejs');
+	if (req.session.username) {
+		res.render('home.ejs', {
+			user: req.session.username
+		});
+	} else {
+		res.render('index.ejs');
+	}
 });
 
 app.get('/login', (req, res) => {
 	res.render('login.ejs');
+});
+
+app.get('/logout', (req, res) => {
+	req.session.destroy((err) => {
+		if (err) {
+			console.log(err.stack);
+		}
+		res.render('index.ejs', {
+			notification: 'Vous etes maintenant deconnecté'
+		});
+	});
+});
+
+app.post('/login', (req, res) => {
+	memberManager.logg_user(req.body.username, req.body.password).then((result) => {
+		if (result !== false) {
+			req.session.username = result;
+			res.redirect('/');
+		} else {
+			res.end('auth failed')
+		}
+	}).catch ((reason) => {
+		res.end('Error : ' + reason);
+	});
 });
 
 app.get('/signup', (req, res) => {

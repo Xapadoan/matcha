@@ -4,5 +4,21 @@
     <body>
         <%- include('header.ejs') %>
         <h1><%= user %></h1>
+        <form id='extended_infos' name='user_infos' action='/complete'>
+            Age : <input name="age" type='number' max="77" min='18' />
+            Genre : <select name="gender">
+                <option value="Both">Les deux</option>
+                <option value="Woman">Femme</option>
+                <option value="Man">Homme</option>
+            </select>
+            Orientation : <select name="orientation">
+                <option value="Women" selected>Femmes</option>
+                <option value="Men">Hommes</option>
+                <option value="Both">Les deux</option>
+                <option value="Others">Autres</option>
+            </select>
+            Bio : <textarea name='bio' form="extended_infos"></textarea>
+            <button>OK</button>
+        </form>
     </body>
 </html>

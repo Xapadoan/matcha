@@ -1,0 +1,6 @@
+{
+    "service": "hotmail",
+    "port": 587,
+    "address": "exemple@you.com",
+    "pass": "password"
+}

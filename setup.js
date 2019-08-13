@@ -1,16 +1,20 @@
-var mysql = require('mysql');
+var mysql	= require('mysql');
+var data = require('./database.json');
 
-var con = mysql.createConnection({
-	host: "localhost",
-	user: "yourusername",
-	password: "rootpass"
+var connection = mysql.createConnection({
+	host     : data['host'],
+	user     : data['root'],
+	port : data['port'],
+	password : data['root_password']
 });
 
-con.connect(function(err) {
-	if (err) throw err;
-	console.log("Connected!");
-	con.query("CREATE DATABASE mydb", function (err, result){
-		if (err) throw err;
-		console.log("Database created");
-	});
+connection.connect((err) => {
+	if (err) {
+		console.error("Mysql : Connection failed: " + err.stack);
+		console.error("This is most likely an error in settings : check 'database.json'");
+	}
 });
+connection.query('CREATE DATABASE IF NOT EXISTS ' + data['name']);
+connection.query('USE ' + data['name']);
+connection.query('CREATE TABLE IF NOT EXISTS users (id INT(9) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL, username VARCHAR(100) NOT NULL, lastname VARCHAR(100) NOT NULL, firstname VARCHAR(100) NOT NULL, email VARCHAR(255) NOT NULL, password VARCHAR(255) NOT NULL)');
+connection.end();

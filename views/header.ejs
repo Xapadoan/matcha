@@ -1,0 +1,74 @@
+<style>
+	body {
+		width: 100vw;
+		margin: 0px;
+		margin-top: 50px;
+		top: 0px;
+		left: 0px;
+	}
+
+	header {
+		background-color: #d33;
+		height: 50px;
+		border-bottom: groove #800 2px;
+		position: fixed;
+		width: 100vw;
+		top: 0px;
+		left: 0px;
+		z-index: 1;
+	}
+
+	#user_notification {
+		background-color: #d33;
+		position: absolute;
+		left: 5%;
+		top: calc(5% + 50px);
+		min-height: 30px;
+		min-width: 200px;
+		width: 20%;
+		text-align: center;
+		border: solid #800 3px;
+		border-radius: 5px;
+	}
+
+	#user_error {
+		background-color: #d33;
+		position: absolute;
+		left: 5%;
+		top: calc(5% + 50px);
+		min-height: 30px;
+		min-width: 200px;
+		width: 20%;
+		text-align: center;
+		border: solid #800 3px;
+		border-radius: 5px;
+	}
+</style>
+<header>
+	<nav class="adaptative_nav_bar">
+		<a href="/">Acceuil</a>
+		<a href="/signup">Créer un compte</a>
+		<a href="/login">Se connecter</a>
+		<a href="/logout">Se deconnecter</a>
+	</nav>
+</header>
+
+<% if (typeof locals.error != 'undefined') {
+		%><p id="user_error"><%= locals.error %></p>
+		<script>
+		window.setTimeout(function() {
+			let elem = document.getElementById('user_error');
+			elem.parentNode.removeChild(elem);
+		}, 5000);
+		</script><%
+} %>
+
+<% if (typeof locals.notification != 'undefined') {
+	%><p id="user_notification"><%= locals.notification %></p>
+	<script>
+	window.setTimeout(function() {
+		let elem = document.getElementById('user_notification');
+		elem.parentNode.removeChild(elem);
+	}, 5000);
+	</script><%
+} %>

@@ -36,15 +36,19 @@ app.get('/login', (req, res) => {
 });
 
 app.get('/logout', (req, res) => {
-	req.session.destroy((err) => {
-		if (err) {
-			console.log(err.stack);
-		}
-		res.render('index.ejs', {
-			notification: 'Vous etes maintenant deconnecté',
-			user: req.session.username
+	if (typeof req.session != 'undefined' && typeof req.session.username != 'undefined') {
+		req.session.destroy((err) => {
+			if (err) {
+				console.log(err.stack);
+			}
+			res.render('index.ejs', {
+				notification: 'Vous etes maintenant deconnecté',
+				user: req.session.username
+			});
 		});
-	});
+	} else {
+		res.redirect('/');
+	}
 });
 
 app.post('/login', (req, res) => {

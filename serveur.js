@@ -52,7 +52,11 @@ app.get('/logout', (req, res) => {
 
 app.post('/complete', (req, res) => {
 	memberManager.update_user(req.session.username, req.body.age, req.body.gender, req.body.orientation, req.body.bio).then((result) => {
-		res.end ('Age : ' + req.body.age + '<br>Genre : ' + req.body.gender + '<br />Orientation : ' + req.body.orientation + '<br />Bio : ' + req.body.bio);
+		if (result === true) {
+			res.end ('Age : ' + req.body.age + '<br>Genre : ' + req.body.gender + '<br />Orientation : ' + req.body.orientation + '<br />Bio : ' + req.body.bio);
+		} else {
+			res.end('WTF');
+		}
 	}).catch((err) => {
 		res.end('error');
 	});

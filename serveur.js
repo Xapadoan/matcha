@@ -51,8 +51,8 @@ app.get('/logout', (req, res) => {
 });
 
 app.post('/complete', (req, res) => {
-	res.end ('Age : ' + req.body.age + '<br>Genre : ' + req.body.genre + '<br />Orientation : ' + req.body.orientation + '<br />Bio : ' + req.body.bio);
-})
+	res.end ('Age : ' + req.body.age + '<br>Genre : ' + req.body.gender + '<br />Orientation : ' + req.body.orientation + '<br />Bio : ' + req.body.bio);
+});
 
 app.post('/login', (req, res) => {
 	memberManager.logg_user(req.body.username, req.body.password).then((result) => {

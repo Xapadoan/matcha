@@ -152,6 +152,7 @@
 							reject ('Failed to connect member');
 						}
 						if (results.length > 0) {
+							console.log(results[0].username);
 							bcrypt.compare(password, results[0].password, function(err, res) {
 								if (err) {
 									console.log(err.stack);

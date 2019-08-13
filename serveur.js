@@ -50,7 +50,7 @@ app.get('/logout', (req, res) => {
 	}
 });
 
-app.post('/complete', (res, req) => {
+app.post('/complete', (req, res) => {
 	res.end ('Age : ' + req.body.age + '<br>Genre : ' + req.body.genre + '<br />Orientation : ' + req.body.orientation + '<br />Bio : ' + req.body.bio);
 })
 

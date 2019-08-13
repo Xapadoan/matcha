@@ -47,7 +47,7 @@
 <header>
 	<nav class="adaptative_nav_bar">
 		<a href="/">Acceuil</a>
-		<% if typeof locals.user != 'undefined') { %>
+		<% if (typeof locals.user != 'undefined') { %>
 		<a href="/signup">Créer un compte</a>
 		<a href="/login">Se connecter</a>
 		<% } else { %>

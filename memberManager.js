@@ -156,12 +156,12 @@
 						console.log(username);
 						console.log(results[0]);
 						id = results[0].id;
-						connection.query('INSERT INTO matcha.users_extended (age, gender, orientation, bio) VALUES (?, ?, ?, ?) WHERE user = ?', [
+						connection.query('INSERT INTO matcha.users_extended (user, age, gender, orientation, bio) VALUES (?, ?, ?, ?, ?)', [
+							id,
 							age,
 							gender,
 							orientation,
-							bio,
-							id
+							bio
 						], (err, results) => {
 							console.log('second query');
 							if (err) {

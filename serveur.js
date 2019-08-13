@@ -23,12 +23,16 @@ app.get('/', (req, res) => {
 			user: req.session.username
 		});
 	} else {
-		res.render('index.ejs');
+		res.render('index.ejs', {
+			user: req.session.username
+		});
 	}
 });
 
 app.get('/login', (req, res) => {
-	res.render('login.ejs');
+	res.render('login.ejs', {
+		user: req.session.username
+	});
 });
 
 app.get('/logout', (req, res) => {
@@ -37,7 +41,8 @@ app.get('/logout', (req, res) => {
 			console.log(err.stack);
 		}
 		res.render('index.ejs', {
-			notification: 'Vous etes maintenant deconnecté'
+			notification: 'Vous etes maintenant deconnecté',
+			user: req.session.username
 		});
 	});
 });
@@ -57,6 +62,7 @@ app.post('/login', (req, res) => {
 
 app.get('/signup', (req, res) => {
 	res.render('signup.ejs', {
+		user: req.session.username
 	});
 });
 
@@ -65,10 +71,12 @@ app.post('/signup', (req, res) => {
 	memberManager.createUser(req.body.Username, req.body.Lastname, req.body.Firstname, req.body.Mail, req.body.Password).then((result) => {
 		if (result !== true) {
 			res.render('signup.ejs', {
+				user: req.session.username,
 				error: result,
 			});
 		} else {
 			res.render('signup_step1.ejs', {
+				user: req.session.username,
 				username: req.body.Username,
 				mail: req.body.Mail,
 			});
@@ -76,6 +84,7 @@ app.post('/signup', (req, res) => {
 	}).catch((reason) => {
 		console.log(reason);
 		res.render('signup.ejs', {
+			user: req.session.username,
 			error: 'Something went wrong we are trying to solve it'
 		});
 	});

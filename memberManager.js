@@ -153,6 +153,8 @@
 						console.log(err.stack);
 						reject ('Something went wrong, we are trying to solve it');
 					} else {
+						console.log(username);
+						console.log(results);
 						id = results[0].id;
 						connection.query('UPDATE matcha.users_extended SET age = ?, gender = ?, orientation = ?, bio = ? WHERE user = ?', [
 							age,

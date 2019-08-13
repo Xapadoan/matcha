@@ -143,7 +143,39 @@
 				});
 			}))
 		},
-		update_user: function update_user (username, age, gender, orientation, bio) {
+		create_user_extended: function create_user_extended (username, age, gender, orientation, bio) {
+			return (new Promise ((resolve, reject) => {
+				//get member id
+				let id;
+				connection.query('SELECT id FROM matcha.users WHERE username = ?', [username], (err, results) => {
+					console.log('First query');
+					if (err) {
+						console.log(err.stack);
+						reject ('Something went wrong, we are trying to solve it');
+					} else {
+						console.log(username);
+						console.log(results[0]);
+						id = results[0].id;
+						connection.query('INSERT INTO matcha.users_extended (age, gender, orientation, bio) VALUES (?, ?, ?, ?) WHERE user = ?', [
+							age,
+							gender,
+							orientation,
+							bio,
+							id
+						], (err, results) => {
+							console.log('second query');
+							if (err) {
+								console.log(err.stack);
+								reject ('Something went wrong, we are trying to solve it');
+							} else {
+								resolve (true);
+							}
+						});
+					}
+				});
+			}));
+		},
+		update_user_extended: function update_user_extended (username, age, gender, orientation, bio) {
 			return (new Promise ((resolve, reject) => {
 				//get member id
 				let id;

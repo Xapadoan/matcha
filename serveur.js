@@ -51,7 +51,7 @@ app.get('/logout', (req, res) => {
 });
 
 app.post('/complete', (req, res) => {
-	memberManager.update_user(req.session.username, req.body.age, req.body.gender, req.body.orientation, req.body.bio).then((result) => {
+	memberManager.create_user_extended(req.session.username, req.body.age, req.body.gender, req.body.orientation, req.body.bio).then((result) => {
 		if (result === true) {
 			res.end ('Age : ' + req.body.age + '<br>Genre : ' + req.body.gender + '<br />Orientation : ' + req.body.orientation + '<br />Bio : ' + req.body.bio);
 		} else {

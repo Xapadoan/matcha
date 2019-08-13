@@ -148,6 +148,7 @@
 				//get member id
 				let id;
 				connection.query('SELECT id FROM matcha.users WHERE username = ?', [username], (err, results) => {
+					console.log('First query');
 					if (err) {
 						console.log(err.stack);
 						reject ('Something went wrong, we are trying to solve it');
@@ -160,6 +161,7 @@
 							bio,
 							id
 						], (err, results) => {
+							console.log('second query');
 							if (err) {
 								console.log(err.stack);
 								reject ('Something went wrong, we are trying to solve it');

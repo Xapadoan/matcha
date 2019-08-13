@@ -51,7 +51,11 @@ app.get('/logout', (req, res) => {
 });
 
 app.post('/complete', (req, res) => {
-	res.end ('Age : ' + req.body.age + '<br>Genre : ' + req.body.gender + '<br />Orientation : ' + req.body.orientation + '<br />Bio : ' + req.body.bio);
+	memberManager.update_user(req.session.username, req.body.age, req.body.gender, req.body.orientation, req.body.bio).then((result) => {
+		res.end ('Age : ' + req.body.age + '<br>Genre : ' + req.body.gender + '<br />Orientation : ' + req.body.orientation + '<br />Bio : ' + req.body.bio);
+	}).catch((err) => {
+		res.end('error');
+	});
 });
 
 app.post('/login', (req, res) => {

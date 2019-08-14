@@ -2,6 +2,7 @@
 	let bcrypt = require('bcrypt');
 	let mailer = require('nodemailer');
 	let data = require('./database.json');
+	let server = require('./server_settings.json');
 	let servermail = require('./mail_data.json');
 	
 	let transporter = mailer.createTransport({
@@ -108,7 +109,7 @@
 									to: mail,
 									subject: 'Bienvenue !',
 									html: 'Vous venez de vous enregistrer sur Matcha.<br />'
-									+ 'veuillez <a href=\'/\'>confirmer</a>'
+									+ 'veuillez <a href=\'http://' + server.name + '/signup?token=key\'>confirmer</a> la creation de votre compte'
 								}
 								transporter.sendMail(mail_options, (err) => {
 									if (err) {

@@ -87,15 +87,9 @@ app.post('/login', (req, res) => {
 
 app.get('/signup', (req, res) => {
 	token = req.hre
-	res.render('signup.ejs', {
-		user: req.session.username
-	});
-});
-
-app.post('/signup', (req, res) => {
 	let token = req.query.token;
 	let username = req.query.username;
-	if (typeof token != 'undefined' && username != 'undefined') {
+	if (typeof token != 'undefined' && typeof username != 'undefined') {
 		memberManager.validateUser(username).then((res) => {
 			res.redirect('/login');
 		}).catch((err) => {
@@ -104,29 +98,35 @@ app.post('/signup', (req, res) => {
 				user: req.session.username,
 				error: 'Something went wrong, we are trying to solve it'
 			})
-		})
+		});
 	} else {
-		memberManager.createUser(req.body.Username, req.body.Lastname, req.body.Firstname, req.body.Mail, req.body.Password).then((result) => {
-			if (result !== true) {
-				res.render('signup.ejs', {
-					user: req.session.username,
-					error: result,
-				});
-			} else {
-				res.render('signup_step1.ejs', {
-					user: req.session.username,
-					username: req.body.Username,
-					mail: req.body.Mail,
-				});
-			}
-		}).catch((reason) => {
-			console.log(reason);
-			res.render('signup.ejs', {
-				user: req.session.username,
-				error: 'Something went wrong we are trying to solve it'
-			});
+		res.render('signup.ejs', {
+			user: req.session.username
 		});
 	}
+});
+
+app.post('/signup', (req, res) => {
+	memberManager.createUser(req.body.Username, req.body.Lastname, req.body.Firstname, req.body.Mail, req.body.Password).then((result) => {
+		if (result !== true) {
+			res.render('signup.ejs', {
+				user: req.session.username,
+				error: result,
+			});
+		} else {
+			res.render('signup_step1.ejs', {
+				user: req.session.username,
+				username: req.body.Username,
+				mail: req.body.Mail,
+			});
+		}
+	}).catch((reason) => {
+		console.log(reason);
+		res.render('signup.ejs', {
+			user: req.session.username,
+			error: 'Something went wrong we are trying to solve it'
+		});
+	});
 });	
 
 app.listen(settings['port']);

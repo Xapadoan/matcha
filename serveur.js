@@ -36,13 +36,32 @@ app.get('/login', (req, res) => {
 });
 
 app.get('/recover', (req, res) => {
-	res.render('recover.ejs', {
-		user: req.session.username
-	});
+	let token = req.query.token;
+	let username = req.query.user;
+	if (typeof token != 'undefined' && typeof username != 'undefined') {
+		res.end('Trying to recover password with token :' + token + 'for :' + username);
+	} else {
+		res.render('recover.ejs', {
+			user: req.session.username
+		});
+	}
 });
 
 app.post('/recover', (req, res) => {
-	res.end('Not available yet !');
+	let username = req.body.username;
+	let mail = req.body.username;
+	memberManager.sendpasswordRecoveryMail(username, mail).then ((result) => {
+		res.render('recover.ejs', {
+			user: req.session.username,
+			mail_sent: true
+		});
+	}).catch((err) => {
+		console.log(err);
+		res.render('recover.ejs', {
+			user: req.session.username,
+			error: 'Something went wrong, we are trying to solve it'
+		});
+	});
 });
 
 app.get('/logout', (req, res) => {

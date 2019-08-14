@@ -223,6 +223,41 @@
 				});
 			}))
 		},
+		sendpasswordRecoveryMail: function sendpasswordRecoveryMail (username, mail) {
+			return (new Promise ((resolve, reject) => {
+				if (validateMail(mail) !== true) {
+					resolve('L\'adresse mail n\'est pas bien formatée');
+				}
+				id = uniqid();
+				connection.query('UPDATE matcha.users SET status = ? WHERE username = ? AND mail = ?',[
+					id,
+					username,
+					mail
+				], (err, results) => {
+					if (err) {
+						console.log(err.stack);
+						reject('Something went wrong, we are trying to solve it');
+					} else if (results.affectedRows != 1) {
+						resolve('L\'adresse mail et le nom d\'utilisateur ne correspondent pas');
+					}
+				});
+				let mail_options = {
+					from: '"Matcha users" ' + servermail.address,
+					to: mail,
+					subject: 'Recupération du mot de passe',
+					html: 'Vous avez fait une demande de récupération de mot de passe.<br />'
+					+ 'veuillez <a href=\'http://' + server.name + '/recover?token=' + id + '&user=' + username + '\'>confirmer</a> la creation de votre compte'
+				}
+				transporter.sendMail(mail_options, (err) => {
+					if (err) {
+						console.log(err.stack);
+						reject('Something went wrong, we are trying to solve it');
+					} else {
+						resolve(true);
+					}
+				});
+			}));
+		},
 		logg_user: function logg_user (username, password) {
 			return (new Promise ((resolve, reject) => {
 				if (username && password) {

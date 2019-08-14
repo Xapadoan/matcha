@@ -104,7 +104,6 @@
 								reject('Fatal Error : Failed to serve Password');
 							} else {
 								//Send mail
-								console.log(server.name);
 								let mail_options = {
 									from: '"Matcha users" ' + servermail.address,
 									to: mail,

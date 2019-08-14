@@ -182,13 +182,10 @@
 				//get member id
 				let id;
 				connection.query('SELECT id FROM matcha.users WHERE username = ?', [username], (err, results) => {
-					console.log('First query');
 					if (err) {
 						console.log(err.stack);
 						reject ('Something went wrong, we are trying to solve it');
 					} else {
-						console.log(username);
-						console.log(results[0]);
 						id = results[0].id;
 						connection.query('UPDATE matcha.users_extended SET age = ?, gender = ?, orientation = ?, bio = ? WHERE user = ?', [
 							age,
@@ -197,7 +194,6 @@
 							bio,
 							id
 						], (err, results) => {
-							console.log('second query');
 							if (err) {
 								console.log(err.stack);
 								reject ('Something went wrong, we are trying to solve it');
@@ -208,6 +204,11 @@
 					}
 				});
 			}));
+		},
+		validateUser: function validateUser (username) {
+			return (new Promise ((resolve, reject) => {
+				resolve('OKOKOK');
+			}))
 		},
 		logg_user: function logg_user (username, password) {
 			return (new Promise ((resolve, reject) => {

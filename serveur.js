@@ -35,6 +35,16 @@ app.get('/login', (req, res) => {
 	});
 });
 
+app.get('/recover', (req, res) => {
+	res.render('recover.ejs', {
+		user: req.session.username
+	});
+});
+
+app.post('/recover', (req, res) => {
+	res.end('Not available yet !');
+});
+
 app.get('/logout', (req, res) => {
 	if (typeof req.session != 'undefined' && typeof req.session.username != 'undefined') {
 		req.session.destroy((err) => {
@@ -76,33 +86,47 @@ app.post('/login', (req, res) => {
 });
 
 app.get('/signup', (req, res) => {
+	token = req.hre
 	res.render('signup.ejs', {
 		user: req.session.username
 	});
 });
 
 app.post('/signup', (req, res) => {
-	let token = req.body.Csrf;
-	memberManager.createUser(req.body.Username, req.body.Lastname, req.body.Firstname, req.body.Mail, req.body.Password).then((result) => {
-		if (result !== true) {
+	let token = req.query.token;
+	let username = req.query.username;
+	if (typeof token != 'undefined' && username != 'undefined') {
+		memberManager.validateUser(username).then((res) => {
+			res.redirect('/login');
+		}).catch((err) => {
+			console.log(err);
 			res.render('signup.ejs', {
 				user: req.session.username,
-				error: result,
-			});
-		} else {
-			res.render('signup_step1.ejs', {
+				error: 'Something went wrong, we are trying to solve it'
+			})
+		})
+	} else {
+		memberManager.createUser(req.body.Username, req.body.Lastname, req.body.Firstname, req.body.Mail, req.body.Password).then((result) => {
+			if (result !== true) {
+				res.render('signup.ejs', {
+					user: req.session.username,
+					error: result,
+				});
+			} else {
+				res.render('signup_step1.ejs', {
+					user: req.session.username,
+					username: req.body.Username,
+					mail: req.body.Mail,
+				});
+			}
+		}).catch((reason) => {
+			console.log(reason);
+			res.render('signup.ejs', {
 				user: req.session.username,
-				username: req.body.Username,
-				mail: req.body.Mail,
+				error: 'Something went wrong we are trying to solve it'
 			});
-		}
-	}).catch((reason) => {
-		console.log(reason);
-		res.render('signup.ejs', {
-			user: req.session.username,
-			error: 'Something went wrong we are trying to solve it'
 		});
-	});
+	}
 });	
 
 app.listen(settings['port']);

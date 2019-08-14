@@ -1,6 +1,7 @@
 	let mysql	= require('mysql');
 	let bcrypt = require('bcrypt');
 	let mailer = require('nodemailer');
+	let uniqid = require('uniqid');
 	let data = require('./database.json');
 	let server = require('./server_settings.json');
 	let servermail = require('./mail_data.json');
@@ -109,7 +110,7 @@
 									to: mail,
 									subject: 'Bienvenue !',
 									html: 'Vous venez de vous enregistrer sur Matcha.<br />'
-									+ 'veuillez <a href=\'http://' + server.name + '/signup?token=key\'>confirmer</a> la creation de votre compte'
+									+ 'veuillez <a href=\'http://' + server.name + '/signup?token=' + uniqid() + '&user=' + username + '\'>confirmer</a> la creation de votre compte'
 								}
 								transporter.sendMail(mail_options, (err) => {
 									if (err) {

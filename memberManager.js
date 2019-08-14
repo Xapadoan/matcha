@@ -105,12 +105,13 @@
 								reject('Fatal Error : Failed to serve Password');
 							} else {
 								//Send mail
+								id = uniqid();
 								let mail_options = {
 									from: '"Matcha users" ' + servermail.address,
 									to: mail,
 									subject: 'Bienvenue !',
 									html: 'Vous venez de vous enregistrer sur Matcha.<br />'
-									+ 'veuillez <a href=\'http://' + server.name + '/signup?token=' + uniqid() + '&user=' + username + '\'>confirmer</a> la creation de votre compte'
+									+ 'veuillez <a href=\'http://' + server.name + '/signup?token=' + id + '&user=' + username + '\'>confirmer</a> la creation de votre compte'
 								}
 								transporter.sendMail(mail_options, (err) => {
 									if (err) {
@@ -121,11 +122,12 @@
 									}
 								});
 								//Save in db
-								connection.query("INSERT INTO " + data['name'] + ".users (username, lastname, firstname, email, password) VALUES (?, ?, ?, ?, ?);", [
+								connection.query("INSERT INTO " + data['name'] + ".users (username, lastname, firstname, email, status, password) VALUES (?, ?, ?, ?, ?, ?);", [
 									username,
 									lastname,
 									firstname,
 									mail,
+									id,
 									hash
 								], (err) => {
 									if (err) {
@@ -205,20 +207,33 @@
 				});
 			}));
 		},
-		validateUser: function validateUser (username) {
+		validateUser: function validateUser (username, id) {
 			return (new Promise ((resolve, reject) => {
-				resolve('OKOKOK');
+				connection.query('UPDATE matcha.users SET status = Confirmed WHERE username = ? AND status = ?', [
+					username,
+					id
+				], (err) => {
+					if (err) {
+						console.log(err.stack);
+						reject ('Something went wrong, we are trying to solve it');
+					} else {
+						resolve (true);
+					}
+				});
 			}))
 		},
 		logg_user: function logg_user (username, password) {
 			return (new Promise ((resolve, reject) => {
 				if (username && password) {
-					connection.query('SELECT username, password FROM matcha.users WHERE username = ?', [username], function(error, results) {
+					connection.query('SELECT username, password, status FROM matcha.users WHERE username = ?', [username], function(error, results) {
 						if (error) {
 							console.log(error.stack);
 							reject ('Failed to connect member');
 						}
 						if (results.length > 0) {
+							if (results[0].status != 'Confirmed') {
+								resolve (false);
+							}
 							bcrypt.compare(password, results[0].password, function(err, res) {
 								if (err) {
 									console.log(err.stack);

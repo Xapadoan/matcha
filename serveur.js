@@ -89,8 +89,8 @@ app.get('/signup', (req, res) => {
 	let token = req.query.token;
 	let username = req.query.user;
 	if (typeof token != 'undefined' && typeof username != 'undefined') {
-		memberManager.validateUser(username).then((res) => {
-			req.redirect('/login');
+		memberManager.validateUser(username).then((result) => {
+			res.redirect('/login');
 		}).catch((err) => {
 			console.log(err);
 			res.render('signup.ejs', {

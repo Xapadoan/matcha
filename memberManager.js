@@ -209,7 +209,8 @@
 		},
 		validateUser: function validateUser (username, id) {
 			return (new Promise ((resolve, reject) => {
-				connection.query('UPDATE matcha.users SET status = Confirmed WHERE username = ? AND status = ?', [
+				connection.query('UPDATE matcha.users SET status = ? WHERE username = ? AND status = ?', [
+					"Confirmed",
 					username,
 					id
 				], (err) => {

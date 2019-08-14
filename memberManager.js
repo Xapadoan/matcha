@@ -229,7 +229,7 @@
 					resolve('L\'adresse mail n\'est pas bien formatée');
 				}
 				id = uniqid();
-				connection.query('UPDATE matcha.users SET status = ? WHERE username = ? AND mail = ?',[
+				connection.query('UPDATE matcha.users SET status = ? WHERE username = ? AND email = ?',[
 					id,
 					username,
 					mail

@@ -12,6 +12,7 @@ Le dossier node_modules n'est pas à jour sur cette branche, verifiez que touts 
 - mysql
 - bcrypt
 - nodemailer
+- uniqid
 
 ## Ejs files
 

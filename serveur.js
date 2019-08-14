@@ -86,7 +86,6 @@ app.post('/login', (req, res) => {
 });
 
 app.get('/signup', (req, res) => {
-	token = req.hre
 	let token = req.query.token;
 	let username = req.query.username;
 	if (typeof token != 'undefined' && typeof username != 'undefined') {
@@ -97,7 +96,7 @@ app.get('/signup', (req, res) => {
 			res.render('signup.ejs', {
 				user: req.session.username,
 				error: 'Something went wrong, we are trying to solve it'
-			})
+			});
 		});
 	} else {
 		res.render('signup.ejs', {

@@ -228,17 +228,25 @@
 				if (validatePassword(password) !== true) {
 					resolve('Le mot de passe doit contenir au moins 8 caractères dont une minuscule, une majuscule et un chiffre');
 				}
-				connection.query('UPDATE matcha.users SET status = ?, password = ? WHERE username = ? AND status = ?',[
-					"Confirmed",
-					password,
-					username,
-					token
-				], (err) => {
+				//Hash password
+				bcrypt.hash(password, 10, (err, hash) => {
 					if (err) {
-						console.log(err.stack);
-						reject('Something went wrong, we are trying to solve');
+						console.log('Bcrypt failed to serve hash : ' + err.stack);
+						reject('Fatal Error : Failed to serve Password');
 					} else {
-						resolve (true);
+						connection.query('UPDATE matcha.users SET status = ?, password = ? WHERE username = ? AND status = ?',[
+							"Confirmed",
+							hash,
+							username,
+							token
+						], (err) => {
+							if (err) {
+								console.log(err.stack);
+								reject('Something went wrong, we are trying to solve');
+							} else {
+								resolve (true);
+							}
+						});
 					}
 				});
 			}));

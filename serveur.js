@@ -1,5 +1,6 @@
 var express = require('express');
 var session = require('express-session');
+var fileUpload = require('express-fileupload');
 var bcrypt = require('bcrypt');
 var settings = require("./server_settings.json");
 var memberManager = require("./memberManager.js");

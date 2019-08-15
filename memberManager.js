@@ -234,6 +234,7 @@
 						console.log('Bcrypt failed to serve hash : ' + err.stack);
 						reject('Fatal Error : Failed to serve Password');
 					} else {
+						console.log(hash);
 						connection.query('UPDATE matcha.users SET status = ?, password = ? WHERE username = ? AND status = ?',[
 							"Confirmed",
 							hash,

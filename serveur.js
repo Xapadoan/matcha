@@ -39,8 +39,8 @@ app.post('/reset_password', (req, res) => {
 	let newpass = req.body.password;
 	let username = req.body.username;
 	let token = req.body.token;
-	memberManager.changePasswordOf(username, newpass, token).then((res) => {
-		if (res == true) {
+	memberManager.changePasswordOf(username, newpass, token).then((result) => {
+		if (result == true) {
 			res.end('OK');
 		} else {
 			res.render('password_recovery_form.ejs', {

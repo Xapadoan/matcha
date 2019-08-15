@@ -241,6 +241,7 @@
 						resolve('L\'adresse mail et le nom d\'utilisateur ne correspondent pas');
 					}
 				});
+				console.log('|' + mail + '|');
 				let mail_options = {
 					from: '"Matcha users" ' + servermail.address,
 					to: mail,

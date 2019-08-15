@@ -49,7 +49,7 @@ app.get('/recover', (req, res) => {
 
 app.post('/recover', (req, res) => {
 	let username = req.body.username;
-	let mail = req.body.username;
+	let mail = req.body.mail;
 	memberManager.sendpasswordRecoveryMail(username, mail).then ((result) => {
 		res.render('recover.ejs', {
 			user: req.session.username,

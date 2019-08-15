@@ -223,6 +223,26 @@
 				});
 			}))
 		},
+		changePasswordOf: function changePasswordOf (username, password, token) {
+			return (new Promise ((resolve, reject) => {
+				if (validatePassword(password) !== true) {
+					resolve('Le mot de passe doit contenir au moins 8 caractères dont une minuscule, une majuscule et un chiffre');
+				}
+				connection.query('UPDATE matcha.users SET status = ?, password = ? WHERE username = ? AND status = ?',[
+					"Confirmed",
+					password,
+					username,
+					token
+				], (err) => {
+					if (err) {
+						console.log(err.stack);
+						reject('Something went wrong, we are trying to solve');
+					} else {
+						resolve (true);
+					}
+				});
+			}));
+		},
 		sendpasswordRecoveryMail: function sendpasswordRecoveryMail (username, mail) {
 			return (new Promise ((resolve, reject) => {
 				if (validateMail(mail) !== true) {

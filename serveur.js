@@ -35,11 +35,36 @@ app.get('/login', (req, res) => {
 	});
 });
 
+app.post('/reset_password', (req, res) => {
+	let newpass = req.body.password;
+	let username = req.body.username;
+	let token = req.body.token;
+	memberManager.changePasswordOf(username, newpass, token).then((res) => {
+		if (res == true) {
+			res.end('OK');
+		} else {
+			res.render('password_recovery_form.ejs', {
+				error: res,
+				user: req.session.username,
+				username: username,
+				token: token
+			});
+		}
+	}).catch((err) => {
+		console.log(err);
+		res.end('Error');
+	});
+});
+
 app.get('/recover', (req, res) => {
 	let token = req.query.token;
 	let username = req.query.user;
 	if (typeof token != 'undefined' && typeof username != 'undefined') {
-		res.end('Trying to recover password with token :' + token + 'for :' + username);
+		res.render('password_recovery_form.ejs', {
+			user: req.session.username,
+			username: username,
+			token: token
+		});
 	} else {
 		res.render('recover.ejs', {
 			user: req.session.username

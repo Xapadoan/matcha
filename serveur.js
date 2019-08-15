@@ -39,8 +39,17 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/new_photo', (req, res) => {
+	if (typeof req.files != 'undefined') {
+		res.write('No file');
+	}
 	let image = req.files.image;
-	res.end(image.name);
+	image.mv(__dirname + '/resources/' + image.name, (err) => {
+		if (err) {
+			console.log(err.stack);
+			res.end('Error');
+		}
+		res.end(image.name + 'has been uploade');
+	});
 });
 
 app.post('/reset_password', (req, res) => {

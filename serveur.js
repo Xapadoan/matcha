@@ -18,9 +18,7 @@ app.use(session({
 	saveUninitialized: true
 }));
 //required for file upload
-app.use(fileUpload({
-	limits: { fileSize: 50 * 1024 * 1024 },
-}));
+app.use(fileUpload());
 
 app.get('/', (req, res) => {
 	if (req.session.username) {

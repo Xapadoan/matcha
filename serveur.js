@@ -16,6 +16,10 @@ app.use(session({
 	resave: true,
 	saveUninitialized: true
 }));
+//required for file upload
+app.use(fileUpload({
+	limits: { fileSize: 50 * 1024 * 1024 },
+}));
 
 app.get('/', (req, res) => {
 	if (req.session.username) {
@@ -33,6 +37,11 @@ app.get('/login', (req, res) => {
 	res.render('login.ejs', {
 		user: req.session.username
 	});
+});
+
+app.post('/new_photo', (req, res) => {
+	let image = req.files.image;
+	res.end(image.name);
 });
 
 app.post('/reset_password', (req, res) => {

@@ -39,16 +39,17 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/new_photo', (req, res) => {
-	if (typeof req.files != 'undefined') {
+	if (typeof req.files == 'undefined') {
 		res.write('No file');
 	}
 	let image = req.files.image;
-	image.mv(__dirname + '/resources/' + image.name, (err) => {
+	image.mv(__dirname + '/resources/user_images/' + image.name, (err) => {
 		if (err) {
 			console.log(err.stack);
 			res.end('Error');
 		}
-		res.end(image.name + 'has been uploade');
+		//Store path in db
+		res.end(image.name + 'has been uploaded');
 	});
 });
 

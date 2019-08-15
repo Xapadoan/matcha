@@ -179,6 +179,12 @@
 				});
 			}));
 		},
+		addUserImage: function addUserImage(username, image_path) {
+			return (new Promise ((resolve, reject) => {
+				//Get all image
+				//Select first empty field and store new path
+			}));
+		},
 		update_user_extended: function update_user_extended (username, age, gender, orientation, bio) {
 			return (new Promise ((resolve, reject) => {
 				//get member id

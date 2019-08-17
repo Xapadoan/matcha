@@ -294,10 +294,36 @@
 				});
 			}));
 		},
+		storeNewImage: function storeNewImage (userid, name) {
+			return (new Promise ((resolve, reject) => {
+				if (userid && name) {
+					connection.query('SELECT * FROM matcha.users_images WHERE user = ?', [
+						userid
+					], (err, results) => {
+						if (err) {
+							console.log(err.stack);
+							reject ('Something went wrong, we are trying to solve it');
+						} else if (results[0].length > 0) {
+							//Select first NULL field and update it
+						} else {
+							connection.query('INSERT INTO matcha.users_images (user, image1) VALUES (?, ?)', [
+								id,
+								name
+							], (err) => {
+								if (err) {
+									console.log(err.stack);
+									reject ('Something went wrong, we are trying to solve it');
+								}
+							})
+						}
+					})
+				}
+			}))
+		},
 		logg_user: function logg_user (username, password) {
 			return (new Promise ((resolve, reject) => {
 				if (username && password) {
-					connection.query('SELECT username, password, status FROM matcha.users WHERE username = ?', [username], function(error, results) {
+					connection.query('SELECT id, username, password, status FROM matcha.users WHERE username = ?', [username], function(error, results) {
 						if (error) {
 							console.log(error.stack);
 							reject ('Failed to connect member');
@@ -312,7 +338,10 @@
 									reject ('Somethimg went wrong, we are trying to solve it');
 								}
 								if (res == true) {
-									resolve (results[0].username);
+									resolve ({
+										username: results[0].username,
+										id: results[0].id
+									});
 								} else {
 									resolve (false);
 								}

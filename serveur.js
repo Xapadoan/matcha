@@ -48,7 +48,7 @@ app.post('/new_photo', (req, res) => {
 			console.log(err.stack);
 			res.end('Error');
 		}
-		//Store path in db
+		memberManager.storeNewImage(req.session.userid, image.name);
 		res.end(image.name + 'has been uploaded');
 	});
 });
@@ -137,7 +137,8 @@ app.post('/complete', (req, res) => {
 app.post('/login', (req, res) => {
 	memberManager.logg_user(req.body.username, req.body.password).then((result) => {
 		if (result !== false) {
-			req.session.username = result;
+			req.session.username = result.username;
+			req.seesion.userid = result.id;
 			res.redirect('/');
 		} else {
 			res.end('auth failed')

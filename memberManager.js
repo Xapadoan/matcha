@@ -163,6 +163,19 @@
 				});
 			}))
 		},
+		updateUser: function updateUser (username, firstname, lastname, mail, password) {
+			return (new Promise ((resolve, reject) => {
+				if (typeof password != 'undefined' && validatePassword(password) !== true) {
+					resolve('Le mot de passe doit contenir au moins 8 caractères dont une minuscule, une majuscule et un chiffre');
+				}
+				if (typeof mail != 'undefined' && validateMail(mail) !== true) {
+					resolve('L\'adresse e-mail doit être valide : ' + mail);
+				}
+				//Get user info
+				//Replace with new if existing
+				//update db
+			}));
+		},
 		create_user_extended: function create_user_extended (username, age, gender, orientation, bio) {
 			return (new Promise ((resolve, reject) => {
 				//get member id
@@ -206,7 +219,7 @@
 					} else {
 						resolve (results[0]);
 					}
-				})
+				});
 			}))
 		},
 		addUserImage: function addUserImage(username, image_path) {

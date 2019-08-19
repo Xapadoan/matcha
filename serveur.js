@@ -26,6 +26,7 @@ app.get('/', csrfProtection, (req, res) => {
 	if (req.session.username) {
 		res.render('home.ejs', {
 			user: req.session.username,
+			images: memberManager.getUserImages(req.session.username),
 			csrfToken: req.csrfToken()
 		});
 	} else {

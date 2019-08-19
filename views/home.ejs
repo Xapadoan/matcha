@@ -37,7 +37,21 @@
             <button>OK</button>
         </form>
         <section id='user_images'>
-            <p>No photos yet !</p>
+            <% if (locals.images.image1 != null) { %>
+            <img src='<%= images.image1 %>' width="100", height="75">
+            <% }
+            if (locals.images.image2 != null) { %>
+            <img src='<%= images.image2 %>' width="100", height="75">
+            <% }
+            if (locals.images.image3 != null) { %>
+            <img src='<%= images.image3 %>' width="100", height="75">
+            <% }
+            if (locals.images.image4 != null) { %>
+            <img src='<%= images.image4 %>' width="100", height="75">
+            <% }
+            if (locals.images.image5 != null) { %>
+            <img src='<%= images.image5 %>' width="100", height="75">
+            <% } %>
         </section>
     </body>
 </html>

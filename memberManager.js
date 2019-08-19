@@ -232,6 +232,7 @@
 						console.log("OK");
 						//Select first empty field and store new path
 						let field = this.getFirstNullImgField(results);
+						console.log(field);
 						if (field == false) {
 							resolve('Vous avez atteint le nombre maximun d\'images, veuillez en supprimer');
 						}

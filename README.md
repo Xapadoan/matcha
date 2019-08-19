@@ -3,7 +3,7 @@
 
 **N'oublie pas de supprimer le .git ignore et de mettre a jour les fichiers de configuration avant de push.**
 
-###Trucs a faire :
+#### Trucs a faire :
 - Terminer memberManager.updateUser
 - Securisation des images uploadés
 - Protection contre injection html/js

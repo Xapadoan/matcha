@@ -181,7 +181,7 @@
 		},
 		getUserImages: function getUserImages(username) {
 			return (new Promise ((resolve, reject) => {
-				connection.query('SELECT image1, image2, image3, image4, image5 FROM matcha.users_images INNER JOIN matcha.users ON matcha.users.id = matcha.users_images.user AND matcha.users.username = ?',[
+				connection.query('SELECT id, image1, image2, image3, image4, image5 FROM matcha.users_images INNER JOIN matcha.users ON matcha.users.id = matcha.users_images.user AND matcha.users.username = ?',[
 					username
 				], (err, results) => {
 					if (err) {
@@ -197,6 +197,10 @@
 			return (new Promise ((resolve, reject) => {
 				this.getUserImages(username).then((results)=> {
 					console.log(results);
+					if (typeof results == 'undefined') {
+						//Insert new image
+						connection.query('INSERT INTO matcha.users_images (user, image1) SELECT ')
+					}
 					//Select first empty field and store new path
 					resolve(true);
 				}).catch((reason) => {
@@ -312,32 +316,6 @@
 					}
 				});
 			}));
-		},
-		storeNewImage: function storeNewImage (userid, name) {
-			return (new Promise ((resolve, reject) => {
-				if (userid && name) {
-					connection.query('SELECT * FROM matcha.users_images WHERE user = ?', [
-						userid
-					], (err, results) => {
-						if (err) {
-							console.log(err.stack);
-							reject ('Something went wrong, we are trying to solve it');
-						} else if (results[0].length > 0) {
-							//Select first NULL field and update it
-						} else {
-							connection.query('INSERT INTO matcha.users_images (user, image1) VALUES (?, ?)', [
-								id,
-								name
-							], (err) => {
-								if (err) {
-									console.log(err.stack);
-									reject ('Something went wrong, we are trying to solve it');
-								}
-							})
-						}
-					})
-				}
-			}))
 		},
 		logg_user: function logg_user (username, password) {
 			return (new Promise ((resolve, reject) => {

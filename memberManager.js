@@ -77,6 +77,20 @@
 		}
 		return (false);
 	}
+
+	function getFirstNullImgField (fields) {
+		if (fields.image1 == 'null') {
+			return ('image1');
+		} else if (fields.image2 == 'null') {
+			return ('image2');
+		} else if (fields.image3 == 'null') {
+			return ('image3');
+		} else if (fields.image4 == 'null') {
+			return ('image4');
+		} else if (fields.image5 == 'null') {
+			return ('image5');
+		}
+	}
 	
 	module.exports = {
 		//	createUser returns :
@@ -188,7 +202,7 @@
 						console.log(err.stack);
 						reject ("Something went wrong, we are trying to solve it");
 					} else {
-						resolve (results);
+						resolve (results[0]);
 					}
 				})
 			}))
@@ -197,12 +211,36 @@
 			return (new Promise ((resolve, reject) => {
 				this.getUserImages(username).then((results)=> {
 					console.log(results);
-					if (typeof results == 'undefined') {
-						//Insert new image
-						connection.query('INSERT INTO matcha.users_images (user, image1) SELECT ')
+					if (typeof results == 'undefined' || typeof results.id == 'undefined') {
+						reject('User is not recognized, please login and try again');
+					} else if (results.image1 == 'null') {
+						//Insert new picture
+						connection.query('INSERT INTO matcha.users_images (user, image1) VALUES (?, ?);', [
+							results.id,
+							image_path
+						], (err) => {
+							if (err) {
+								console.log(err.stack);
+								reject('Something went wrong, we aretrying to solve it');
+							} else {
+								resolve(true);
+							}
+						});
+					} else {
+						//Select first empty field and store new path
+						connection.query('UPDATE matcha.users_images SET ??=? WHERE user=?',[
+							[this.getFirstNullImgField(results)],
+							image_path,
+							results.id
+						], (err) => {
+							if (err) {
+								console.log(err.stack);
+								reject('Something went wrong, we are trying to solve it');
+							} else {
+								resolve(true);
+							}
+						});
 					}
-					//Select first empty field and store new path
-					resolve(true);
 				}).catch((reason) => {
 					reject (reason);
 				});

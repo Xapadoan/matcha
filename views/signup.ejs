@@ -12,7 +12,7 @@
             <input name='Lastname' type="text" maxlength="100" minlength="1" placeholder="Nom de Famille" />
             <input name='Mail' type="email" maxlength="100" minlength="5" placeholder="E-Mail" />
             <input name='Password' type='password' maxlength="32" minlength="1" placeholder="Mot de passe"/>
-            <input name='Csrf' type='hidden' value="csrf_token"/>
+            <input type="hidden" name="_csrf" value=<%= csrfToken %> />
             <button>Créer un compte</button>
         </form>
     </body>

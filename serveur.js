@@ -41,7 +41,23 @@ app.get('/login', csrfProtection, (req, res) => {
 	});
 });
 
-app.post('/new_photo', (req, res) => {
+app.post('/login', csrfProtection, (req, res) => {
+	memberManager.logg_user(req.body.username, req.body.password).then((result) => {
+		if (result !== false) {
+			req.session.username = result.username;
+			req.session.userid = result.id;
+			res.redirect('/');
+		} else {
+			res.render('login.ejs', {
+				error: 'Le nom d\'utilisateur et le mot de passe ne correspondent pas'
+			});
+		}
+	}).catch ((reason) => {
+		res.end('Error : ' + reason);
+	});
+});
+
+app.post('/new_photo', csrfProtection, (req, res) => {
 	if (typeof req.files == 'undefined') {
 		res.write('No file');
 	}
@@ -59,7 +75,7 @@ app.post('/new_photo', (req, res) => {
 	});
 });
 
-app.post('/reset_password', (req, res) => {
+app.post('/reset_password', csrfProtection, (req, res) => {
 	let newpass = req.body.password;
 	let username = req.body.username;
 	let token = req.body.token;
@@ -80,23 +96,25 @@ app.post('/reset_password', (req, res) => {
 	});
 });
 
-app.get('/recover', (req, res) => {
+app.get('/recover', csrfProtection, (req, res) => {
 	let token = req.query.token;
 	let username = req.query.user;
 	if (typeof token != 'undefined' && typeof username != 'undefined') {
 		res.render('password_recovery_form.ejs', {
 			user: req.session.username,
 			username: username,
-			token: token
+			token: token,
+			csrfToken: req.csrfToken()
 		});
 	} else {
 		res.render('recover.ejs', {
-			user: req.session.username
+			user: req.session.username,
+			csrfToken: req.csrfToken()
 		});
 	}
 });
 
-app.post('/recover', (req, res) => {
+app.post('/recover', csrfProtection, (req, res) => {
 	let username = req.body.username;
 	let mail = req.body.mail;
 	memberManager.sendpasswordRecoveryMail(username, mail).then ((result) => {
@@ -128,10 +146,10 @@ app.get('/logout', (req, res) => {
 	}
 });
 
-app.post('/complete', (req, res) => {
+app.post('/complete', csrfProtection, (req, res) => {
 	memberManager.create_user_extended(req.session.username, req.body.age, req.body.gender, req.body.orientation, req.body.bio).then((result) => {
 		if (result === true) {
-			res.end ('Age : ' + req.body.age + '<br>Genre : ' + req.body.gender + '<br />Orientation : ' + req.body.orientation + '<br />Bio : ' + req.body.bio);
+			res.redirect(301, '/');
 		} else {
 			res.end('WTF');
 		}
@@ -140,23 +158,11 @@ app.post('/complete', (req, res) => {
 	});
 });
 
-app.post('/login', csrfProtection, (req, res) => {
-	memberManager.logg_user(req.body.username, req.body.password).then((result) => {
-		if (result !== false) {
-			req.session.username = result.username;
-			req.session.userid = result.id;
-			res.redirect('/');
-		} else {
-			res.render('login.ejs', {
-				error: 'Le nom d\'utilisateur et le mot de passe ne correspondent pas'
-			});
-		}
-	}).catch ((reason) => {
-		res.end('Error : ' + reason);
-	});
-});
+app.post('/update', csrfProtection, (req, res) => {
+	res.end('Nom :' + req.body.Lastname + '<br />Prenom: ' + req.body.Firstname + '<br />Mail: ' + req.body.Mail);
+})
 
-app.get('/signup', (req, res) => {
+app.get('/signup', csrfProtection, (req, res) => {
 	let token = req.query.token;
 	let username = req.query.user;
 	if (typeof token != 'undefined' && typeof username != 'undefined') {
@@ -166,22 +172,25 @@ app.get('/signup', (req, res) => {
 			console.log(err);
 			res.render('signup.ejs', {
 				user: req.session.username,
-				error: 'Something went wrong, we are trying to solve it'
+				error: 'Something went wrong, we are trying to solve it',
+				csrfToken: req.csrfToken()
 			});
 		});
 	} else {
 		res.render('signup.ejs', {
-			user: req.session.username
+			user: req.session.username,
+			csrfToken: req.csrfToken()
 		});
 	}
 });
 
-app.post('/signup', (req, res) => {
+app.post('/signup', csrfProtection, (req, res) => {
 	memberManager.createUser(req.body.Username, req.body.Lastname, req.body.Firstname, req.body.Mail, req.body.Password).then((result) => {
 		if (result !== true) {
 			res.render('signup.ejs', {
 				user: req.session.username,
 				error: result,
+				csrfToken: req.csrfToken(),
 			});
 		} else {
 			res.render('signup_step1.ejs', {
@@ -194,7 +203,8 @@ app.post('/signup', (req, res) => {
 		console.log(reason);
 		res.render('signup.ejs', {
 			user: req.session.username,
-			error: 'Something went wrong we are trying to solve it'
+			error: 'Something went wrong we are trying to solve it',
+			csrfToken: req.csrfToken()
 		});
 	});
 });	

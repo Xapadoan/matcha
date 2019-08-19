@@ -188,7 +188,7 @@
 						console.log(err.stack);
 						reject ("Something went wrong, we are trying to solve it");
 					} else {
-						resolve (results[0]);
+						resolve (results);
 					}
 				})
 			}))

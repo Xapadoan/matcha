@@ -229,8 +229,9 @@
 					} else {
 						console.log("OK");
 						//Select first empty field and store new path
+						let field = this.getFirstNullImgField(results);
 						connection.query('UPDATE matcha.users_images SET ??=? WHERE user=?',[
-							[this.getFirstNullImgField(results)],
+							[field],
 							image_path,
 							results.id
 						], (err) => {

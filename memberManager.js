@@ -227,6 +227,7 @@
 							}
 						});
 					} else {
+						console.log("OK");
 						//Select first empty field and store new path
 						connection.query('UPDATE matcha.users_images SET ??=? WHERE user=?',[
 							[this.getFirstNullImgField(results)],

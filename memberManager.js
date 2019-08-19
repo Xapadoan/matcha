@@ -79,16 +79,18 @@
 	}
 
 	function getFirstNullImgField (fields) {
-		if (fields.image1 == 'null') {
+		if (fields.image1 == null) {
 			return ('image1');
-		} else if (fields.image2 == 'null') {
+		} else if (fields.image2 == null) {
 			return ('image2');
-		} else if (fields.image3 == 'null') {
+		} else if (fields.image3 == null) {
 			return ('image3');
-		} else if (fields.image4 == 'null') {
+		} else if (fields.image4 == null) {
 			return ('image4');
-		} else if (fields.image5 == 'null') {
+		} else if (fields.image5 == null) {
 			return ('image5');
+		} else {
+			return (false);
 		}
 	}
 	
@@ -180,7 +182,7 @@
 							gender,
 							orientation,
 							bio
-						], (err, results) => {
+						], (err) => {
 							console.log('second query');
 							if (err) {
 								console.log(err.stack);
@@ -230,8 +232,11 @@
 						console.log("OK");
 						//Select first empty field and store new path
 						let field = this.getFirstNullImgField(results);
+						if (field == false) {
+							resolve('Vous avez atteint le nombre maximun d\'images, veuillez en supprimer');
+						}
 						connection.query('UPDATE matcha.users_images SET ??=? WHERE user=?',[
-							[field],
+							field,
 							image_path,
 							results.id
 						], (err) => {
@@ -240,6 +245,7 @@
 								console.log(err.stack);
 								reject('Something went wrong, we are trying to solve it');
 							} else {
+								console.log()
 								resolve(true);
 							}
 						});

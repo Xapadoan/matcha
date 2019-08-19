@@ -1,23 +1,25 @@
 var express = require('express');
 var session = require('express-session');
 var fileUpload = require('express-fileupload');
-var bcrypt = require('bcrypt');
+var csrf = require('csurf');
 var settings = require("./server_settings.json");
 var memberManager = require("./memberManager.js");
 
 var app = express();
 
-//required to retrieve x-www-form-encoded in req.body
+//requiered to retrieve x-www-form-encoded in req.body
 app.use(express.urlencoded({extended: true}));
-//required to serve static files (stylesheets, images, ...)
+//requiered to use csrf protection
+var csrfProtection = csrf();
+//requiered to serve static files (stylesheets, images, ...)
 app.use(express.static('resources'));
-//required for session usage
+//requiered for session usage
 app.use(session({
 	secret: 'secret',
 	resave: true,
 	saveUninitialized: true
 }));
-//required for file upload
+//requiered for file upload
 app.use(fileUpload());
 
 app.get('/', (req, res) => {
@@ -32,9 +34,10 @@ app.get('/', (req, res) => {
 	}
 });
 
-app.get('/login', (req, res) => {
+app.get('/login', csrfProtection, (req, res) => {
 	res.render('login.ejs', {
-		user: req.session.username
+		user: req.session.username,
+		csrfToken: req.csrfToken() 
 	});
 });
 
@@ -137,7 +140,7 @@ app.post('/complete', (req, res) => {
 	});
 });
 
-app.post('/login', (req, res) => {
+app.post('/login', csrfProtection, (req, res) => {
 	memberManager.logg_user(req.body.username, req.body.password).then((result) => {
 		if (result !== false) {
 			req.session.username = result.username;

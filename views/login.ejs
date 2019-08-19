@@ -8,6 +8,7 @@
         <form action="login" method="POST">
             <input type="text" name="username" placeholder="Username" required />
             <input type="password" name="password" placeholder="Password" required />
+            <input type="hidden" name="_csrf" value=<%= csrfToken %> />
             <a href='/recover'>Mot de passe oublié ?</a>
             <button>Se connecter</button>
         </form>

@@ -229,10 +229,8 @@
 							}
 						});
 					} else {
-						console.log("OK");
 						//Select first empty field and store new path
 						let field = getFirstNullImgField(results);
-						console.log("|" + field + "|");
 						if (field == false) {
 							resolve('Vous avez atteint le nombre maximun d\'images, veuillez en supprimer');
 						}
@@ -241,12 +239,10 @@
 							image_path,
 							results.id
 						], (err) => {
-							console.log('Done');
 							if (err) {
 								console.log(err.stack);
 								reject('Something went wrong, we are trying to solve it');
 							} else {
-								console.log()
 								resolve(true);
 							}
 						});

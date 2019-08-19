@@ -214,7 +214,6 @@
 					if (typeof results == 'undefined' || typeof results.id == 'undefined') {
 						reject('User is not recognized, please login and try again');
 					} else if (results.image1 == null) {
-						console.log('OK');
 						//Insert new picture
 						connection.query('INSERT INTO matcha.users_images (user, image1) VALUES (?, ?);', [
 							results.id,
@@ -234,6 +233,7 @@
 							image_path,
 							results.id
 						], (err) => {
+							console.log('Done');
 							if (err) {
 								console.log(err.stack);
 								reject('Something went wrong, we are trying to solve it');

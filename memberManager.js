@@ -179,10 +179,29 @@
 				});
 			}));
 		},
+		getUserImages: function getUserImages(username) {
+			return (new Promise ((resolve, reject) => {
+				connection.query('SELECT image1, image2, image3, image4, image5 FROM users_images INNER JOIN users ON users.id = users_images.user AND users.username = ?',[
+					username
+				], (err, results) => {
+					if (err) {
+						console.log(err.stack);
+						reject ("Something went wrong, we are trying to solve it");
+					} else {
+						resolve (results[0]);
+					}
+				})
+			}))
+		},
 		addUserImage: function addUserImage(username, image_path) {
 			return (new Promise ((resolve, reject) => {
-				//Get all image
-				//Select first empty field and store new path
+				this.getUserImages(username).then((results)=> {
+					console.log(results);
+					//Select first empty field and store new path
+					resolve(true);
+				}).catch((reason) => {
+					reject (reason);
+				});
 			}));
 		},
 		update_user_extended: function update_user_extended (username, age, gender, orientation, bio) {

@@ -181,7 +181,7 @@
 		},
 		getUserImages: function getUserImages(username) {
 			return (new Promise ((resolve, reject) => {
-				connection.query('SELECT image1, image2, image3, image4, image5 FROM users_images INNER JOIN users ON users.id = users_images.user AND users.username = ?',[
+				connection.query('SELECT image1, image2, image3, image4, image5 FROM matcha.users_images INNER JOIN matcha.users ON matcha.users.id = matcha.users_images.user AND matcha.users.username = ?',[
 					username
 				], (err, results) => {
 					if (err) {

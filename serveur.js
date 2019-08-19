@@ -48,8 +48,11 @@ app.post('/new_photo', (req, res) => {
 			console.log(err.stack);
 			res.end('Error');
 		}
-		memberManager.addUserImage(req.session.username, image.name);
-		res.end(image.name + ' has been uploaded');
+		memberManager.addUserImage(req.session.username, image.name).then((result) => {
+			res.end(image.name + ' has been uploaded');
+		}).catch ((reason) => {
+			res.redirect('/', 301);
+		});
 	});
 });
 

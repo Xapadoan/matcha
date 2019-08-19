@@ -22,10 +22,11 @@ app.use(session({
 //requiered for file upload
 app.use(fileUpload());
 
-app.get('/', (req, res) => {
+app.get('/', csrfProtection, (req, res) => {
 	if (req.session.username) {
 		res.render('home.ejs', {
-			user: req.session.username
+			user: req.session.username,
+			csrfToken: req.csrfToken()
 		});
 	} else {
 		res.render('index.ejs', {

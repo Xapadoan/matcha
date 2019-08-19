@@ -24,10 +24,19 @@ app.use(fileUpload());
 
 app.get('/', csrfProtection, (req, res) => {
 	if (req.session.username) {
-		res.render('home.ejs', {
-			user: req.session.username,
-			images: memberManager.getUserImages(req.session.username),
-			csrfToken: req.csrfToken()
+		memberManager.getUserImages(req.session.username).then((images) => {
+			res.render('home.ejs', {
+				user: req.session.username,
+				images: images,
+				csrfToken: req.csrfToken()
+			});
+		}).catch ((reason) => {
+			console.log(reason);
+			res.render('home.ejs', {
+				user: req.session.username,
+				error: 'Vos photos sont introuvables',
+				csrfToken: req.csrfToken()
+			});
 		});
 	} else {
 		res.render('index.ejs', {

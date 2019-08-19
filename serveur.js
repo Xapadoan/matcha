@@ -138,10 +138,12 @@ app.post('/login', (req, res) => {
 	memberManager.logg_user(req.body.username, req.body.password).then((result) => {
 		if (result !== false) {
 			req.session.username = result.username;
-			req.seesion.userid = result.id;
+			req.session.userid = result.id;
 			res.redirect('/');
 		} else {
-			res.end('auth failed')
+			res.render('login.ejs', {
+				error: 'Le nom d\'utilisateur et le mot de passe ne correspondent pas'
+			});
 		}
 	}).catch ((reason) => {
 		res.end('Error : ' + reason);

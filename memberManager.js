@@ -225,10 +225,12 @@ module.exports = {
 						results.mail,
 						results.password,
 						username
-					], (err) => {
+					], (err, results) => {
 						if (err) {
 							console.log('update user failed : ' + err.stack);
 							reject('Error : Failed to update user informations');
+						} else if (results.affectedRows != 1) {
+							resolve('L\'utilisateur n\'a pas été reconnu');
 						} else {
 							resolve(true);
 						}

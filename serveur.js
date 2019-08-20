@@ -48,7 +48,7 @@ app.get('/', csrfProtection, (req, res) => {
 app.get('/login', csrfProtection, (req, res) => {
 	res.render('login.ejs', {
 		user: req.session.username,
-		csrfToken: req.csrfToken() 
+		csrfToken: req.csrfToken()
 	});
 });
 
@@ -60,11 +60,15 @@ app.post('/login', csrfProtection, (req, res) => {
 			res.redirect('/');
 		} else {
 			res.render('login.ejs', {
-				error: 'Le nom d\'utilisateur et le mot de passe ne correspondent pas'
+				error: 'Le nom d\'utilisateur et le mot de passe ne correspondent pas',
+				csrfToken: req.csrfToken()
 			});
 		}
 	}).catch ((reason) => {
-		res.end('Error : ' + reason);
+		res.render('login.ejs', {
+			error: 'Une erreur est survenue, si cette erreur persiste, contactez nous.',
+			csrfToken: req.csrfToken()
+		});
 	});
 });
 
@@ -170,7 +174,7 @@ app.post('/complete', csrfProtection, (req, res) => {
 });
 
 app.post('/update', csrfProtection, (req, res) => {
-	res.end('Nom :' + req.body.Lastname + '<br />Prenom: ' + req.body.Firstname + '<br />Mail: ' + req.body.Mail);
+	req.redirect('/');
 })
 
 app.get('/signup', csrfProtection, (req, res) => {

@@ -206,6 +206,7 @@ module.exports = {
 						});
 					}
 					if (typeof password != 'undefined' && password != "") {
+						console.log('Password field got');
 						if (validatePassword(password) !== true) {
 							resolve('Le mot de passe doit contenir au moins 8 caractères dont une minuscule, une majuscule et un chiffre');
 						}

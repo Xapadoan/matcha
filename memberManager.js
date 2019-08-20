@@ -172,8 +172,10 @@ module.exports = {
 			if (typeof password != 'undefined' && validatePassword(password) !== true) {
 				resolve('Le mot de passe doit contenir au moins 8 caractères dont une minuscule, une majuscule et un chiffre');
 			}
-			if (typeof mail != 'undefined' && validateMail(mail) !== true) {
-				resolve('L\'adresse e-mail doit être valide : ' + mail);
+			if (typeof mail != 'undefined') {
+				if (validateMail(mail) !== true) {
+					resolve('L\'adresse e-mail doit être valide : ' + mail);
+				}
 			}
 			//Get user info
 			this.getUserInfos(username).then((results) => {

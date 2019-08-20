@@ -233,8 +233,10 @@ module.exports = {
 							console.log('update user failed : ' + err.stack);
 							reject('Error : Failed to update user informations');
 						} else if (results.affectedRows != 1) {
+							console.log("NON")
 							resolve('L\'utilisateur n\'a pas été reconnu');
 						} else {
+							console.log("Done");
 							resolve(true);
 						}
 					});

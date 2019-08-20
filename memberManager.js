@@ -216,17 +216,23 @@ module.exports = {
 								console.log("Bcrypt failed to hash : " + err.stack);
 								reject('Error : Failed to server hash');
 							} else {
-								results.password = hash;
+								connection.query('UPDATE matcha.users SET password=? WHERE username LIKE ?', [
+									hash
+								], (err) => {
+									if (err) {
+										console.log('Failed to store password: ' + err.stack);
+										reject ('Error : Failed to update password');
+									}
+								})
 								console.log("|" + results.password + "|");
 							}
 						});
 					}
 					//update db
-					connection.query('UPDATE matcha.users SET firstname=?, lastname=?, email=?, password=? WHERE username LIKE ?', [
+					connection.query('UPDATE matcha.users SET firstname=?, lastname=?, email=? WHERE username LIKE ?', [
 						results.firstname,
 						results.lastname,
 						results.mail,
-						results.password,
 						username
 					], (err, results) => {
 						if (err) {

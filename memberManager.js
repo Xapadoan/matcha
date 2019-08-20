@@ -182,6 +182,7 @@ module.exports = {
 						results.lastname = lastname;
 					}
 					if (typeof mail != 'undefined' && mail != "") {
+						console.log(mail);
 						if (validateMail(mail) !== true) {
 							resolve('L\'adresse e-mail doit être valide : ' + mail);
 						}
@@ -202,6 +203,7 @@ module.exports = {
 							} else {
 								results.email = mail;
 								results.status = id;
+								console.log(results.email);
 							}
 						});
 					}

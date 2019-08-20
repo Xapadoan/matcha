@@ -206,12 +206,10 @@ module.exports = {
 						});
 					}
 					if (typeof password != 'undefined' && password != "") {
-						console.log('Password field got');
 						if (validatePassword(password) !== true) {
 							resolve('Le mot de passe doit contenir au moins 8 caractères dont une minuscule, une majuscule et un chiffre');
 						}
 						bcrypt.hash(password, 10, (err, hash) => {
-							console.log("|" + results.password + "|");
 							if (err) {
 								console.log("Bcrypt failed to hash : " + err.stack);
 								reject('Error : Failed to server hash');
@@ -225,7 +223,6 @@ module.exports = {
 										reject ('Error : Failed to update password');
 									}
 								})
-								console.log("|" + results.password + "|");
 							}
 						});
 					}
@@ -233,17 +230,15 @@ module.exports = {
 					connection.query('UPDATE matcha.users SET firstname=?, lastname=?, email=? WHERE username LIKE ?', [
 						results.firstname,
 						results.lastname,
-						results.mail,
+						results.email,
 						username
 					], (err, results) => {
 						if (err) {
 							console.log('update user failed : ' + err.stack);
 							reject('Error : Failed to update user informations');
 						} else if (results.affectedRows != 1) {
-							console.log("NON")
 							resolve('L\'utilisateur n\'a pas été reconnu');
 						} else {
-							console.log("Done");
 							resolve(true);
 						}
 					});

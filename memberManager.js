@@ -168,13 +168,7 @@ module.exports = {
 	//		On succes : true
 	//		On failure : The error message to be displayed for user
 	updateUser: function updateUser(username, firstname, lastname, mail, password) {
-		return (new Promise((resolve, reject) => {q
-			if (typeof mail != 'undefined' && mail != "") {
-				console.log('|' + mail + '|');
-				if (validateMail(mail) !== true) {
-					resolve('L\'adresse e-mail doit être valide : ' + mail);
-				}
-			}
+		return (new Promise((resolve, reject) => {
 			//Get user info
 			this.getUserInfos(username).then((results) => {
 				if (results === false) {

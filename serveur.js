@@ -83,7 +83,7 @@ app.post('/new_photo', csrfProtection, (req, res) => {
 			res.end('Error');
 		}
 		memberManager.addUserImage(req.session.username, image.name).then((result) => {
-			res.end(image.name + ' has been uploaded');
+			res.redirect(301, '/');
 		}).catch ((reason) => {
 			res.redirect(301, '/');
 		});

@@ -174,7 +174,24 @@ app.post('/complete', csrfProtection, (req, res) => {
 });
 
 app.post('/update', csrfProtection, (req, res) => {
-	res.redirect('/');
+	memberManager.updateUser(req.session.username, req.body.Firstname, req.body.Lastname, req.body.Mail, req.body.Password).then((results) => {
+		if (results !== true) {
+			res.render('home.ejs', {
+				user: req.session.username,
+				error: results,
+				csrfToken: req.csrfToken()
+			});
+		} else {
+			res.redirect(301, '/');
+		}
+	}).catch((reason) => {
+		console.log(reason);
+		res.render('home.ejs', {
+			user: req.session.username,
+			error: "Une erreur est survenue, si elle persiste, veuillez nous contacter.",
+			csrfToken: req.csrfToken()
+		});
+	});
 })
 
 app.get('/signup', csrfProtection, (req, res) => {

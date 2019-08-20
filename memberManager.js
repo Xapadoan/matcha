@@ -189,6 +189,8 @@ module.exports = {
 						}
 						//Send mail to new address
 						id = uniqid();
+						results.email = mail;
+						results.status = id;
 						let mail_options = {
 							from: '"Matcha users" ' + servermail.address,
 							to: mail,
@@ -201,10 +203,6 @@ module.exports = {
 							if (err) {
 								console.log(err);
 								reject('Error : Failed to send registration mail');
-							} else {
-								results.email = mail;
-								results.status = id;
-								console.log(results.email);
 							}
 						});
 					}
@@ -230,10 +228,11 @@ module.exports = {
 						});
 					}
 					//update db
-					connection.query('UPDATE matcha.users SET firstname=?, lastname=?, email=? WHERE username LIKE ?', [
+					connection.query('UPDATE matcha.users SET firstname=?, lastname=?, email=?, status=? WHERE username LIKE ?', [
 						results.firstname,
 						results.lastname,
 						results.email,
+						results.status,
 						username
 					], (err, results) => {
 						if (err) {

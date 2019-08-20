@@ -168,20 +168,7 @@ module.exports = {
 	//		On succes : true
 	//		On failure : The error message to be displayed for user
 	updateUser: function updateUser(username, firstname, lastname, mail, password) {
-		return (new Promise((resolve, reject) => {
-			if (typeof password != 'undefined' && password != "") {
-				if (validatePassword(password) !== true) {
-					resolve('Le mot de passe doit contenir au moins 8 caractères dont une minuscule, une majuscule et un chiffre');
-				}
-				bcrypt.hash(password, 10, (err, hash) => {
-					if (err) {
-						console.log("Bcrypt failed to hash : " + err.stack);
-						reject('Error : Failed to server hash');
-					} else {
-						results.password = hash;
-					}
-				});
-			}
+		return (new Promise((resolve, reject) => {q
 			if (typeof mail != 'undefined' && mail != "") {
 				console.log('|' + mail + '|');
 				if (validateMail(mail) !== true) {
@@ -201,6 +188,9 @@ module.exports = {
 						results.lastname = lastname;
 					}
 					if (typeof mail != 'undefined' && mail != "") {
+						if (validateMail(mail) !== true) {
+							resolve('L\'adresse e-mail doit être valide : ' + mail);
+						}
 						//Send mail to new address
 						id = uniqid();
 						let mail_options = {
@@ -218,6 +208,19 @@ module.exports = {
 							} else {
 								results.mail = mail;
 								results.status = id;
+							}
+						});
+					}
+					if (typeof password != 'undefined' && password != "") {
+						if (validatePassword(password) !== true) {
+							resolve('Le mot de passe doit contenir au moins 8 caractères dont une minuscule, une majuscule et un chiffre');
+						}
+						bcrypt.hash(password, 10, (err, hash) => {
+							if (err) {
+								console.log("Bcrypt failed to hash : " + err.stack);
+								reject('Error : Failed to server hash');
+							} else {
+								results.password = hash;
 							}
 						});
 					}

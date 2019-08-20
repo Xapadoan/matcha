@@ -219,7 +219,7 @@ module.exports = {
 						});
 					}
 					//update db
-					connection.query('UPDATE matcha.users SET firstname=?, lastname=?, email=?, password=? WHERE username = ?', [
+					connection.query('UPDATE matcha.users SET firstname=?, lastname=?, email=?, password=? WHERE username LIKE ?', [
 						results.firstname,
 						results.lastname,
 						results.mail,

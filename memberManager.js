@@ -183,6 +183,7 @@ module.exports = {
 					}
 					if (typeof mail != 'undefined' && mail != "") {
 						console.log(mail);
+						console.log(results.email);
 						if (validateMail(mail) !== true) {
 							resolve('L\'adresse e-mail doit être valide : ' + mail);
 						}

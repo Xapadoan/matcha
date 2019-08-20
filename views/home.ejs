@@ -36,6 +36,7 @@
             <input type="hidden" name="_csrf" value=<%= csrfToken %> />
             <button>OK</button>
         </form>
+        <% if (typeof locals.images != 'undefined') { %>
         <section id='user_images'>
             <h2>Vos photos</h2>
             <% if (locals.images.image1 != null) { %>
@@ -54,5 +55,6 @@
             <img src='user_images/<%= images.image5 %>' width="200", height="150">
             <% } %>
         </section>
+        <% } %>
     </body>
 </html>

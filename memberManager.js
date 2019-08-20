@@ -217,7 +217,8 @@ module.exports = {
 								reject('Error : Failed to server hash');
 							} else {
 								connection.query('UPDATE matcha.users SET password=? WHERE username LIKE ?', [
-									hash
+									hash,
+									username
 								], (err) => {
 									if (err) {
 										console.log('Failed to store password: ' + err.stack);

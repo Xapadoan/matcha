@@ -211,11 +211,13 @@ module.exports = {
 							resolve('Le mot de passe doit contenir au moins 8 caractères dont une minuscule, une majuscule et un chiffre');
 						}
 						bcrypt.hash(password, 10, (err, hash) => {
+							console.log(results.password);
 							if (err) {
 								console.log("Bcrypt failed to hash : " + err.stack);
 								reject('Error : Failed to server hash');
 							} else {
 								results.password = hash;
+								console.log(results.password);
 							}
 						});
 					}

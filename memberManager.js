@@ -200,7 +200,7 @@ module.exports = {
 								console.log(err);
 								reject('Error : Failed to send registration mail');
 							} else {
-								results.mail = mail;
+								results.email = mail;
 								results.status = id;
 							}
 						});

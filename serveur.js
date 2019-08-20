@@ -174,7 +174,7 @@ app.post('/complete', csrfProtection, (req, res) => {
 });
 
 app.post('/update', csrfProtection, (req, res) => {
-	req.redirect('/');
+	res.redirect('/');
 })
 
 app.get('/signup', csrfProtection, (req, res) => {

@@ -163,6 +163,10 @@
 				});
 			}))
 		},
+		//	updateUser returns :
+		//		On error : a formated string <error_level> : <message>
+		//		On succes : true
+		//		On failure : The error message to be displayed for user
 		updateUser: function updateUser (username, firstname, lastname, mail, password) {
 			return (new Promise ((resolve, reject) => {
 				if (typeof password != 'undefined' && validatePassword(password) !== true) {
@@ -172,8 +176,43 @@
 					resolve('L\'adresse e-mail doit être valide : ' + mail);
 				}
 				//Get user info
-				//Replace with new if existing
-				//update db
+				this.getUserInfos(username).then((results) => {
+					if (results === false) {
+						resolve ("L'utilisateur n'a pas été reconnu");
+					} else {
+						//Replace with new if existing
+						if (typeof firstname != 'undefined') {
+							results.firstname = firstname;
+						}
+						if (typeof lastname != 'undefined') {
+							results.lastname = lastname;
+						}
+						if (typeof mail != 'undefined') {
+							results.mail = mail;
+						}
+						if (typeof password != 'undefined') {
+							results.password = password;
+						}
+						//update db
+						connection.query('UPDATE matcha.users SET firstname=?, lastname=?, mail=?, password=? WHERE username = ?',[
+							results.firstname,
+							results.lastname,
+							results.mail,
+							results.password,
+							username
+						], (err) => {
+							if (err) {
+								console.log('update user failed : ' + err.stack);
+								reject ('Error : Failed to update user informations');
+							} else {
+								resolve (true);
+							}
+						});
+					}
+				}).catch((reason) => {
+					console.log(reason);
+					reject('Error : Failed to get User infos')
+				});
 			}));
 		},
 		create_user_extended: function create_user_extended (username, age, gender, orientation, bio) {
@@ -204,6 +243,26 @@
 								resolve (true);
 							}
 						});
+					}
+				});
+			}));
+		},
+		//This function return :
+		//On success : user object
+		//On failre : false
+		//On error : Formated error string : <level>:<message>
+		getUserInfos: function getUserInfos(username) {
+			return (new Promise((resolve, reject) => {
+				connection.query('SELECT * FROM matcha.users WHERE username = ?',[
+					username
+				], (err, results) => {
+					if (err) {
+						console.log ("getUserInfos Failed : " + err.stack);
+						reject("Something went wrong, we are trying to solve it");
+					} else if (results.length == 0) {
+						resolve(false);
+					} else {
+						resolve(results[0]);
 					}
 				});
 			}));

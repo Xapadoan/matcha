@@ -169,10 +169,20 @@ module.exports = {
 	//		On failure : The error message to be displayed for user
 	updateUser: function updateUser(username, firstname, lastname, mail, password) {
 		return (new Promise((resolve, reject) => {
-			if (typeof password != 'undefined' && validatePassword(password) !== true) {
-				resolve('Le mot de passe doit contenir au moins 8 caractères dont une minuscule, une majuscule et un chiffre');
+			if (typeof password != 'undefined' && password != "") {
+				if (validatePassword(password) !== true) {
+					resolve('Le mot de passe doit contenir au moins 8 caractères dont une minuscule, une majuscule et un chiffre');
+				}
+				bcrypt.hash(password, 10, (err, hash) => {
+					if (err) {
+						console.log("Bcrypt failed to hash : " + err.stack);
+						reject('Error : Failed to server hash');
+					} else {
+						results.password = hash;
+					}
+				});
 			}
-			if (typeof mail != 'undefined') {
+			if (typeof mail != 'undefined' && mail != "") {
 				console.log('|' + mail + '|');
 				if (validateMail(mail) !== true) {
 					resolve('L\'adresse e-mail doit être valide : ' + mail);
@@ -184,13 +194,13 @@ module.exports = {
 					resolve("L'utilisateur n'a pas été reconnu");
 				} else {
 					//Replace with new if existing
-					if (typeof firstname != 'undefined') {
+					if (typeof firstname != 'undefined' && firstname != "") {
 						results.firstname = firstname;
 					}
-					if (typeof lastname != 'undefined') {
+					if (typeof lastname != 'undefined' && lastname != "") {
 						results.lastname = lastname;
 					}
-					if (typeof mail != 'undefined') {
+					if (typeof mail != 'undefined' && mail != "") {
 						//Send mail to new address
 						id = uniqid();
 						let mail_options = {
@@ -208,16 +218,6 @@ module.exports = {
 							} else {
 								results.mail = mail;
 								results.status = id;
-							}
-						});
-					}
-					if (typeof password != 'undefined') {
-						bcrypt.hash(password, 10, (err, hash) => {
-							if (err) {
-								console.log("Bcrypt failed to hash : " + err.stack);
-								reject('Error : Failed to server hash');
-							} else {
-								results.password = hash;
 							}
 						});
 					}

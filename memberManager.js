@@ -173,6 +173,7 @@ module.exports = {
 				resolve('Le mot de passe doit contenir au moins 8 caractères dont une minuscule, une majuscule et un chiffre');
 			}
 			if (typeof mail != 'undefined') {
+				console.log('|' + mail + '|');
 				if (validateMail(mail) !== true) {
 					resolve('L\'adresse e-mail doit être valide : ' + mail);
 				}
@@ -221,7 +222,7 @@ module.exports = {
 						});
 					}
 					//update db
-					connection.query('UPDATE matcha.users SET firstname=?, lastname=?, mail=?, password=? WHERE username = ?', [
+					connection.query('UPDATE matcha.users SET firstname=?, lastname=?, email=?, password=? WHERE username = ?', [
 						results.firstname,
 						results.lastname,
 						results.mail,

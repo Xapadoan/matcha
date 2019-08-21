@@ -1,6 +1,6 @@
 {
     "service": "gmail",
     "port": 587,
-    "address": "example@youmail.com",
-    "pass": "password"
+    "address": "matcha.nodidireply@gmail.com",
+    "pass": "matchaPASS1234"
 }

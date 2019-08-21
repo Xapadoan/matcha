@@ -5,7 +5,8 @@
 
 #### Trucs a faire :
 - Securisation des images uploadés
-- Protection contre injection html/js
+- Autoriser l'utilisateur a supprimmer son compte
+- Ne pas proposer directement la modification de profil si celui-ci est deja complet.
 - **Du front quoi, ça ressemble a rien la** (mais a la toute fin)
 
 Pour cette version, on essaye de faire marcher la creation d'utilisateurs
@@ -23,6 +24,9 @@ Le dossier node_modules n'est pas à jour sur cette branche, verifiez que touts 
 ## Ejs files
 
 Les fichiers .ejs sont toujours chargés depuis `/views` regarde `/views/head.ejs` !
+
+Les fichiers ejs previenne contre l'injection html et js, donc c'est bon, du moment qu'on utilise toujours `<%= variable %>`
+pour afficher les variables.
 
 ## Css Files
 

@@ -79,7 +79,8 @@ app.post('/new_photo', csrfProtection, (req, res) => {
 	}
 	let image = req.files.image;
 	let type = image.mimetype;
-	console.log(image.data[1]);
+	let data = image.data.entries();
+	console.log(data[1][1]);
 	if (type != 'image/png' && type != 'image/jpg' && type != 'image/jpeg') {
 		res.end(image.name + " : Format is not supported");
 	} else if (image.size == 0) {

@@ -4,7 +4,8 @@
 **N'oublie pas de supprimer le .git ignore et de mettre a jour les fichiers de configuration avant de push.**
 
 #### Trucs a faire :
-- Securisation des images uploadés
+- Securisation des images uploadés:
+    - express-fileupload: file.mimetype seems to be based on file's extension. We can't rely on that.
 - Autoriser l'utilisateur a supprimmer son compte
 - Ne pas proposer directement la modification de profil si celui-ci est deja complet.
 - **Du front quoi, ça ressemble a rien la** (mais a la toute fin)

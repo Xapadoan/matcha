@@ -4,6 +4,7 @@ var fileUpload = require('express-fileupload');
 var csrf = require('csurf');
 var settings = require("./server_settings.json");
 var memberManager = require("./memberManager.js");
+var imageChecker = require("./imageChecker.js");
 
 var app = express();
 
@@ -77,10 +78,12 @@ app.post('/new_photo', csrfProtection, (req, res) => {
 		res.write('No file');
 	}
 	let image = req.files.image;
-	console.log(image.mimetype);
 	let type = image.mimetype;
+	console.log(image.data);
 	if (type != 'image/png' && type != 'image/jpg' && type != 'image/jpeg') {
 		res.end(image.name + " : Format is not supported");
+	} else if (image.size == 0) {
+		res.end("Can't upload empty file");
 	} else {
 		image.mv(__dirname + '/resources/user_images/' + image.name, (err) => {
 			if (err) {

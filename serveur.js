@@ -8,7 +8,7 @@ var memberManager = require("./memberManager.js");
 var app = express();
 
 //requiered to retrieve x-www-form-encoded in req.body
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 //requiered to use csrf protection
 var csrfProtection = csrf();
 //requiered to serve static files (stylesheets, images, ...)
@@ -30,7 +30,7 @@ app.get('/', csrfProtection, (req, res) => {
 				images: images,
 				csrfToken: req.csrfToken()
 			});
-		}).catch ((reason) => {
+		}).catch((reason) => {
 			console.log(reason);
 			res.render('home.ejs', {
 				user: req.session.username,
@@ -64,7 +64,7 @@ app.post('/login', csrfProtection, (req, res) => {
 				csrfToken: req.csrfToken()
 			});
 		}
-	}).catch ((reason) => {
+	}).catch((reason) => {
 		res.render('login.ejs', {
 			error: 'Une erreur est survenue, si cette erreur persiste, contactez nous.',
 			csrfToken: req.csrfToken()
@@ -77,22 +77,23 @@ app.post('/new_photo', csrfProtection, (req, res) => {
 		res.write('No file');
 	}
 	let image = req.files.image;
-	console.log (image.mimetype);
+	console.log(image.mimetype);
 	let type = image.mimetype;
-	if (type != 'image/png' || type != 'image/jpg' || type != 'image/jpeg') {
+	if (type != 'image/png' && type != 'image/jpg' && type != 'image/jpeg') {
 		res.end("Fromat is nor supported");
-	}
-	image.mv(__dirname + '/resources/user_images/' + image.name, (err) => {
-		if (err) {
-			console.log(err.stack);
-			res.end('Error');
-		}
-		memberManager.addUserImage(req.session.username, image.name).then((result) => {
-			res.redirect(301, '/');
-		}).catch ((reason) => {
-			res.redirect(301, '/');
+	} else {
+		image.mv(__dirname + '/resources/user_images/' + image.name, (err) => {
+			if (err) {
+				console.log(err.stack);
+				res.end('Error');
+			}
+			memberManager.addUserImage(req.session.username, image.name).then((result) => {
+				res.redirect(301, '/');
+			}).catch((reason) => {
+				res.redirect(301, '/');
+			});
 		});
-	});
+	}
 });
 
 app.post('/reset_password', csrfProtection, (req, res) => {
@@ -137,7 +138,7 @@ app.get('/recover', csrfProtection, (req, res) => {
 app.post('/recover', csrfProtection, (req, res) => {
 	let username = req.body.username;
 	let mail = req.body.mail;
-	memberManager.sendpasswordRecoveryMail(username, mail).then ((result) => {
+	memberManager.sendpasswordRecoveryMail(username, mail).then((result) => {
 		res.render('recover.ejs', {
 			user: req.session.username,
 			mail_sent: true
@@ -244,6 +245,6 @@ app.post('/signup', csrfProtection, (req, res) => {
 			csrfToken: req.csrfToken()
 		});
 	});
-});	
+});
 
 app.listen(settings['port']);

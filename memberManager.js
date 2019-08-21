@@ -320,7 +320,6 @@ module.exports = {
 	addUserImage: function addUserImage(username, image_path) {
 		return (new Promise((resolve, reject) => {
 			this.getUserImages(username).then((results) => {
-				console.log(results);
 				if (typeof results == 'undefined' || typeof results.id == 'undefined') {
 					reject('User is not recognized, please login and try again');
 				} else if (results.image1 == null) {
@@ -340,6 +339,7 @@ module.exports = {
 					//Select first empty field and store new path
 					let field = getFirstNullImgField(results);
 					if (field == false) {
+						console.log('Max Images');
 						resolve('Vous avez atteint le nombre maximun d\'images, veuillez en supprimer');
 					}
 					connection.query('UPDATE matcha.users_images SET ??=? WHERE user=?', [

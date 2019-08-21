@@ -80,7 +80,7 @@ app.post('/new_photo', csrfProtection, (req, res) => {
 	console.log(image.mimetype);
 	let type = image.mimetype;
 	if (type != 'image/png' && type != 'image/jpg' && type != 'image/jpeg') {
-		res.end("Fromat is nor supported");
+		res.end(image.name + " : Format is not supported");
 	} else {
 		image.mv(__dirname + '/resources/user_images/' + image.name, (err) => {
 			if (err) {

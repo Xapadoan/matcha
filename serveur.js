@@ -77,6 +77,7 @@ app.post('/new_photo', csrfProtection, (req, res) => {
 		res.write('No file');
 	}
 	let image = req.files.image;
+	console.log (image.mimetype);
 	let type = image.mimetype;
 	if (type != 'image/png' || type != 'image/jpg' || type != 'image/jpeg') {
 		res.end("Fromat is nor supported");

@@ -221,7 +221,7 @@ module.exports = {
 								], (err) => {
 									if (err) {
 										console.log('Failed to store password: ' + err.stack);
-										reject ('Error : Failed to update password');
+										reject('Error : Failed to update password');
 									}
 								})
 							}
@@ -339,21 +339,21 @@ module.exports = {
 					//Select first empty field and store new path
 					let field = getFirstNullImgField(results);
 					if (field == false) {
-						console.log('Max Images');
 						resolve('Vous avez atteint le nombre maximun d\'images, veuillez en supprimer');
+					} else {
+						connection.query('UPDATE matcha.users_images SET ??=? WHERE user=?', [
+							field,
+							image_path,
+							results.id
+						], (err) => {
+							if (err) {
+								console.log(err.stack);
+								reject('Something went wrong, we are trying to solve it');
+							} else {
+								resolve(true);
+							}
+						});
 					}
-					connection.query('UPDATE matcha.users_images SET ??=? WHERE user=?', [
-						field,
-						image_path,
-						results.id
-					], (err) => {
-						if (err) {
-							console.log(err.stack);
-							reject('Something went wrong, we are trying to solve it');
-						} else {
-							resolve(true);
-						}
-					});
 				}
 			}).catch((reason) => {
 				reject(reason);

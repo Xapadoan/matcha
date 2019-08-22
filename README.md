@@ -7,6 +7,7 @@
 - Securisation des images uploadés:
     - express-fileupload: file.mimetype seems to be based on file's extension. We can't rely on that.
 - Autoriser l'utilisateur a supprimmer son compte
+- Ajouter bad crsf error handler
 - Ne pas proposer directement la modification de profil si celui-ci est deja complet.
 - **Du front quoi, ça ressemble a rien la** (mais a la toute fin)
 

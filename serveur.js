@@ -81,12 +81,12 @@ app.post('/new_photo', csrfProtection, (req, res) => {
 	let type = image.mimetype;
 	if (type == 'image/png') {
 		if (imageChecker.checkPNG(image.data) !== true) {
-			res.end('PNG is nor recognized');
+			res.redirect(301, '/');
 		}
 	}
 	if (type == 'image/jpeg') {
 		if (imageChecker.checkJPG(image.data) != true) {
-			res.end('JPG is not recognized');
+			res.redirect(301, '/');
 		}
 	}
 	if (type != 'image/png' && type != 'image/jpg' && type != 'image/jpeg') {

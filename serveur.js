@@ -79,10 +79,16 @@ app.post('/new_photo', csrfProtection, (req, res) => {
 	}
 	let image = req.files.image;
 	let type = image.mimetype;
-	let data = Buffer.from(image.data).slice(0, 8);
-	console.log(data);
-	console.log(data[0]);
-	console.log(data.toString('hex'));
+	if (type == 'image/png') {
+		if (imageChecker.checkPNG(image.data) !== true) {
+			res.end('PNG is nor recognized');
+		}
+	}
+	if (type == 'image/jpeg') {
+		if (imageChecker.checkJPG(image.data) != true) {
+			res.end('JPG is not recognized');
+		}
+	}
 	if (type != 'image/png' && type != 'image/jpg' && type != 'image/jpeg') {
 		res.end(image.name + " : Format is not supported");
 	} else if (image.size == 0) {

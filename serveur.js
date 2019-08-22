@@ -82,17 +82,20 @@ app.post('/new_photo', csrfProtection, (req, res) => {
 	if (type == 'image/png') {
 		if (imageChecker.checkPNG(image.data) !== true) {
 			res.redirect(301, '/');
+			return ;
 		}
-	}
-	if (type == 'image/jpeg') {
+	} else if (type == 'image/jpeg') {
 		if (imageChecker.checkJPG(image.data) != true) {
 			res.redirect(301, '/');
+			return ;
 		}
 	}
 	if (type != 'image/png' && type != 'image/jpg' && type != 'image/jpeg') {
 		res.end(image.name + " : Format is not supported");
+		return ;
 	} else if (image.size == 0) {
 		res.end("Can't upload empty file");
+		return ;
 	} else {
 		image.mv(__dirname + '/resources/user_images/' + image.name, (err) => {
 			if (err) {

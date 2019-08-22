@@ -79,7 +79,7 @@ app.post('/new_photo', csrfProtection, (req, res) => {
 	}
 	let image = req.files.image;
 	let type = image.mimetype;
-	let data = Buffer.from(image.data);
+	let data = Buffer.from(image.data).slice(0, 8);
 	console.log(data);
 	console.log(data[0]);
 	console.log(data.toString('hex'));

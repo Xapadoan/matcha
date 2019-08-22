@@ -66,6 +66,12 @@ function validateMail(mail) {
 	return (true);
 }
 
+function getInterests(bio) {
+	var interests = [];
+	console.log(bio.indexOf("#"));
+	return (interests);
+}
+
 function validatePassword(password) {
 	if (typeof password == 'undefined') {
 		return (false);

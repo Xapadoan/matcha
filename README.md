@@ -7,6 +7,11 @@
 - Securisation des images uploadés:
     - express-fileupload: file.mimetype seems to be based on file's extension. We can't rely on that.
 - Autoriser l'utilisateur a supprimmer son compte
+- Gestion des interets :
+    1. L'utilisateur donne une liste d'interets,
+    2. Si un interet n'est pas listé, on le rajoute, sinon, on ajoute l'id de l'utilisateur
+    3. Les matchs, on passe a travers les interets de l'utilisateur, et on cherche dans la table interet les utilisateurs qui correspondent
+    4. Matcher en fonction de la geocalisation / fruit sexe = geo proche & fruit social = geo moyenne
 - Ajouter bad crsf error handler
 - Ne pas proposer directement la modification de profil si celui-ci est deja complet.
 - **Du front quoi, ça ressemble a rien la** (mais a la toute fin)

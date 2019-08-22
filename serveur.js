@@ -84,7 +84,7 @@ app.post('/new_photo', csrfProtection, (req, res) => {
 			res.redirect(301, '/');
 			return ;
 		}
-	} else if (type == 'image/jpeg') {
+	} else if (type == 'image/jpeg' || type == 'image/jpg') {
 		if (imageChecker.checkJPG(image.data) != true) {
 			res.redirect(301, '/');
 			return ;
@@ -130,6 +130,10 @@ app.post('/reset_password', csrfProtection, (req, res) => {
 		console.log(err);
 		res.end('Error');
 	});
+});
+
+app.get('/road', (req, res) => {
+	res.end('Not available yet');
 });
 
 app.get('/recover', csrfProtection, (req, res) => {

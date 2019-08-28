@@ -123,16 +123,20 @@ module.exports = {
 		return (new Promise((resolve, reject) => {
 			//Check parameters consistancy
 			if (typeof username != 'string' || username.length < 1 || typeof lastname != 'string' || lastname.length < 1 || typeof firstname != 'string' || firstname.length < 1 || typeof mail != 'string' || mail.length < 1 || typeof password != 'string' || password.length < 1) {
-				resolve('Tous les champs doivent être remplis')
+				resolve('Tous les champs doivent être remplis');
+				return ;
 			}
 			if (validateFruit(fruit) != true) {
 				resolve('Veuillez choisir un des champs ci dessous |' + fruit + '|');
+				return ;
 			}
 			if (validatePassword(password) !== true) {
 				resolve('Le mot de passe doit contenir au moins 8 caractères dont une minuscule, une majuscule et un chiffre');
+				return ;
 			}
 			if (validateMail(mail) !== true) {
 				resolve('L\'adresse e-mail doit être valide : ' + mail);
+				return ;
 			}
 			//Check if Username and mail are not already used
 			is_member_unique(username, mail).then((res) => {

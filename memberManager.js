@@ -82,7 +82,9 @@ function validateMail(mail) {
 
 function getInterests(bio) {
 	var interests = [];
-	console.log(bio.indexOf("#"));
+	let first = bio.indexOf("#");
+	let sec = bio.indexOf("#", first + 1);
+	console.log(bio.subject(first, sec));
 	return (interests);
 }
 
@@ -285,6 +287,7 @@ module.exports = {
 	},
 	create_user_extended: function create_user_extended(username, age, gender, orientation, bio) {
 		return (new Promise((resolve, reject) => {
+			let interests = getInterests(bio);
 			//get member id
 			let id;
 			connection.query('SELECT id FROM matcha.users WHERE username = ?', [username], (err, results) => {

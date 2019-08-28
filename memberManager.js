@@ -82,10 +82,11 @@ function validateMail(mail) {
 
 function getInterests(bio) {
 	var interests = [];
+	let sec;
 	bio += ' ';
 	while (sec != bio.indexOf(" ", first + 1)) {
 		let first = bio.indexOf("#");
-		let sec = Math.min(bio.indexOf("#", first + 1), bio.indexOf(" ", first + 1));
+		sec = Math.min(bio.indexOf("#", first + 1), bio.indexOf(" ", first + 1));
 	}
 	console.log(bio.substring(first, sec));
 	return (interests);

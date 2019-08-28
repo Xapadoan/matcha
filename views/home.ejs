@@ -11,10 +11,10 @@
             <input name='Password' type='password' maxlength="32" minlength="1" placeholder="Mot de passe"/>
             <br />
             <h3>Fruit: </h3>
-            Noix de Coco : <input type='checkbox' name='#pasdecoupdunsoir' />
-            Peche : <input type='checkbox' name='#unsoir' checked />
-            Cerise : <input type='checkbox' name='#serieux' />
-            Gimgembre : <input type='checkbox' name='#pqr' />
+            Noix de Coco : <input type='radio' name='Fruit' value='#pasdecoupdunsoir' />
+            Peche : <input type='radio' name='Fruit' value='#unsoir' checked />
+            Cerise : <input type='radio' name='Fruit' value='#serieux' />
+            Gimgembre : <input type='radio' name='Fruit' value='#pqr' />
             <input type="hidden" name="_csrf" value=<%= csrfToken %> />
             <button>Mettre a jour</button>
         </form>

@@ -56,16 +56,16 @@ function is_member_unique(username, mail) {
 }
 
 function validateFruit(fruit) {
-	if (fruit != '#pasdecoupdunsoir') {
-		return (false);
-	} else if (fruit != '#unsoir') {
-		return (false);
-	} else if (fruit != '#serieux') {
-		return (false);
-	} else if (fruit != '#pqr') {
-		return (false);
-	} else {
+	if (fruit == '#pasdecoupdunsoir') {
 		return (true);
+	} else if (fruit == '#unsoir') {
+		return (true);
+	} else if (fruit == '#serieux') {
+		return (true);
+	} else if (fruit == '#pqr') {
+		return (true);
+	} else {
+		return (false);
 	}
 }
 
@@ -126,7 +126,7 @@ module.exports = {
 				resolve('Tous les champs doivent être remplis')
 			}
 			if (validateFruit(fruit) != true) {
-				resolve('Veuillez choisir un des champs si dessous |' + fruit + '|');
+				resolve('Veuillez choisir un des champs ci dessous |' + fruit + '|');
 			}
 			if (validatePassword(password) !== true) {
 				resolve('Le mot de passe doit contenir au moins 8 caractères dont une minuscule, une majuscule et un chiffre');

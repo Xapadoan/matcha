@@ -86,7 +86,7 @@ function getInterests(bio) {
 	let first = 0;
 	bio += ' ';
 	while (first != -1 && sec != -1) {
-		first = bio.indexOf("#", sec + 1);
+		first = bio.indexOf("#", sec);
 		sec = Math.min(bio.indexOf("#", first + 1), bio.indexOf(" ", first + 1));
 	}
 	console.log(bio.substring(first, sec));

@@ -126,7 +126,7 @@ module.exports = {
 				resolve('Tous les champs doivent être remplis')
 			}
 			if (validateFruit(fruit) != true) {
-				resolve('Veuillez choisir un des champs si dessous|' + fruit + '|');
+				resolve('Veuillez choisir un des champs si dessous |' + fruit + '|');
 			}
 			if (validatePassword(password) !== true) {
 				resolve('Le mot de passe doit contenir au moins 8 caractères dont une minuscule, une majuscule et un chiffre');

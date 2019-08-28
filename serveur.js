@@ -242,7 +242,7 @@ app.get('/signup', csrfProtection, (req, res) => {
 });
 
 app.post('/signup', csrfProtection, (req, res) => {
-	memberManager.createUser(req.body.Username, req.body.Lastname, req.body.Firstname, req.body.Mail, req.body.Password).then((result) => {
+	memberManager.createUser(req.body.Username, req.body.Lastname, req.body.Firstname, req.body.Mail, req.body.Password, req.body.Fruit).then((result) => {
 		if (result !== true) {
 			res.render('signup.ejs', {
 				user: req.session.username,

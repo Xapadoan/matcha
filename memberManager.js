@@ -82,12 +82,12 @@ function validateMail(mail) {
 
 function getInterests(bio) {
 	var interests = [];
-	let sec;
+	let sec = 0;
 	let first = 0;
 	bio += ' ';
-	while (sec != bio.indexOf(" ", first + 1)) {
-		first = bio.indexOf("#");
-		sec = Math.max(bio.indexOf("#", first + 1), bio.indexOf(" ", first + 1));
+	while (first != -1) {
+		first = bio.indexOf("#", sec + 1);
+		sec = Math.min(bio.indexOf("#", first + 1), bio.indexOf(" ", first + 1));
 	}
 	console.log(bio.substring(first, sec));
 	return (interests);

@@ -82,8 +82,11 @@ function validateMail(mail) {
 
 function getInterests(bio) {
 	var interests = [];
-	let first = bio.indexOf("#");
-	let sec = bio.indexOf("#", first + 1);
+	bio += ' ';
+	while (sec != bio.indexOf(" ", first + 1)) {
+		let first = bio.indexOf("#");
+		let sec = Math.min(bio.indexOf("#", first + 1), bio.indexOf(" ", first + 1));
+	}
 	console.log(bio.substring(first, sec));
 	return (interests);
 }
@@ -291,13 +294,10 @@ module.exports = {
 			//get member id
 			let id;
 			connection.query('SELECT id FROM matcha.users WHERE username = ?', [username], (err, results) => {
-				console.log('First query');
 				if (err) {
 					console.log(err.stack);
 					reject('Something went wrong, we are trying to solve it');
 				} else {
-					console.log(username);
-					console.log(results[0]);
 					id = results[0].id;
 					connection.query('INSERT INTO matcha.users_extended (user, age, gender, orientation, bio) VALUES (?, ?, ?, ?, ?)', [
 						id,
@@ -306,7 +306,6 @@ module.exports = {
 						orientation,
 						bio
 					], (err) => {
-						console.log('second query');
 						if (err) {
 							console.log(err.stack);
 							reject('Something went wrong, we are trying to solve it');

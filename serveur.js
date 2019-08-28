@@ -194,6 +194,7 @@ app.post('/complete', csrfProtection, (req, res) => {
 			res.end('WTF');
 		}
 	}).catch((err) => {
+		console.log('Error while creating new extended profile : ' + err.stack);
 		res.end('error');
 	});
 });

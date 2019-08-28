@@ -84,7 +84,7 @@ function getInterests(bio) {
 	var interests = [];
 	let first = bio.indexOf("#");
 	let sec = bio.indexOf("#", first + 1);
-	console.log(bio.subject(first, sec));
+	console.log(bio.substring(first, sec));
 	return (interests);
 }
 

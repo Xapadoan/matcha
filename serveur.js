@@ -199,7 +199,7 @@ app.post('/complete', csrfProtection, (req, res) => {
 });
 
 app.post('/update', csrfProtection, (req, res) => {
-	memberManager.updateUser(req.session.username, req.body.Firstname, req.body.Lastname, req.body.Mail, req.body.Password).then((results) => {
+	memberManager.updateUser(req.session.username, req.body.Firstname, req.body.Lastname, req.body.Mail, req.body.Password, req.body.Fruit).then((results) => {
 		if (results !== true) {
 			res.render('home.ejs', {
 				user: req.session.username,

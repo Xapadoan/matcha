@@ -10,14 +10,14 @@
             <input name='Username' type='text' maxlength="100" minlength="1" placeholder="Pseudo" />
             <input name='Firstname' type="text" maxlength="100" minlength="1" placeholder="Prénom" />
             <input name='Lastname' type="text" maxlength="100" minlength="1" placeholder="Nom de Famille" />
-            <br />
-            <h3>Fruit: </h3>
-            Noix de Coco : <input type='checkbox' name='#pasdecoupdunsoir' />
-            Peche : <input type='checkbox' name='#unsoir' checked />
-            Cerise : <input type='checkbox' name='#serieux' />
-            Gimgembre : <input type='checkbox' name='#pqr' />
             <input name='Mail' type="email" maxlength="100" minlength="5" placeholder="E-Mail" />
             <input name='Password' type='password' maxlength="32" minlength="1" placeholder="Mot de passe"/>
+            <br />
+            <h3>Fruit: </h3>
+            Noix de Coco : <input type='radio' name='fruit' value='#pasdecoupdunsoir' />
+            Peche : <input type='radio' name='fruit' value='#unsoir' checked />
+            Cerise : <input type='radio' name='fruit' value='#serieux' />
+            Gimgembre : <input type='radio' name='fruit' value='#pqr' />
             <input type="hidden" name="_csrf" value=<%= csrfToken %> />
             <button>Créer un compte</button>
         </form>

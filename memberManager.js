@@ -55,7 +55,7 @@ function is_member_unique(username, mail) {
 	}));
 }
 
-function valideFruit(fruit) {
+function validateFruit(fruit) {
 	if (fruit != '#pasdecoupdunsoir') {
 		return (false);
 	} else if (fruit != '#unsoir') {
@@ -125,6 +125,9 @@ module.exports = {
 			if (typeof username != 'string' || username.length < 1 || typeof lastname != 'string' || lastname.length < 1 || typeof firstname != 'string' || firstname.length < 1 || typeof mail != 'string' || mail.length < 1 || typeof password != 'string' || password.length < 1) {
 				resolve('Tous les champs doivent être remplis')
 			}
+			if (validateFruit(fruit) != true) {
+				resolve('Veuillez choisir un des champs si dessous');
+			}
 			if (validatePassword(password) !== true) {
 				resolve('Le mot de passe doit contenir au moins 8 caractères dont une minuscule, une majuscule et un chiffre');
 			}
@@ -158,12 +161,13 @@ module.exports = {
 								}
 							});
 							//Save in db
-							connection.query("INSERT INTO " + data['name'] + ".users (username, lastname, firstname, email, status, password) VALUES (?, ?, ?, ?, ?, ?);", [
+							connection.query("INSERT INTO " + data['name'] + ".users (username, lastname, firstname, email, status, fruit, password) VALUES (?, ?, ?, ?, ?, ?, ?);", [
 								username,
 								lastname,
 								firstname,
 								mail,
 								id,
+								fruit,
 								hash
 							], (err) => {
 								if (err) {
@@ -197,6 +201,9 @@ module.exports = {
 					//Replace with new if existing
 					if (typeof firstname != 'undefined' && firstname != "") {
 						results.firstname = firstname;
+					}
+					if (typeof fruit != 'undefined' && fruit != "") {
+						results.fruit = fruit;
 					}
 					if (typeof lastname != 'undefined' && lastname != "") {
 						results.lastname = lastname;
@@ -248,11 +255,12 @@ module.exports = {
 						});
 					}
 					//update db
-					connection.query('UPDATE matcha.users SET firstname=?, lastname=?, email=?, status=? WHERE username LIKE ?', [
+					connection.query('UPDATE matcha.users SET firstname=?, lastname=?, email=?, status=?, fruit=? WHERE username LIKE ?', [
 						results.firstname,
 						results.lastname,
 						results.email,
 						results.status,
+						results.fruit,
 						username
 					], (err, results) => {
 						if (err) {

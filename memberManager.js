@@ -55,6 +55,20 @@ function is_member_unique(username, mail) {
 	}));
 }
 
+function valideFruit(fruit) {
+	if (fruit != '#pasdecoupdunsoir') {
+		return (false);
+	} else if (fruit != '#unsoir') {
+		return (false);
+	} else if (fruit != '#serieux') {
+		return (false);
+	} else if (fruit != '#pqr') {
+		return (false);
+	} else {
+		return (true);
+	}
+}
+
 function validateMail(mail) {
 	if (typeof mail == 'undefined') {
 		return (false);
@@ -105,7 +119,7 @@ module.exports = {
 	//		On error, a formated string <error_level> : <message>
 	//		On succes : true
 	//		On failure : The error message to be displayed for user
-	createUser: function createUser(username, lastname, firstname, mail, password) {
+	createUser: function createUser(username, lastname, firstname, mail, password, fruit) {
 		return (new Promise((resolve, reject) => {
 			//Check parameters consistancy
 			if (typeof username != 'string' || username.length < 1 || typeof lastname != 'string' || lastname.length < 1 || typeof firstname != 'string' || firstname.length < 1 || typeof mail != 'string' || mail.length < 1 || typeof password != 'string' || password.length < 1) {
@@ -173,7 +187,7 @@ module.exports = {
 	//		On error : a formated string <error_level> : <message>
 	//		On succes : true
 	//		On failure : The error message to be displayed for user
-	updateUser: function updateUser(username, firstname, lastname, mail, password) {
+	updateUser: function updateUser(username, firstname, lastname, mail, password, fruit) {
 		return (new Promise((resolve, reject) => {
 			//Get user info
 			this.getUserInfos(username).then((results) => {

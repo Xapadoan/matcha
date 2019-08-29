@@ -12,6 +12,15 @@ var app = express();
 app.use(express.urlencoded({ extended: true }));
 //requiered to use csrf protection
 var csrfProtection = csrf();
+//catch bad csrf errors
+app.use(function (err, req, res, next) {
+	console.log('OK');
+	if (err.code !== 'EBADCSRFTOKEN') {
+		return next(err)
+	}
+	// handle CSRF token errors here
+	res.redirect(403, '/');
+});
 //requiered to serve static files (stylesheets, images, ...)
 app.use(express.static('resources'));
 //requiered for session usage
@@ -22,15 +31,6 @@ app.use(session({
 }));
 //requiered for file upload
 app.use(fileUpload());
-//catch bad csrf errors
-app.use(function (err, req, res, next) {
-	console.log('OK');
-	if (err.code !== 'EBADCSRFTOKEN') {
-		return next(err)
-	}
-	// handle CSRF token errors here
-	res.redirect(403, '/');
-});
 
 app.get('/', csrfProtection, (req, res) => {
 	if (req.session.username) {

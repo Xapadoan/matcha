@@ -297,8 +297,8 @@ module.exports = {
 				if (err) {
 					console.log(err.stack);
 					reject('Something went wrong, we are trying to solve it');
-				} else if (results[0].user != results[0].id) {
-					console.log('do not exists');
+				} else if (results[0].user == results[0].id) {
+					console.log('already exists');
 				} else {
 					let interests = getInterests(bio);
 					id = results[0].id;

@@ -1,66 +1,69 @@
 <!DOCTYPE html>
 <html lang="fr">
-    <%- include('head.ejs'); %>
-    <body>
-        <%- include('header.ejs') %>
-        <h1><%= user %></h1>
-        <form id='user_infos' method="POST" name='user_infos' action='/update'>
-            <input name='Firstname' type="text" maxlength="100" minlength="1" placeholder="Prénom" />
-            <input name='Lastname' type="text" maxlength="100" minlength="1" placeholder="Nom de Famille" />
-            <input name='Mail' type="email" maxlength="100" minlength="5" placeholder="E-Mail" />
-            <input name='Password' type='password' maxlength="32" minlength="1" placeholder="Mot de passe"/>
-            <br />
-            <h3>Fruit: </h3>
-            Noix de Coco : <input type='radio' name='Fruit' value='#pasdecoupdunsoir' />
-            Peche : <input type='radio' name='Fruit' value='#unsoir' checked />
-            Cerise : <input type='radio' name='Fruit' value='#serieux' />
-            Gimgembre : <input type='radio' name='Fruit' value='#pqr' />
-            <input type="hidden" name="_csrf" value=<%= csrfToken %> />
-            <button>Mettre a jour</button>
-        </form>
-        <hr />
-        <form id='extended_infos' method="POST" name='extended_infos' action='/complete'>
-            Age : <input name="age" type='number' max="77" min='18' />
-            Genre : <select name="gender">
-                <option value="Both" selected>Les deux</option>
-                <option value="Woman">Femme</option>
-                <option value="Man">Homme</option>
-            </select>
-            Orientation : <select name="orientation">
-                <option value="Women" selected>Femmes</option>
-                <option value="Men">Hommes</option>
-                <option value="Both">Les deux</option>
-                <option value="Others">Autres</option>
-            </select>
-            Bio : <textarea name='bio' form="extended_infos"></textarea>
-            <input type="hidden" name="_csrf" value=<%= csrfToken %> />
-            <button>OK</button>
-        </form>
-        <hr />
-        <form method="POST" id='new_photo' name="new_photo" action='/new_photo' enctype="multipart/form-data">
-            Photo : <input type="file" name="image" />
-            <input type="hidden" name="_csrf" value=<%= csrfToken %> />
-            <button>OK</button>
-        </form>
-        <% if (typeof locals.images != 'undefined') { %>
-        <section id='user_images'>
-            <h2>Vos photos</h2>
-            <% if (locals.images.image1 != null) { %>
-            <img src='user_images/<%= images.image1 %>' width="200", height="150">
-            <% }
-            if (locals.images.image2 != null) { %>
-            <img src='user_images/<%= images.image2 %>' width="200", height="150">
-            <% }
-            if (locals.images.image3 != null) { %>
-            <img src='user_images/<%= images.image3 %>' width="200", height="150">
-            <% }
-            if (locals.images.image4 != null) { %>
-            <img src='user_images/<%= images.image4 %>' width="200", height="150">
-            <% }
-            if (locals.images.image5 != null) { %>
-            <img src='user_images/<%= images.image5 %>' width="200", height="150">
-            <% } %>
-        </section>
-        <% } %>
-    </body>
+	<%- include('head.ejs'); %>
+	<body>
+		<%- include('header.ejs') %>
+		<h1><%= user %></h1>
+		<form id='user_infos' method="POST" name='user_infos' action='/update'>
+			<input name='Firstname' type="text" maxlength="100" minlength="1" placeholder="Prénom" />
+			<input name='Lastname' type="text" maxlength="100" minlength="1" placeholder="Nom de Famille" />
+			<input name='Mail' type="email" maxlength="100" minlength="5" placeholder="E-Mail" />
+			<input name='Password' type='password' maxlength="32" minlength="1" placeholder="Mot de passe"/>
+			<br />
+			<h3>Fruit: </h3>
+			Noix de Coco : <input type='radio' name='Fruit' value='#pasdecoupdunsoir' />
+			Peche : <input type='radio' name='Fruit' value='#unsoir' checked />
+			Cerise : <input type='radio' name='Fruit' value='#serieux' />
+			Gimgembre : <input type='radio' name='Fruit' value='#pqr' />
+			<input type="hidden" name="_csrf" value=<%= csrfToken %> />
+			<button>Mettre a jour</button>
+		</form>
+		<hr />
+		<form id='extended_infos' method="POST" name='extended_infos' action='/complete'>
+			Age : <input name="age" type='number' max="77" min='18' />
+			Genre : <select name="gender">
+				<option value="Both" selected>Les deux</option>
+				<option value="Woman">Femme</option>
+				<option value="Man">Homme</option>
+			</select>
+			Orientation : <select name="orientation">
+				<option value="Women" selected>Femmes</option>
+				<option value="Men">Hommes</option>
+				<option value="Both">Les deux</option>
+				<option value="Others">Autres</option>
+			</select>
+			Bio : <textarea name='bio' form="extended_infos"></textarea>
+			<input type="hidden" name="_csrf" value=<%= csrfToken %> />
+			<button>OK</button>
+		</form>
+		<hr />
+		<form method="POST" id='new_photo' name="new_photo" action='/new_photo' enctype="multipart/form-data">
+			Photo : <input type="file" name="image" />
+			<input type="hidden" name="_csrf" value=<%= csrfToken %> />
+			<button>OK</button>
+		</form>
+		<% if (typeof locals.images != 'undefined') { %>
+		<section id='user_images'>
+			<h2>Vos photos</h2>
+			<% if (locals.images.image1 != null) { %>
+			<figure>
+				<img src='user_images/<%= images.image1 %>' width="200", height="150">
+				<figcaption>Photo de profil</figcaption>
+			</figure>
+			<% }
+			if (locals.images.image2 != null) { %>
+			<img src='user_images/<%= images.image2 %>' width="200", height="150">
+			<% }
+			if (locals.images.image3 != null) { %>
+			<img src='user_images/<%= images.image3 %>' width="200", height="150">
+			<% }
+			if (locals.images.image4 != null) { %>
+			<img src='user_images/<%= images.image4 %>' width="200", height="150">
+			<% }
+			if (locals.images.image5 != null) { %>
+			<img src='user_images/<%= images.image5 %>' width="200", height="150">
+			<% } %>
+		</section>
+		<% } %>
+	</body>
 </html>

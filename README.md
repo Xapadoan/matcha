@@ -18,6 +18,34 @@
 
 Pour cette version, on essaye de faire marcher la creation d'utilisateurs
 
+## Setup
+
+On a 3 tables :
+
+#### users
+
+id  | username | lastname | firstname | email | status | fruit | password
+--- | -------- | -------- | --------- | ----- | ------ | ----- | --------
+PRIMARY KEY | VARCHAR(100) | VARCHAR(100) | VARCHAR(100) | VARCHAR(255) | VARCHAR(100) | VARCHAR(20) | VARCHAR(255)
+
+#### users_extended
+
+id  | user | gender | orientation | age | bio | interests
+--- | ---- | ------ | ----------- | --- | --- | ---------
+PRIMARY KEY | FOREIGN KEY (users.id) | INT | VARCHAR(50) | INT | TEXT(500) | VARCHAR(255)
+
+#### users_images
+
+id  | user | image1 | image2 | image3 | image4 | image5
+--- | ---- | ------ | ------ | ------ | ------ | ------
+PRIMARY KEY | FOREIGN KEY (users.id) | VARCHAR(100) | VARCHAR(100) | VARCHAR(100) | VARCHAR(100) | VARCHAR(100)
+
+#### users_interests
+
+id  | name | users
+--- | ---- | -----
+PRIMARY KEY | VARCHAR(50) | TEXT(10000)
+
 ## Required packages
 
 Le dossier node_modules n'est pas à jour sur cette branche, verifiez que touts les packages suivants soient bien installés:

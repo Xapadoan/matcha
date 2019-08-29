@@ -128,19 +128,19 @@ module.exports = {
 			//Check parameters consistancy
 			if (typeof username != 'string' || username.length < 1 || typeof lastname != 'string' || lastname.length < 1 || typeof firstname != 'string' || firstname.length < 1 || typeof mail != 'string' || mail.length < 1 || typeof password != 'string' || password.length < 1) {
 				resolve('Tous les champs doivent être remplis');
-				return ;
+				return;
 			}
 			if (validateFruit(fruit) != true) {
 				resolve('Veuillez choisir un des champs ci dessous');
-				return ;
+				return;
 			}
 			if (validatePassword(password) !== true) {
 				resolve('Le mot de passe doit contenir au moins 8 caractères dont une minuscule, une majuscule et un chiffre');
-				return ;
+				return;
 			}
 			if (validateMail(mail) !== true) {
 				resolve('L\'adresse e-mail doit être valide : ' + mail);
-				return ;
+				return;
 			}
 			//Check if Username and mail are not already used
 			is_member_unique(username, mail).then((res) => {
@@ -287,21 +287,16 @@ module.exports = {
 			});
 		}));
 	},
+	//create_user_extended creates a new extended profile for a user. if it already exists, it will update it with
+	//provided values
 	create_user_extended: function create_user_extended(username, age, gender, orientation, bio) {
 		return (new Promise((resolve, reject) => {
-			//get member id
-			let id;
-			connection.query('SELECT u.id, e.user FROM matcha.users u LEFT JOIN matcha.users_extended e ON u.id = e.user AND u.username = ?', [
-				username
-			], (err, results) => {
-				if (err) {
-					console.log(err.stack);
-					reject('Something went wrong, we are trying to solve it');
-				} else if (results[0].user == results[0].id) {
-					console.log('already exists');
-				} else {
+			//get user extended profile
+			this.getUserExtended(username).then((result) => {
+				if (result == false) {
+					//extended profile doesn't exists, we have to create it
 					let interests = getInterests(bio);
-					id = results[0].id;
+					id = result[0].id;
 					connection.query('INSERT INTO matcha.users_extended (user, age, gender, orientation, bio, interests) VALUES (?, ?, ?, ?, ?, ?)', [
 						id,
 						age,
@@ -317,13 +312,36 @@ module.exports = {
 							resolve(true);
 						}
 					});
+				} else {
+					//extended profile exists, we will udate it
+					if (typeof age != 'undefined' && age != "") {
+						result.age = age;
+					}
+					if (typeof gender != 'undefined' && gender != "") {
+						result.gender = gender;
+					}
+					if (typeof orientation != 'undefined' && orientation != "") {
+						result.orientation = orientation;
+					}
+					if (typeof bio != 'undefined' && bio != "") {
+						result.bio = bio;
+						result.interests = getInterests(bio);
+					}
+					this.update_user_extended(result.user, result.age, result.gender, result.orientation, result.bio, result.interests).then((result) => {
+						resolve(result);
+					}).catch((reason) => {
+						reject(reason);
+					});
 				}
+			}).catch((reason) => {
+				console.log(reason);
+				reject('Une erreur est survenue');
 			});
 		}));
 	},
 	//This function return :
 	//On success : user object
-	//On failre : false
+	//On failure : false
 	//On error : Formated error string : <level>:<message>
 	getUserInfos: function getUserInfos(username) {
 		return (new Promise((resolve, reject) => {
@@ -340,6 +358,24 @@ module.exports = {
 				}
 			});
 		}));
+	},
+	getUserExtended: function getUserExtended(username) {
+		return (new Promise((resolve, reject) => {
+			connection.query('SELECT u.id, u.username, e.gender, e.orientation, e.age, e.bio, e.interests FROM matcha.users_extended e RIGHT JOIN matcha.users u ON u.id = e.user AND u.username = ?', [
+				username
+			], (err, results) => {
+				if (err) {
+					console.log('Failed to getUserExtended : ' + err.stack);
+					reject('Echec lors de la recuperation du profils étendu');
+				}
+				if (typeof results.gender == 'undefined') {
+					resolve(false);
+					return;
+				} else {
+					resolve(results[0]);
+				}
+			})
+		}))
 	},
 	getUserImages: function getUserImages(username) {
 		return (new Promise((resolve, reject) => {
@@ -398,30 +434,21 @@ module.exports = {
 			});
 		}));
 	},
-	update_user_extended: function update_user_extended(username, age, gender, orientation, bio) {
+	update_user_extended: function update_user_extended(userid, age, gender, orientation, bio, interests) {
 		return (new Promise((resolve, reject) => {
-			//get member id
-			let id;
-			connection.query('SELECT id FROM matcha.users WHERE username = ?', [username], (err, results) => {
+			connection.query('UPDATE matcha.users_extended SET age = ?, gender = ?, orientation = ?, bio = ?, interests = ? WHERE user = ?', [
+				age,
+				gender,
+				orientation,
+				bio,
+				interests,
+				userid
+			], (err) => {
 				if (err) {
 					console.log(err.stack);
 					reject('Something went wrong, we are trying to solve it');
 				} else {
-					id = results[0].id;
-					connection.query('UPDATE matcha.users_extended SET age = ?, gender = ?, orientation = ?, bio = ? WHERE user = ?', [
-						age,
-						gender,
-						orientation,
-						bio,
-						id
-					], (err, results) => {
-						if (err) {
-							console.log(err.stack);
-							reject('Something went wrong, we are trying to solve it');
-						} else {
-							resolve(true);
-						}
-					});
+					resolve(true);
 				}
 			});
 		}));

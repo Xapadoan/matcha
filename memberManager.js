@@ -69,6 +69,52 @@ function validateFruit(fruit) {
 	}
 }
 
+function update_user_extended(userid, age, gender, orientation, bio, interests) {
+	return (new Promise((resolve, reject) => {
+		connection.query('UPDATE matcha.users_extended SET age = ?, gender = ?, orientation = ?, bio = ?, interests = ? WHERE user = ?', [
+			age,
+			gender,
+			orientation,
+			bio,
+			interests,
+			userid
+		], (err) => {
+			if (err) {
+				console.log(err.stack);
+				reject('Something went wrong, we are trying to solve it');
+			} else {
+				resolve(true);
+			}
+		});
+	}));
+}
+
+function digestInterests(userid, interests) {
+	let regex = RegExp("#[A-Za-z0-9]+", "g");
+	let interest;
+	//remove all user's, interests
+	connection.query("DELETE FROM matcha.users_interests WHERE user = ?",[
+		userid
+	], (err) => {
+		if (err) {
+			console.log('Error : Failed to erase user\'s interests');
+			return (false);
+		}
+	});
+	while ((interest = regex.exec(interests)) != null) {
+		//add interest
+		connection.query("INSERT INTO matcha.users_interests (name, user) VALUES (?, ?);",[
+			interest,
+			userid
+		], (err) => {{
+			if (err) {
+				console.log('Error : Failed to set new interest');
+				return (false);
+			}
+		}});
+	}
+}
+
 function validateMail(mail) {
 	if (typeof mail == 'undefined') {
 		return (false);
@@ -296,6 +342,7 @@ module.exports = {
 				if (result == false) {
 					//extended profile doesn't exists, we have to create it
 					let interests = getInterests(bio);
+					digestInterests(result.id, interests);
 					connection.query('INSERT INTO matcha.users_extended (user, age, gender, orientation, bio, interests) VALUES (?, ?, ?, ?, ?, ?)', [
 						result.id,
 						age,
@@ -325,8 +372,9 @@ module.exports = {
 					if (typeof bio != 'undefined' && bio != "") {
 						result.bio = bio;
 						result.interests = getInterests(bio);
+						digestInterests(result.id, result.interests);
 					}
-					this.update_user_extended(result.id, result.age, result.gender, result.orientation, result.bio, result.interests).then((result) => {
+					update_user_extended(result.id, result.age, result.gender, result.orientation, result.bio, result.interests).then((result) => {
 						resolve(result);
 					}).catch((reason) => {
 						reject(reason);
@@ -426,26 +474,6 @@ module.exports = {
 				}
 			}).catch((reason) => {
 				reject(reason);
-			});
-		}));
-	},
-	update_user_extended: function update_user_extended(userid, age, gender, orientation, bio, interests) {
-		return (new Promise((resolve, reject) => {
-			connection.query('UPDATE matcha.users_extended SET age = ?, gender = ?, orientation = ?, bio = ?, interests = ? WHERE user = ?', [
-				age,
-				gender,
-				orientation,
-				bio,
-				interests,
-				userid
-			], (err) => {
-				if (err) {
-					console.log(err.stack);
-					reject('Something went wrong, we are trying to solve it');
-				} else {
-					console.log('Done');
-					resolve(true);
-				}
 			});
 		}));
 	},

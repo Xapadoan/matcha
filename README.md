@@ -6,6 +6,7 @@
 #### Trucs a faire :
 
 - Autoriser l'utilisateur a supprimmer son compte
+- Autoriser l'utilisateur a supprimer ses photos
 - Gestion des interets :
     1. L'utilisateur donne une liste d'interets,
     2. Si un interet n'est pas listé, on le rajoute, sinon, on ajoute l'id de l'utilisateur
@@ -44,7 +45,7 @@ PRIMARY KEY | FOREIGN KEY (users.id) | VARCHAR(100) | VARCHAR(100) | VARCHAR(100
 
 id  | name | users
 --- | ---- | -----
-PRIMARY KEY | VARCHAR(50) | TEXT(10000)
+PRIMARY KEY | VARCHAR(50) | INT
 
 ## Required packages
 

@@ -82,16 +82,23 @@ function validateMail(mail) {
 
 function getInterests(bio) {
 	var interests = [];
+	/*
 	let sec = 0;
 	let first = 0;
 	bio += ' ';
-	console.log(bio);
 	while (first != -1 && sec != -1) {
 		first = bio.indexOf("#", sec);
 		sec = bio.indexOf(" ", first + 1);
 		console.log(bio.substring(first, sec));
 	}
 	console.log('INTERSTS ENDS : first = ' + first + " ; sec = " + sec);
+	*/
+	let regex = new RegExp("#[A-Za-z0-9]+", "g");
+	let match;
+	while ((match = regex.exec(bio)) != null) {
+		console.log(match);
+		interests.push(match[0]);
+	}
 	return (interests);
 }
 

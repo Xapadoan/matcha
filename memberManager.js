@@ -291,10 +291,14 @@ module.exports = {
 		return (new Promise((resolve, reject) => {
 			//get member id
 			let id;
-			connection.query('SELECT id FROM matcha.users WHERE username = ?', [username], (err, results) => {
+			connection.query('SELECT id, e.user FROM matcha.users LEFT JOIN matcha.users_extended e ON matcha.users.id = e.user WHERE username = ?', [
+				username
+			], (err, results) => {
 				if (err) {
 					console.log(err.stack);
 					reject('Something went wrong, we are trying to solve it');
+				} else if (results[0].user != results[0].id) {
+					console.log('do not exists');
 				} else {
 					let interests = getInterests(bio);
 					id = results[0].id;

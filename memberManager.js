@@ -98,6 +98,7 @@ function digestInterests(userid, interests) {
 	], (err) => {
 		if (err) {
 			console.log('Error : Failed to erase user\'s interests');
+			console.log(err.stack);
 			return (false);
 		}
 	});
@@ -109,6 +110,7 @@ function digestInterests(userid, interests) {
 		], (err) => {{
 			if (err) {
 				console.log('Error : Failed to set new interest');
+				console.log(err.stack);
 				return (false);
 			}
 		}});

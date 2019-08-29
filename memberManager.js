@@ -296,7 +296,7 @@ module.exports = {
 				if (result == false) {
 					//extended profile doesn't exists, we have to create it
 					let interests = getInterests(bio);
-					id = result[0].id;
+					id = result.id;
 					connection.query('INSERT INTO matcha.users_extended (user, age, gender, orientation, bio, interests) VALUES (?, ?, ?, ?, ?, ?)', [
 						id,
 						age,

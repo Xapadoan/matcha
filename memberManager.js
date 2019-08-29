@@ -312,6 +312,7 @@ module.exports = {
 						}
 					});
 				} else {
+					console.log('EXISTS');
 					//extended profile exists, we will udate it
 					if (typeof age != 'undefined' && age != "") {
 						result.age = age;

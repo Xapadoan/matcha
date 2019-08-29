@@ -81,23 +81,11 @@ function validateMail(mail) {
 }
 
 function getInterests(bio) {
-	var interests = [];
-	/*
-	let sec = 0;
-	let first = 0;
-	bio += ' ';
-	while (first != -1 && sec != -1) {
-		first = bio.indexOf("#", sec);
-		sec = bio.indexOf(" ", first + 1);
-		console.log(bio.substring(first, sec));
-	}
-	console.log('INTERSTS ENDS : first = ' + first + " ; sec = " + sec);
-	*/
+	var interests = new String();
 	let regex = new RegExp("#[A-Za-z0-9]+", "g");
 	let match;
 	while ((match = regex.exec(bio)) != null) {
-		console.log(match);
-		interests.push(match[0]);
+		interests += match[0];
 	}
 	return (interests);
 }
@@ -143,7 +131,7 @@ module.exports = {
 				return ;
 			}
 			if (validateFruit(fruit) != true) {
-				resolve('Veuillez choisir un des champs ci dessous |' + fruit + '|');
+				resolve('Veuillez choisir un des champs ci dessous');
 				return ;
 			}
 			if (validatePassword(password) !== true) {
@@ -301,7 +289,6 @@ module.exports = {
 	},
 	create_user_extended: function create_user_extended(username, age, gender, orientation, bio) {
 		return (new Promise((resolve, reject) => {
-			let interests = getInterests(bio);
 			//get member id
 			let id;
 			connection.query('SELECT id FROM matcha.users WHERE username = ?', [username], (err, results) => {
@@ -309,13 +296,15 @@ module.exports = {
 					console.log(err.stack);
 					reject('Something went wrong, we are trying to solve it');
 				} else {
+					let interests = getInterests(bio);
 					id = results[0].id;
-					connection.query('INSERT INTO matcha.users_extended (user, age, gender, orientation, bio) VALUES (?, ?, ?, ?, ?)', [
+					connection.query('INSERT INTO matcha.users_extended (user, age, gender, orientation, bio, interests) VALUES (?, ?, ?, ?, ?, ?)', [
 						id,
 						age,
 						gender,
 						orientation,
-						bio
+						bio,
+						interests
 					], (err) => {
 						if (err) {
 							console.log(err.stack);

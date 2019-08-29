@@ -312,7 +312,6 @@ module.exports = {
 						}
 					});
 				} else {
-					console.log('EXISTS');
 					//extended profile exists, we will udate it
 					if (typeof age != 'undefined' && age != "") {
 						result.age = age;
@@ -327,7 +326,7 @@ module.exports = {
 						result.bio = bio;
 						result.interests = getInterests(bio);
 					}
-					this.update_user_extended(result.user, result.age, result.gender, result.orientation, result.bio, result.interests).then((result) => {
+					this.update_user_extended(result.id, result.age, result.gender, result.orientation, result.bio, result.interests).then((result) => {
 						resolve(result);
 					}).catch((reason) => {
 						reject(reason);

@@ -7,6 +7,7 @@
 
 - Autoriser l'utilisateur a supprimmer son compte
 - Autoriser l'utilisateur a supprimer ses photos
+- Gérer la geolocalisation
 - Gestion des interets :
     1. L'utilisateur donne une liste d'interets,
     2. Si un interet n'est pas listé, on le rajoute, sinon, on ajoute l'id de l'utilisateur

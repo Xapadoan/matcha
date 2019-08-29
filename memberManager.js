@@ -443,6 +443,7 @@ module.exports = {
 					console.log(err.stack);
 					reject('Something went wrong, we are trying to solve it');
 				} else {
+					console.log('Done');
 					resolve(true);
 				}
 			});

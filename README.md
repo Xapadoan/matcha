@@ -21,8 +21,6 @@ Pour cette version, on essaye de faire marcher la creation d'utilisateurs
 
 ## Setup
 
-On a 3 tables :
-
 #### users
 
 id  | username | lastname | firstname | email | status | fruit | password
@@ -43,7 +41,7 @@ PRIMARY KEY | FOREIGN KEY (users.id) | VARCHAR(100) | VARCHAR(100) | VARCHAR(100
 
 #### users_interests
 
-id  | name | users
+id  | name | user
 --- | ---- | -----
 PRIMARY KEY | VARCHAR(50) | INT
 
@@ -51,6 +49,8 @@ PRIMARY KEY | VARCHAR(50) | INT
 
 Le dossier node_modules n'est pas à jour sur cette branche, verifiez que touts les packages suivants soient bien installés:
 - express
+- express-session
+- ejs
 - mysql
 - csurf
 - bcrypt

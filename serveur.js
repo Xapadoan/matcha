@@ -22,6 +22,14 @@ app.use(session({
 }));
 //requiered for file upload
 app.use(fileUpload());
+//catch bad csrf errors
+app.use(function (err, req, res, next) {
+	if (err.code !== 'EBADCSRFTOKEN') {
+		return next(err)
+	}
+	// handle CSRF token errors here
+	res.redirect(403, '/');
+});
 
 app.get('/', csrfProtection, (req, res) => {
 	if (req.session.username) {

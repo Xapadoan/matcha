@@ -296,9 +296,8 @@ module.exports = {
 				if (result == false) {
 					//extended profile doesn't exists, we have to create it
 					let interests = getInterests(bio);
-					id = result.id;
 					connection.query('INSERT INTO matcha.users_extended (user, age, gender, orientation, bio, interests) VALUES (?, ?, ?, ?, ?, ?)', [
-						id,
+						result.id,
 						age,
 						gender,
 						orientation,
@@ -367,10 +366,6 @@ module.exports = {
 				if (err) {
 					console.log('Failed to getUserExtended : ' + err.stack);
 					reject('Echec lors de la recuperation du profils étendu');
-				}
-				if (typeof results.gender == 'undefined') {
-					resolve(false);
-					return;
 				} else {
 					resolve(results[0]);
 				}

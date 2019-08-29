@@ -90,6 +90,7 @@ function getInterests(bio) {
 		sec = Math.min(bio.indexOf("#", first + 1), bio.indexOf(" ", first + 1));
 		console.log(bio.substring(first, sec));
 	}
+	console.log('INTERSTS ENDS');
 	return (interests);
 }
 

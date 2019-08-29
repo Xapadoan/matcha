@@ -291,7 +291,7 @@ module.exports = {
 		return (new Promise((resolve, reject) => {
 			//get member id
 			let id;
-			connection.query('SELECT id, e.user FROM matcha.users LEFT JOIN matcha.users_extended e ON matcha.users.id = e.user WHERE username = ?', [
+			connection.query('SELECT u.id, e.user FROM matcha.users u LEFT JOIN matcha.users_extended e ON matcha.users.id = e.user WHERE username = ?', [
 				username
 			], (err, results) => {
 				if (err) {

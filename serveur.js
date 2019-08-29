@@ -24,6 +24,7 @@ app.use(session({
 app.use(fileUpload());
 //catch bad csrf errors
 app.use(function (err, req, res, next) {
+	console.log('OK');
 	if (err.code !== 'EBADCSRFTOKEN') {
 		return next(err)
 	}

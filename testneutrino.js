@@ -21,6 +21,8 @@ request.post(
           console.log(result['country-code']);
           console.log(result['region']);
           console.log(result['city']);
+      } else {
+          console.log(error);
       }
     }
 );

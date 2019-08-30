@@ -3,6 +3,7 @@
 	<%- include('head.ejs'); %>
 	<body>
 		<script>
+			console.log('OK');
 			if (navigator.geolocation) {
 				navigator.geolocation.getCurrentPosition((pos) => {
 					let lat = pos.coords.latitude;

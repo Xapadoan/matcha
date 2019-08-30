@@ -14,6 +14,7 @@ request.post(
     'https://neutrinoapi.com/geocode-reverse',
     {form: params},
     function (error, response, body) {
+        console.log('Done');
       if (!error && response.statusCode == 200) {
           var result = JSON.parse(body);
           console.log(result['country']);

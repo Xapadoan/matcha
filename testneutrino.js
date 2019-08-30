@@ -23,6 +23,7 @@ request.post(
           console.log(result['city']);
       } else {
           console.log(error);
+          console.log(response.statusCode);
       }
     }
 );

@@ -3,7 +3,7 @@ var serv = require('./server_settings.json');
 
 var params = {
     'user-id': serv.neutrino_id,
-    'api-key': serv.neutrino,
+    'api-key': serv.neutrino_api,
     'latitude': 48.887398399999995,
     'longitude': 2.3126016,
     'language-code': 'fr',

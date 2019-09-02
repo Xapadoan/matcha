@@ -65,6 +65,8 @@ app.get('/match', (req, res) => {
 		console.log(req.ips);
 		console.log(req.connection.remoteAddress);
 		console.log(req.headers['x-forwarded-for']);
+		console.log(req.headers);
+		console.log(req.rawHeaders);
 		res.render('match.ejs', {
 			user: req.session.username,
 			location: result,

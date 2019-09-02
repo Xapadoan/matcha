@@ -55,6 +55,9 @@ module.exports = {
 				if (err) {
 					console.log('Failed to getLocationFromIp : ' + err.stack);
 					reject ('An error occurred while fetching geolocation');
+				} else if (results.length == 0) {
+					console.log('Not found');
+					resolve('Localisation non trouvée');
 				} else {
 					console.log('Longip: ' + longip)
 					console.log(results[0])

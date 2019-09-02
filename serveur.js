@@ -62,7 +62,7 @@ app.get('/match', (req, res) => {
 	locationFinder.getLocationFromIp(req.ip).then((result) => {
 		console.log(req.ip);
 		console.log(req.connection.remoteAddress);
-		console.log(req.headers['X-Forwarded-For']);
+		console.log(req.headers);
 		res.render('match.ejs', {
 			user: req.session.username,
 			location: result,

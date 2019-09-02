@@ -49,6 +49,7 @@ module.exports = {
 	getLocationFromIp: function getLocationFromIp(ip) {
 		return (new Promise((resolve, reject) => {
 			let longip = ip2long('62.210.32.71');
+			console.log('long ip: ' + longip);
 			connection.query('SELECT * FROM matcha.ip2location_db5 WHERE ? BETWEEN ip_from and ip_to', [
 				longip
 			], (err, results) => {

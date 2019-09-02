@@ -11,7 +11,7 @@ let connection = mysql.createConnection({
 
 function ip2long(ip) {
 	str = new String(ip);
-	str = new String(str.split(':')[3]);
+	//str = new String(str.split(':')[3]);
 	nbrs = str.split('.');
 	console.log('raw ip : ' + ip);
 	console.log('ip: ' + nbrs[0] + ' . ' + nbrs[1] + ' . ' + nbrs[2] + ' . ' + nbrs[3])
@@ -46,35 +46,36 @@ module.exports = {
 			);
 		}));
 	},
-	getLocationFromIp: function getLocationFromIp(ip) {
+	getLocationFromIp: function getLocationFromIp() {
 		return (new Promise((resolve, reject) => {
 			request.get('http://ip4.me/api/', null, (err, res, body) => {
 				if (err) {
 					console.log(err.stack);
 					reject('Failed to get ip');
 				}
-				console.log(body);
+				ip = new String(body).split(',')[1];
+				console.log(ip);
+				let longip = ip2long(ip);
+				console.log('long ip: ' + longip);
+				connection.query('SELECT * FROM matcha.ip2location_db5 WHERE ? BETWEEN ip_from and ip_to', [
+					longip
+				], (err, results) => {
+					if (err) {
+						console.log('Failed to getLocationFromIp : ' + err.stack);
+						reject ('An error occurred while fetching geolocation');
+					} else if (results.length == 0) {
+						console.log('Not found');
+						resolve('Localisation non trouvée');
+					} else {
+						console.log('Longip: ' + longip)
+						console.log(results[0])
+						resolve ({
+							'country': results[0].country_name,
+							'city': results[0].city_name
+						});
+					}
+				})
 			});
-			let longip = ip2long(ip);
-			console.log('long ip: ' + longip);
-			connection.query('SELECT * FROM matcha.ip2location_db5 WHERE ? BETWEEN ip_from and ip_to', [
-				longip
-			], (err, results) => {
-				if (err) {
-					console.log('Failed to getLocationFromIp : ' + err.stack);
-					reject ('An error occurred while fetching geolocation');
-				} else if (results.length == 0) {
-					console.log('Not found');
-					resolve('Localisation non trouvée');
-				} else {
-					console.log('Longip: ' + longip)
-					console.log(results[0])
-					resolve ({
-						'country': results[0].country_name,
-						'city': results[0].city_name
-					});
-				}
-			})
 		}));
 	},
 	getLatLngFromIp: function getLatLngFromIp(ip) {

@@ -48,7 +48,7 @@ module.exports = {
 	},
 	getLocationFromIp: function getLocationFromIp(ip) {
 		return (new Promise((resolve, reject) => {
-			request.get('https://ipv4.me/api/', null, (err, res, body) => {
+			request.get('https://ip4.me/api/', null, (err, res, body) => {
 				console.log(res);
 				console.log('------');
 				console.log(body);

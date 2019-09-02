@@ -5,6 +5,7 @@ var csrf = require('csurf');
 var settings = require("./server_settings.json");
 var memberManager = require("./memberManager.js");
 var imageChecker = require("./imageChecker.js");
+var locationFinder = require("./locationFinder");
 
 var app = express();
 
@@ -56,6 +57,19 @@ app.get('/', csrfProtection, (req, res) => {
 		});
 	}
 });
+
+app.get('/match', (req, res) => {
+	let latlng;
+	locationFinder.getLatLngFromIp(req.ip).then((result) => {
+		render('match.ejs', {
+			user: req.session.username,
+			location: result,
+		});
+	}).catch((reason) => {
+		console.log(reason);
+		error = 'Impossible de savoir ou vous etes';
+	});
+})
 
 app.get('/login', csrfProtection, (req, res) => {
 	res.render('login.ejs', {

@@ -12,8 +12,8 @@ let connection = mysql.createConnection({
 function ip2long(ip) {
 	str = new String(ip);
 	nbrs = str.split('.');
-	console.log(nbrs[0] + ' . ' + nbrs[1] + ' . ' + nbrs[2] + ' . ' + nbrs[3])
-	return ('ip: ' + nbrs[0] * Math.pow(256, 3) + nbrs[1] * Math.pow(256, 2) + nbrs[2] * 256 + nbrs[3]);
+	console.log('ip: ' + nbrs[0] + ' . ' + nbrs[1] + ' . ' + nbrs[2] + ' . ' + nbrs[3])
+	return (nbrs[0] * Math.pow(256, 3) + nbrs[1] * Math.pow(256, 2) + nbrs[2] * 256 + nbrs[3]);
 }
 
 module.exports = {
@@ -46,7 +46,7 @@ module.exports = {
 	},
 	getLocationFromIp: function getLocationFromIp(ip) {
 		return (new Promise((resolve, reject) => {
-			let longip = ip2long(ip)
+			let longip = ip2long(ip);
 			connection.query('SELECT * FROM matcha.ip2location_db5 WHERE ? BETWEEN ip_from and ip_to', [
 				longip
 			], (err, results) => {

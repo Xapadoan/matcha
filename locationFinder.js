@@ -48,11 +48,14 @@ module.exports = {
 	},
 	getLocationFromIp: function getLocationFromIp(ip) {
 		return (new Promise((resolve, reject) => {
-			request.get('https://ip4.me/api/', null, (err, res, body) => {
+			request.get('https://ip4only.me/api/', null, (err, res, body) => {
+				if (err) {
+					console.log(err.stack);
+				}
 				console.log(res);
 				console.log('------');
 				console.log(body);
-			})
+			});
 			let longip = ip2long(ip);
 			console.log('long ip: ' + longip);
 			connection.query('SELECT * FROM matcha.ip2location_db5 WHERE ? BETWEEN ip_from and ip_to', [

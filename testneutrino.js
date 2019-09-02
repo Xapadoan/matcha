@@ -14,16 +14,12 @@ request.post(
     'https://neutrinoapi.com/geocode-reverse',
     {form: params},
     function (error, response, body) {
-        console.log('Done');
       if (!error && response.statusCode == 200) {
           var result = JSON.parse(body);
           console.log(result['country']);
           console.log(result['country-code']);
           console.log(result['region']);
           console.log(result['city']);
-      } else {
-          console.log(error);
-          console.log(response.statusCode);
       }
     }
 );

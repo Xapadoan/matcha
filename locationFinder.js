@@ -48,7 +48,7 @@ module.exports = {
 	},
 	getLocationFromIp: function getLocationFromIp(ip) {
 		return (new Promise((resolve, reject) => {
-			request.get('https://ip4only.me/api/', null, (err, res, body) => {
+			request.get('http://ip4only.me/api/', null, (err, res, body) => {
 				if (err) {
 					console.log(err.stack);
 				}

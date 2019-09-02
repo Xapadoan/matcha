@@ -5,14 +5,15 @@
 
 #### Trucs a faire :
 
+- Creer la seed de fakes
 - Autoriser l'utilisateur a supprimmer son compte
 - Autoriser l'utilisateur a supprimer ses photos
-- Gérer la geolocalisation
+- Gérer la geolocalisation :
+    - On la recupère a la connection, et a la tentative de match (GET /match)
+    - On la stocke dans la base de donne (lat lng)
 - Gestion des interets :
-    1. L'utilisateur donne une liste d'interets,
-    2. Si un interet n'est pas listé, on le rajoute, sinon, on ajoute l'id de l'utilisateur
-    3. Les matchs, on passe a travers les interets de l'utilisateur, et on cherche dans la table interet les utilisateurs qui correspondent
-    4. Matcher en fonction de la geocalisation / fruit sexe = geo proche & fruit social = geo moyenne
+    - Les matchs, on passe a travers les interets de l'utilisateur, et on cherche dans la table interet les utilisateurs qui correspondent
+    - Matcher en fonction de la geocalisation / fruit sexe = geo proche & fruit social = geo moyenne
 - Gestion des autorisations
 - Ajouter bad crsf error handler
 - Ne pas proposer directement la modification de profil si celui-ci est deja complet.

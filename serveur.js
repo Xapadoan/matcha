@@ -8,7 +8,6 @@ var imageChecker = require("./imageChecker.js");
 var locationFinder = require("./locationFinder");
 
 var app = express();
-app.set('trust proxy', '8.8.8.8');
 
 //requiered to retrieve x-www-form-encoded in req.body
 app.use(express.urlencoded({ extended: true }));
@@ -60,13 +59,7 @@ app.get('/', csrfProtection, (req, res) => {
 });
 
 app.get('/match', (req, res) => {
-	locationFinder.getLocationFromIp(req.ip).then((result) => {
-		console.log(req.ip);
-		console.log(req.ips);
-		console.log(req.connection.remoteAddress);
-		console.log(req.headers['x-forwarded-for']);
-		console.log(req.headers);
-		console.log(req.rawHeaders);
+	locationFinder.getLocationFromIp().then((result) => {
 		res.render('match.ejs', {
 			user: req.session.username,
 			location: result,

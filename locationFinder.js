@@ -45,13 +45,14 @@ module.exports = {
 	},
 	getLocationFromIp: function getLocationFromIp(ip) {
 		return (new Promise((resolve, reject) => {
-			connection.query('SELECT country_name, city_name FROM matcha.ip2location_db5 WHERE ? BETWEEN ip_from and ip_to', [
+			connection.query('SELECT * FROM matcha.ip2location_db5 WHERE ? BETWEEN ip_from and ip_to', [
 				ip2long(ip)
 			], (err, results) => {
 				if (err) {
 					console.log('Failed to getLocationFromIp : ' + err.stack);
 					reject ('An error occurred while fetching geolocation');
 				} else {
+					console.log(results[0])
 					resolve ({
 						'country': results[0].country_name,
 						'city': results[0].city_name

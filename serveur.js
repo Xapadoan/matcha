@@ -8,7 +8,7 @@ var imageChecker = require("./imageChecker.js");
 var locationFinder = require("./locationFinder");
 
 var app = express();
-app.enable('trust proxy');
+app.set('trust proxy', '8.8.8.8');
 
 //requiered to retrieve x-www-form-encoded in req.body
 app.use(express.urlencoded({ extended: true }));

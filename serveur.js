@@ -59,7 +59,7 @@ app.get('/', csrfProtection, (req, res) => {
 });
 
 app.get('/match', (req, res) => {
-	locationFinder.getLatLngFromIp(req.ip).then((result) => {
+	locationFinder.getLocationFromIp(req.ip).then((result) => {
 		res.render('match.ejs', {
 			user: req.session.username,
 			location: result,

@@ -48,12 +48,11 @@ module.exports = {
 	},
 	getLocationFromIp: function getLocationFromIp(ip) {
 		return (new Promise((resolve, reject) => {
-			request.get('http://ip4only.me/api/', null, (err, res, body) => {
+			request.get('http://ip4.me/api/', null, (err, res, body) => {
 				if (err) {
 					console.log(err.stack);
+					reject('Failed to get ip');
 				}
-				console.log(res);
-				console.log('------');
 				console.log(body);
 			});
 			let longip = ip2long(ip);

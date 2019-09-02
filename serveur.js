@@ -59,9 +59,8 @@ app.get('/', csrfProtection, (req, res) => {
 });
 
 app.get('/match', (req, res) => {
-	let latlng;
 	locationFinder.getLatLngFromIp(req.ip).then((result) => {
-		render('match.ejs', {
+		res.render('match.ejs', {
 			user: req.session.username,
 			location: result,
 		});

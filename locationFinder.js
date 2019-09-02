@@ -11,7 +11,7 @@ let connection = mysql.createConnection({
 
 function ip2long(ip) {
 	str = new String(ip);
-	console.log(str.split(':')[3]);
+	str = new String(str.split(':')[3]);
 	nbrs = str.split('.');
 	console.log('raw ip : ' + ip);
 	console.log('ip: ' + nbrs[0] + ' . ' + nbrs[1] + ' . ' + nbrs[2] + ' . ' + nbrs[3])

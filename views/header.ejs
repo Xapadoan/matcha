@@ -5,12 +5,42 @@
 		margin-top: 50px;
 		top: 0px;
 		left: 0px;
+		background-image: url('background.png');
+		background-attachment: fixed;
+		background-repeat: no-repeat;
+		background-position: center;
+		background-size: cover;
+	}
+
+	a {
+		color: #bb5;
+		text-decoration: none;
+		font-weight: bold;
+	}
+
+	form {
+		border-radius: 20px;
+		text-align: center;
+		background-color: rgba(160, 160, 160, 0.4);
+		padding: 0px 20px;
+		min-width: 350px;
+		width: 30%;
+		margin: 5px 0px;
+		margin-left: 20px;
+	}
+
+	form * {
+		margin: 2px 0px; 
+	}
+
+	form p {
+		display: inline;
 	}
 
 	header {
 		background-color: #d33;
 		height: 50px;
-		border-bottom: groove #800 2px;
+		border-bottom: solid #800 2px;
 		position: fixed;
 		width: 100vw;
 		top: 0px;
@@ -46,13 +76,13 @@
 </style>
 <header>
 	<nav class="adaptative_nav_bar">
-		<a href="/">Acceuil</a>
+		<a href="/" title="Acceuil">Acceuil</a>
 		<% if (typeof locals.user == 'undefined') { %>
-		<a href="/signup">Créer un compte</a>
-		<a href="/login">Se connecter</a>
+		<a href="/signup" title="Créer un compte">Créer un compte</a>
+		<a href="/login" title="Se connecter">Se connecter</a>
 		<% } else { %>
-		<a href="/"><%= user %></a>
-		<a href="/logout">Se deconnecter</a>
+		<a href="/" title="Espace Personnel"><%= user %></a>
+		<a href="/logout" title="Déconnexion">Se deconnecter</a>
 		<% } %>
 	</nav>
 </header>

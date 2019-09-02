@@ -4,21 +4,18 @@
     <body>
         <%- include('header.ejs'); %>
         <h1>Créer un compte !</h1>
-        <p>Vous pouvez créer votre compte ici !</p>
-        <p>En cours de traitement.</p>
-        <form name='signup_form' method="POST">
-            <input name='Username' type='text' maxlength="100" minlength="1" placeholder="Pseudo" />
-            <input name='Firstname' type="text" maxlength="100" minlength="1" placeholder="Prénom" />
-            <input name='Lastname' type="text" maxlength="100" minlength="1" placeholder="Nom de Famille" />
-            <input name='Mail' type="email" maxlength="100" minlength="5" placeholder="E-Mail" />
+        <form id='signup_form' name='signup_form' method="POST">
+            <p>Vous pouvez créer votre compte ici !</p><br />
+            <input name='Username' type='text' maxlength="100" minlength="1" placeholder="Pseudo" /><br />
+            <input name='Firstname' type="text" maxlength="100" minlength="1" placeholder="Prénom" /><br />
+            <input name='Lastname' type="text" maxlength="100" minlength="1" placeholder="Nom de Famille" /><br />
+            <input name='Mail' type="email" maxlength="100" minlength="5" placeholder="E-Mail" /><br />
             <input name='Password' type='password' maxlength="32" minlength="1" placeholder="Mot de passe"/>
             <br />
             <h3>Fruit: </h3>
-            Noix de Coco : <input type='radio' name='Fruit' value='#pasdecoupdunsoir' />
-            Peche : <input type='radio' name='Fruit' value='#unsoir' checked />
-            Cerise : <input type='radio' name='Fruit' value='#serieux' />
-            Gimgembre : <input type='radio' name='Fruit' value='#pqr' />
-            <input type="hidden" name="_csrf" value=<%= csrfToken %> />
+            <p>Le fruit sert a savoir le type de relation que vous cherchez</p><br />
+            <%- include('fruits.ejs') %>
+            <input type="hidden" name="_csrf" value=<%= csrfToken %> /><br />
             <button>Créer un compte</button>
         </form>
     </body>

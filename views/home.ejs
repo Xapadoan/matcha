@@ -29,7 +29,7 @@
 			}
 		</script>
 		<%- include('header.ejs') %>
-		<!--
+		{#
 		<form id='user_infos' method="POST" name='user_infos' action='/update'>
 			<h1><%= user %></h1>
 			<input name='Firstname' type="text" maxlength="100" minlength="1" <% if (typeof locals.user_info != 'undefined') { %> value='<%= user_info.firstname %>' <% } else { %> placeholder="Prénom" <% } %> />
@@ -88,6 +88,6 @@
 			<% } %>
 		</section>
 		<% } %>
-	-->
+	#}
 	</body>
 </html>

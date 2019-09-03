@@ -32,8 +32,8 @@
 		<form id='user_infos' method="POST" name='user_infos' action='/update'>
 			<h1><%= user %></h1>
 			<input name='Firstname' type="text" maxlength="100" minlength="1" <% if (typeof locals.user_info != 'undefined') { %> value='<%= user_info.firstname %>' <% } else { %> placeholder="Prénom" <% } %> />
-			<input name='Lastname' type="text" maxlength="100" minlength="1" placeholder="Nom de Famille" />
-			<input name='Mail' type="email" maxlength="100" minlength="5" placeholder="E-Mail" />
+			<input name='Lastname' type="text" maxlength="100" minlength="1" <% if (typeof locals.user_info != 'undefined') { %> value='<%= user_info.lastname %>' <% } else { %> placeholder="Nom de Famille" <% } %> />
+			<input name='Mail' type="email" maxlength="100" minlength="5" <% if (typeof locals.user_info != 'undefined') { %> value='<%= user_info.email %>' <% } else { %> placeholder="E-Mail" <% } %> />
 			<input name='Password' type='password' maxlength="32" minlength="1" placeholder="Mot de passe"/>
 			<br />
 			<h3>Fruit: </h3>
@@ -41,19 +41,21 @@
 			<button>Mettre a jour</button>
 		</form>
 		<form id='extended_infos' method="POST" name='extended_infos' action='/complete'>
-			Age : <input name="age" type='number' max="77" min='18' />
+			Age : <input name="age" type='number' <% if (typeof locals.user_extended != 'undefined') { %> value='<%= user_extended.age %>' <% } else { %> placeholder='20' max="77" min='18' />
 			Genre : <select name="gender">
-				<option value="Both" selected>Les deux</option>
-				<option value="Woman">Femme</option>
-				<option value="Man">Homme</option>
+				<option value="Both" <% if (typeof locals.user_extended != 'undefined' && locals.user_extended.gender == 'Both') { %> selected <% } %> >Les deux</option>
+				<option value="Woman" <% if (typeof locals.user_extended != 'undefined' && locals.user_extended.gender == 'Woman') { %> selected <% } %> >Femme</option>
+				<option value="Man" <% if (typeof locals.user_extended != 'undefined' && locals.user_extended.gender == 'Man') { %> selected <% } %> >Homme</option>
 			</select>
 			Orientation : <select name="orientation">
-				<option value="Women" selected>Femmes</option>
-				<option value="Men">Hommes</option>
-				<option value="Both">Les deux</option>
-				<option value="Others">Autres</option>
+				<option value="Women" <% if (typeof locals.user_extended != 'undefined' && locals.user_extended.orientation == 'Women') { %> selected <% } %> >Femmes</option>
+				<option value="Men" <% if (typeof locals.user_extended != 'undefined' && locals.user_extended.orientation == 'Men') { %> selected <% } %> >Hommes</option>
+				<option value="Both" <% if (typeof locals.user_extended != 'undefined' && locals.user_extended.orientation == 'Both') { %> selected <% } %> >Les deux</option>
+				<option value="Others" <% if (typeof locals.user_extended != 'undefined' && locals.user_extended.gender == 'Others') { %> selected <% } %> >Autres</option>
 			</select>
-			Bio : <textarea name='bio' form="extended_infos"></textarea>
+			Bio : <textarea name='bio' form="extended_infos">
+				<% if (typeof locals.user_extended != 'undefined') { %><%= user_extended.bio %><% } %>
+			</textarea>
 			<input type="hidden" name="_csrf" value=<%= csrfToken %> />
 			<button>OK</button>
 		</form>

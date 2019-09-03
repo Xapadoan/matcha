@@ -66,11 +66,6 @@ app.get('/', csrfProtection, (req, res) => {
 					csrfToken: req.csrfToken()
 				});
 			});
-			res.render('home.ejs', {
-				user: req.session.username,
-				images: images,
-				csrfToken: req.csrfToken()
-			});
 		}).catch((reason) => {
 			console.log(reason);
 			res.render('home.ejs', {

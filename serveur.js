@@ -38,6 +38,34 @@ app.use(function (err, req, res, next) {
 app.get('/', csrfProtection, (req, res) => {
 	if (req.session.username) {
 		memberManager.getUserImages(req.session.username).then((images) => {
+			memberManager.getUserInfos(req.session.username).then((user_info) => {
+				memberManager.getUserExtended(req.session.username).then((user_extended) => {
+					res.render('home.ejs', {
+						user: req.username,
+						user_info: user_info,
+						user_extended: user_extended,
+						images: images,
+						csrfToken: req.csrfToken()
+					});
+				}).catch((reason) => {
+					console.log('Failed to load extended profile: ' + reason);
+					res.render('home.ejs', {
+						user: req.username,
+						user_info: user_info,
+						error: 'Une erreur est survenue au chargement de votre profil',
+						images: images,
+						csrfToken: req.csrfToken()
+					});
+				})
+			}).catch((reason) => {
+				console.log('Failed to load user infos: ' + reason);
+				res.render('home.ejs', {
+					user: req.username,
+					error: 'Votre profil est introuvable',
+					images: images,
+					csrfToken: req.csrfToken()
+				});
+			});
 			res.render('home.ejs', {
 				user: req.session.username,
 				images: images,

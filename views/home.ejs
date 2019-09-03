@@ -31,7 +31,7 @@
 		<%- include('header.ejs') %>
 		<form id='user_infos' method="POST" name='user_infos' action='/update'>
 			<h1><%= user %></h1>
-			<input name='Firstname' type="text" maxlength="100" minlength="1" placeholder="Prénom" />
+			<input name='Firstname' type="text" maxlength="100" minlength="1" <% if (typeof locals.user_info != 'undefined') { %> value='<%= user_info.firstname %>' <% } %> placeholder="Prénom" />
 			<input name='Lastname' type="text" maxlength="100" minlength="1" placeholder="Nom de Famille" />
 			<input name='Mail' type="email" maxlength="100" minlength="5" placeholder="E-Mail" />
 			<input name='Password' type='password' maxlength="32" minlength="1" placeholder="Mot de passe"/>

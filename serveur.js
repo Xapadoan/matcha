@@ -56,7 +56,7 @@ app.get('/', csrfProtection, (req, res) => {
 						images: images,
 						csrfToken: req.csrfToken()
 					});
-				})
+				});
 			}).catch((reason) => {
 				console.log('Failed to load user infos: ' + reason);
 				res.render('home.ejs', {

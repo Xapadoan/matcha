@@ -29,7 +29,6 @@
 			}
 		</script>
 		<%- include('header.ejs') %>
-		{#
 		<form id='user_infos' method="POST" name='user_infos' action='/update'>
 			<h1><%= user %></h1>
 			<input name='Firstname' type="text" maxlength="100" minlength="1" <% if (typeof locals.user_info != 'undefined') { %> value='<%= user_info.firstname %>' <% } else { %> placeholder="Prénom" <% } %> />
@@ -41,25 +40,7 @@
 			<%- include('fruits.ejs') %>
 			<button>Mettre a jour</button>
 		</form>
-		<form id='extended_infos' method="POST" name='extended_infos' action='/complete'>
-			Age : <input name="age" type='number' <% if (typeof locals.user_extended != 'undefined') { %> value='<%= user_extended.age %>' <% } else { %> placeholder='20' max="77" min='18' />
-			Genre : <select name="gender">
-				<option value="Both" <% if (typeof locals.user_extended != 'undefined' && locals.user_extended.gender == 'Both') { %> selected <% } %> >Les deux</option>
-				<option value="Woman" <% if (typeof locals.user_extended != 'undefined' && locals.user_extended.gender == 'Woman') { %> selected <% } %> >Femme</option>
-				<option value="Man" <% if (typeof locals.user_extended != 'undefined' && locals.user_extended.gender == 'Man') { %> selected <% } %> >Homme</option>
-			</select>
-			Orientation : <select name="orientation">
-				<option value="Women" <% if (typeof locals.user_extended != 'undefined' && locals.user_extended.orientation == 'Women') { %> selected <% } %> >Femmes</option>
-				<option value="Men" <% if (typeof locals.user_extended != 'undefined' && locals.user_extended.orientation == 'Men') { %> selected <% } %> >Hommes</option>
-				<option value="Both" <% if (typeof locals.user_extended != 'undefined' && locals.user_extended.orientation == 'Both') { %> selected <% } %> >Les deux</option>
-				<option value="Others" <% if (typeof locals.user_extended != 'undefined' && locals.user_extended.gender == 'Others') { %> selected <% } %> >Autres</option>
-			</select>
-			Bio : <textarea name='bio' form="extended_infos">
-				<% if (typeof locals.user_extended != 'undefined') { %><%= user_extended.bio %><% } %>
-			</textarea>
-			<input type="hidden" name="_csrf" value=<%= csrfToken %> />
-			<button>OK</button>
-		</form>
+
 		<form method="POST" id='new_photo' name="new_photo" action='/new_photo' enctype="multipart/form-data">
 			Photo : <input type="file" name="image" />
 			<input type="hidden" name="_csrf" value=<%= csrfToken %> />
@@ -88,6 +69,5 @@
 			<% } %>
 		</section>
 		<% } %>
-	#}
 	</body>
 </html>

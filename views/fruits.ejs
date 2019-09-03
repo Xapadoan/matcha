@@ -18,7 +18,7 @@
 	}
 </style>
 
-<input type='radio' id='coconut' name='Fruit' value='#pasdecoupdunsoir' /><label for='coconut'><img id='coco_img' src='coconut.png' width="75" height="75" title="#pasdecoupdunsoir" /></label>
-<input type='radio' name='Fruit' id='peach' value='#unsoir' checked /><label for='peach'><img src='peach.png' width="75" height="75" title="#unsoir" /></label>
-<input type='radio' name='Fruit' id='cherry' value='#serieux' /><label for='cherry' ><img src='cherry.png' width="75" height="75" title="#serieux" /></label>
-<input type='radio' name='Fruit' id='ginger' value='#pqr' /><label for='ginger' ><img src='spices.png' width="75" height="75" title="#pqr" /></label>
+<input type='radio' id='coconut' name='Fruit' value='#pasdecoupdunsoir' <% if (typeof locals.user_info != 'undefined' && locals.user_info.fruit == '#pasdecoupdunsoir') { %> checked <% } %> /><label for='coconut'><img id='coco_img' src='coconut.png' width="75" height="75" title="#pasdecoupdunsoir" /></label>
+<input type='radio' name='Fruit' id='peach' value='#unsoir' <% if (typeof locals.user_info != 'undefined' && locals.user_info.fruit == '#unsoir') { %> checked <% } %> /><label for='peach'><img src='peach.png' width="75" height="75" title="#unsoir" /></label>
+<input type='radio' name='Fruit' id='cherry' value='#serieux' <% if (typeof locals.user_info != 'undefined' && locals.user_info.fruit == '#serieux') { %> checked <% } %> /><label for='cherry' ><img src='cherry.png' width="75" height="75" title="#serieux" /></label>
+<input type='radio' name='Fruit' id='ginger' value='#pqr' <% if (typeof locals.user_info != 'undefined' && locals.user_info.fruit == '#pqr') { %> checked <% } %> /><label for='ginger' ><img src='spices.png' width="75" height="75" title="#pqr" /></label>

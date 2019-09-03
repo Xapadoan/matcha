@@ -52,6 +52,7 @@ PRIMARY KEY | VARCHAR(50) | INT
 Le dossier node_modules n'est pas à jour sur cette branche, verifiez que touts les packages suivants soient bien installés:
 - express
 - express-session
+- request
 - ejs
 - mysql
 - csurf

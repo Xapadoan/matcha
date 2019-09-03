@@ -40,6 +40,7 @@ app.get('/', csrfProtection, (req, res) => {
 		memberManager.getUserImages(req.session.username).then((images) => {
 			memberManager.getUserInfos(req.session.username).then((user_info) => {
 				memberManager.getUserExtended(req.session.username).then((user_extended) => {
+					console.log(user_extended);
 					res.render('home.ejs', {
 						user: req.username,
 						user_info: user_info,

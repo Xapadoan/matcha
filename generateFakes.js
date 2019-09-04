@@ -41,7 +41,7 @@ function generateBio () {
 }
 
 function generateFemales() {
-    request.get('https://fr.fakenamegenerator.com/gen-female-fr-fr.php', null, (err, res, body) => {
+    request.get('https://fr.fakenamegenerator.com/gen-female-fr-fr.php', {charset: 'utf-8'}, (err, res, body) => {
         if (err) {
             console.log('An error occured while generating new identity');
         }

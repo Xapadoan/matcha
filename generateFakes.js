@@ -46,13 +46,13 @@ function generateFemales() {
             console.log('An error occured while generating new identity');
         }
         console.log(body);
-        //we need:  <div class='adress'>
+        //we need:  <div class='address'>
         //              <h3>Firstname Lastname</h3>
         //          </div>
         //          <a id='geo' href='...'>lat lng</a>
-        name_regex = new RegExp('<div class=\'adress\'>(.*?)</div>', 'g');
+        name_regex = new RegExp('<div class="address">(.*?)</div>', 'g');
         match = name_regex.exec(body);
-        geo_regex = new RegExp('<a id=\'geo\' (.*?)</a>', 'g');
+        geo_regex = new RegExp('<a id="geo" href="javascript:void(0)">(.*?)</a>', 'g');
         geo = geo_regex.exec(body);
         console.log('Name : ' + match);
         console.log('Geo : ' + geo);

@@ -57,7 +57,7 @@ function generateFemales() {
         i1 = body.indexOf('>', i1);
         i2 = body.indexOf('</a>', i1);
         geo = body.substring(i1 + 1, i2);
-        names = names.replace('M-CM-\)', 'é');
+      //  names = names.replace('M-CM-\)', 'é');
         console.log('Name : ' + names);
         console.log('Geo : ' + geo);
     });

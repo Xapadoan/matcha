@@ -127,37 +127,35 @@ function generateFemale() {
 
 module.exports = {
     generateFake: function generateFake(gender) {
-        if (gender == 'male') {
-            generateMale().then((result) => {
-                return (result);
-            }).catch((reason) => {
-                console.log('Failed to generate Male');
-                return (false);
-            });
-        } else if (gender == 'female') {
-            generateFemale().then((result) => {
-                return (result);
-            }).catch((reason) => {
-                console.log('Failed to generate Female');
-                return (false);
-            })
-        } else {
-            gender = Math.floor(Math.random() * 2);
-            if (gender) {
+        return (new Promise((resolve, reject) => {
+            if (gender == 'male') {
                 generateMale().then((result) => {
-                    return (result);
+                    resolve (result);
                 }).catch((reason) => {
-                    console.log('Failed to generate Male');
-                    return (false);
+                    reject('Failed to generate Male:\n' + reason);
                 });
-            } else {
+            } else if (gender == 'female') {
                 generateFemale().then((result) => {
-                    return (result);
+                    resolve (result);
                 }).catch((reason) => {
-                    console.log('Failed to generate Female');
-                    return (false);
-                });
+                    reject('Failed to generate Female:\n' + reason);
+                })
+            } else {
+                gender = Math.floor(Math.random() * 2);
+                if (gender) {
+                    generateMale().then((result) => {
+                        resolve (result);
+                    }).catch((reason) => {
+                        reject('Failed to generate Male:\n' + reason);
+                    });
+                } else {
+                    generateFemale().then((result) => {
+                        resolve (result);
+                    }).catch((reason) => {
+                        reject('Failed to generate Female:\n' + reason);
+                    });
+                }
             }
-        }
+        }));
     }
 }

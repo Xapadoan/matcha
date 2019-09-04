@@ -23,7 +23,10 @@ connection.query('CREATE TABLE IF NOT EXISTS users_images (id INT(9) UNSIGNED AU
 connection.query('CREATE TABLE IF NOT EXISTS users_interests (id INT(9) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL, name VARCHAR(50) NOT NULL, user INT NOT NULL)');
 
 //gen fakes and store'em
-fake = fakeGenerator.generateFake();
-console.log(fake);
+fakeGenerator.generateFake().then((result) => {
+	console.log(result);
+}).catch((reason) => {
+	console.log('Failed to generate fake: \n' + reason);
+});
 
 connection.end();

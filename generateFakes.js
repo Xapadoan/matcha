@@ -16,7 +16,7 @@ function generateMail(Firstname, Lastname) {
     hosts = ['gmail.com', 'hotmail.com', 'hotmail.fr', 'live.fr'];
     sep_key = Math.floor(Math.random() * 4);
     hosts_key = Math.floor(Math.random() * 4);
-    return(Firstname + sep[sep_key] + Lastname + '@' + hosts[hosts_key]);
+    return(Firstname.toLowerCase() + sep[sep_key] + Lastname.toLowerCase() + '@' + hosts[hosts_key]);
 }
 
 function generateOrientation () {
@@ -38,6 +38,7 @@ function affectionSentence() {
 function generateBio () {
     sports = ['rugby', 'foot', 'football', 'danse', 'natation', 'equitation', 'athletisme', 'courseapied', 'slackline', 'escalade', 'gymnastique', 'velo', 'ski', 'snowboard', 'surf', 'tennis', 'skateboard'];
     sports_key = Math.floor(Math.random() * sports.length);
+    return(affectionSentence() + sports[sports_key]);
 }
 
 function generateFemales() {
@@ -59,9 +60,20 @@ function generateFemales() {
         geo = body.substring(i1 + 1, i2);
         names = names.split(' ');
         geo = geo.split(', ');
-        console.log('Name : ' + names);
-        console.log('Geo : ' + geo);
+        return ({
+            Username: names[0][0] + names[1],
+            Firstname: names[0],
+            Lastname: names[1],
+            Gender: 'Female',
+            Orientation: generateOrientation(),
+            Mail: generateMail(names[0], names[1]),
+            Fruit: generateFruit(),
+            Age: generateAge(),
+            Bio: generateBio(),
+            Latitude: geo[0],
+            Longitude: geo[1]
+        });
     });
 }
 
-generateFemales();
+console.log(generateFemales());

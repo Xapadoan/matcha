@@ -154,4 +154,4 @@ module.exports = {
     }
 }
 
-console.log(this.generateFake());
+console.log(generateFake());

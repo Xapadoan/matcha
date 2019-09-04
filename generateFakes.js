@@ -52,12 +52,12 @@ function generateFemales() {
         i1 = body.indexOf('<div class="address">');
         i1 = body.indexOf('<h3>', i1) + 4;
         i2 = body.indexOf('</h3>', i1);
-        names = body.substring(i1, i2);
+        names = new String(body.substring(i1, i2));
         i1 = body.indexOf('<a id="geo" href="javascript:void(0)">');
         i1 = body.indexOf('>', i1);
         i2 = body.indexOf('</a>', i1);
         geo = body.substring(i1 + 1, i2);
-        names.replace('M-CM-', 'é');
+        names.replace('M\-CM\-', 'é');
         console.log('Name : ' + names);
         console.log('Geo : ' + geo);
     });

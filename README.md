@@ -5,7 +5,9 @@
 
 #### Trucs a faire :
 
-- Creer la seed de fakes
+- Creer la seed de fakes :
+    - Ameliorer la generation de biographie
+    - Telecharger et choisir photos
 - Autoriser l'utilisateur a supprimmer son compte
 - Autoriser l'utilisateur a supprimer ses photos
 - Gérer la geolocalisation :

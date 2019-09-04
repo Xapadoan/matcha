@@ -31,7 +31,7 @@ function generateOrientation () {
 }
 
 function affectionSentence() {
-    sentences = ["j'adore", "j'aime", "j'aime beaucoup", "j'apprécie", "je suis fan de"];
+    sentences = ["j'adore", "j'aime", "j'aime beaucoup", "j'apprécie", "je suis fan", "je kiffe", ""];
     return (sentences[Math.floor(Math.random() * sentences.length)]);
 }
 
@@ -62,21 +62,27 @@ function generateMale() {
             geo = body.substring(i1 + 1, i2);
             names = names.split(' ');
             geo = geo.split(', ');
+            age = generateAge();
             resolve ({
                 Username: names[0][0] + names[1],
                 Firstname: names[0],
                 Lastname: names[1],
-                Gender: 'Female',
+                Gender: 'Male',
                 Orientation: generateOrientation(),
                 Mail: generateMail(names[0], names[1]),
                 Fruit: generateFruit(),
-                Age: generateAge(),
+                Age: age,
                 Bio: generateBio(),
+                image: generateImage('male', age),
                 Latitude: geo[0],
                 Longitude: geo[1]
             });
         });
     }));
+}
+
+function generateImage(gender, age) {
+    return ('no_image.png');
 }
 
 function generateFemale() {
@@ -100,6 +106,7 @@ function generateFemale() {
             geo = body.substring(i1 + 1, i2);
             names = names.split(' ');
             geo = geo.split(', ');
+            age = generateAge();
             resolve ({
                 Username: names[0][0] + names[1],
                 Firstname: names[0],
@@ -108,8 +115,9 @@ function generateFemale() {
                 Orientation: generateOrientation(),
                 Mail: generateMail(names[0], names[1]),
                 Fruit: generateFruit(),
-                Age: generateAge(),
+                Age: age,
                 Bio: generateBio(),
+                image: generateImage('female', age),
                 Latitude: geo[0],
                 Longitude: geo[1]
             });
@@ -153,5 +161,3 @@ module.exports = {
         }
     }
 }
-
-console.log(generateFake());

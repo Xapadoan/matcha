@@ -41,39 +41,46 @@ function generateBio () {
     return(affectionSentence() + sports[sports_key]);
 }
 
-function generateFemales() {
-    request.get('https://fr.fakenamegenerator.com/gen-female-fr-fr.php', {encoding: 'utf-8'}, (err, res, body) => {
-        if (err) {
-            console.log('An error occured while generating new identity');
-        }
-        //we need:  <div class='address'>
-        //              <h3>Firstname Lastname</h3>
-        //          </div>
-        //          <a id='geo' href='...'>lat lng</a>
-        i1 = body.indexOf('<div class="address">');
-        i1 = body.indexOf('<h3>', i1) + 4;
-        i2 = body.indexOf('</h3>', i1);
-        names = new String(body.substring(i1, i2));
-        i1 = body.indexOf('<a id="geo" href="javascript:void(0)">');
-        i1 = body.indexOf('>', i1);
-        i2 = body.indexOf('</a>', i1);
-        geo = body.substring(i1 + 1, i2);
-        names = names.split(' ');
-        geo = geo.split(', ');
-        return ({
-            Username: names[0][0] + names[1],
-            Firstname: names[0],
-            Lastname: names[1],
-            Gender: 'Female',
-            Orientation: generateOrientation(),
-            Mail: generateMail(names[0], names[1]),
-            Fruit: generateFruit(),
-            Age: generateAge(),
-            Bio: generateBio(),
-            Latitude: geo[0],
-            Longitude: geo[1]
+function generateFemale() {
+    return (new Promise((resolve, reject) => {
+        request.get('https://fr.fakenamegenerator.com/gen-female-fr-fr.php', {encoding: 'utf-8'}, (err, res, body) => {
+            if (err) {
+                console.log('An error occured while generating new identity');
+                reject('Something went wrong');
+            }
+            //we need:  <div class='address'>
+            //              <h3>Firstname Lastname</h3>
+            //          </div>
+            //          <a id='geo' href='...'>lat lng</a>
+            i1 = body.indexOf('<div class="address">');
+            i1 = body.indexOf('<h3>', i1) + 4;
+            i2 = body.indexOf('</h3>', i1);
+            names = new String(body.substring(i1, i2));
+            i1 = body.indexOf('<a id="geo" href="javascript:void(0)">');
+            i1 = body.indexOf('>', i1);
+            i2 = body.indexOf('</a>', i1);
+            geo = body.substring(i1 + 1, i2);
+            names = names.split(' ');
+            geo = geo.split(', ');
+            resolve ({
+                Username: names[0][0] + names[1],
+                Firstname: names[0],
+                Lastname: names[1],
+                Gender: 'Female',
+                Orientation: generateOrientation(),
+                Mail: generateMail(names[0], names[1]),
+                Fruit: generateFruit(),
+                Age: generateAge(),
+                Bio: generateBio(),
+                Latitude: geo[0],
+                Longitude: geo[1]
+            });
         });
-    });
+    }));
 }
 
-console.log(generateFemales());
+generateFemale().then((results) => {
+    console.log(results);
+}).catch((reason) => {
+    console.error(reason);
+});

@@ -7,7 +7,7 @@ function generateFruit() {
 }
 
 function generateAge() {
-    age = Math.floor(Math.random * 20);
+    age = Math.floor(Math.random() * 20);
     return (18 + age);
 }
 
@@ -38,7 +38,7 @@ function affectionSentence() {
 function generateBio () {
     sports = ['rugby', 'foot', 'football', 'danse', 'natation', 'equitation', 'athletisme', 'courseapied', 'slackline', 'escalade', 'gymnastique', 'velo', 'ski', 'snowboard', 'surf', 'tennis', 'skateboard'];
     sports_key = Math.floor(Math.random() * sports.length);
-    return(affectionSentence() + sports[sports_key]);
+    return(affectionSentence() + ' #' + sports[sports_key]);
 }
 
 function generateFemale() {

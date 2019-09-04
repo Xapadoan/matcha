@@ -1,5 +1,5 @@
 var mysql = require('mysql');
-var fakeGenerator = require('generateFakes');
+var fakeGenerator = require('./generateFakes');
 var data = require('./database.json');
 
 var connection = mysql.createConnection({

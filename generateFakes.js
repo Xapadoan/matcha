@@ -50,12 +50,13 @@ function generateFemales() {
         //              <h3>Firstname Lastname</h3>
         //          </div>
         //          <a id='geo' href='...'>lat lng</a>
-        name_regex = new RegExp('<div class="address">\n(.*?)\n<\/div>', 'g');
+        name_regex = new RegExp('<div class="address">(.*?)<\/div>', 'g');
         match = body.match(name_regex);
         geo_regex = new RegExp('<a id="geo" href="javascript:void(0)">(.*?)<\/a>', 'g');
         geo = geo_regex.exec(body);
         console.log('Name : ' + match);
         console.log('Geo : ' + geo);
+        console.log(body.indexOf('<div class="address">'));
     });
 }
 

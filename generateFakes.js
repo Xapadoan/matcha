@@ -31,7 +31,7 @@ function generateOrientation () {
 }
 
 function affectionSentence() {
-    sentences = ['j\'adore', 'j\'aime', 'j\'aime beaucoup', 'j\'apprécie', 'je suis fan de'];
+    sentences = ["j'adore", "j'aime", "j'aime beaucoup", "j'apprécie", "je suis fan de"];
     return (sentences[Math.floor(Math.random() * sentences.length)]);
 }
 

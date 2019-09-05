@@ -67,7 +67,7 @@ function generateMale() {
                 Username: names[0][0] + names[1],
                 Firstname: names[0],
                 Lastname: names[1],
-                Gender: 'Male',
+                Gender: 'Man',
                 Orientation: generateOrientation(),
                 Mail: generateMail(names[0], names[1]),
                 Fruit: generateFruit(),
@@ -84,13 +84,13 @@ function generateMale() {
 function generateImage(gender, age) {
     let name;
     let max_key;
-    if (gender == 'male' && age < 28) {
+    if (gender == 'Man' && age < 28) {
         name = 'male_20_';
         max_key = 10;
-    } else if (gender == 'male') {
+    } else if (gender == 'Man') {
         name = 'male_30_';
         max_key = 11;
-    } else if (gender == 'female' && age < 28) {
+    } else if (gender == 'Woman' && age < 28) {
         name = 'female_20_';
         max_key = 18;
     } else {
@@ -128,7 +128,7 @@ function generateFemale() {
                 Username: names[0][0] + names[1],
                 Firstname: names[0],
                 Lastname: names[1],
-                Gender: 'Female',
+                Gender: 'Woman',
                 Orientation: generateOrientation(),
                 Mail: generateMail(names[0], names[1]),
                 Fruit: generateFruit(),

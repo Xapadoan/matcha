@@ -78,7 +78,10 @@ function getInterests(bio) {
 
 //gen fakes and store'em
 var userid = 1;
-while (userid <= 3) {
+(function storeFake(id) {
+	if (id == 3) {
+		process.exit();
+	}
 	fakeGenerator.generateFake().then((result) => {
 		//Insert in users
 		connection.query('INSERT INTO users (username, firstname, lastname, email, status, fruit, password) VALUES (?, ?, ?, ?, "Confirmed", ?, "FakePassword");', [
@@ -95,7 +98,7 @@ while (userid <= 3) {
 		//Insert in users_extended
 		let interests = getInterests(result.Bio);
 		connection.query('INSERT INTO users_extended (user, gender, orientation, age, bio, interests) VALUES (?, ?, ?, ?, ?, ?);', [
-			userid,
+			id,
 			result.Gender,
 			result.Orientation,
 			result.Age,
@@ -110,15 +113,16 @@ while (userid <= 3) {
 		digestInterests(userid, interests);
 		//Insert image
 		connection.query('INSERT INTO users_images (user, image1) VALUES (?, ?);', [
-			userid,
+			id,
 			result.Image
 		], (err) => {
 			if (err) {
 				console.log('Failed to store Fake user_image in database: ' + err.stack);
 			}
 		});
+		storeFake(id + 1);
 	}).catch((reason) => {
 		console.log('Failed to generate fake: \n' + reason);
 	});
 	userid++;
-}
+}) (1);

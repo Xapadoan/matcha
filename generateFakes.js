@@ -73,7 +73,7 @@ function generateMale() {
                 Fruit: generateFruit(),
                 Age: age,
                 Bio: generateBio(),
-                image: generateImage('male', age),
+                image: generateImage('Man', age),
                 Latitude: geo[0],
                 Longitude: geo[1]
             });
@@ -134,7 +134,7 @@ function generateFemale() {
                 Fruit: generateFruit(),
                 Age: age,
                 Bio: generateBio(),
-                Image: generateImage('female', age),
+                Image: generateImage('Woman', age),
                 Latitude: geo[0],
                 Longitude: geo[1]
             });

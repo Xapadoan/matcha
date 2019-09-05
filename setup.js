@@ -80,7 +80,7 @@ function getInterests(bio) {
 var userid = 1;
 (function storeFake(id) {
 	if (id == 3) {
-		process.exit();
+		return ;
 	}
 	fakeGenerator.generateFake().then((result) => {
 		//Insert in users

@@ -25,7 +25,7 @@ connection.query('CREATE TABLE IF NOT EXISTS ip2location_db5(ip_from INT(10) UNS
 	if (err) {
 		console.log('Failed to create ip2location table: ' + err.stack);
 	} else {
-		connection.query("LOAD DATA LOCAL INFILE '/home/www/public_html/sql/IP2LOCATION-LITE-DB5.CSV' INTO TABLE ip2location_db5 FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\r\n' IGNORE 0 LINES;");
+		connection.query("LOAD DATA LOCAL INFILE '/root/matcha/IP2LOCATION-LITE-DB5.CSV' INTO TABLE ip2location_db5 FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\r\n' IGNORE 0 LINES;");
 	}
 });
 

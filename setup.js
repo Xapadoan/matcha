@@ -2,7 +2,7 @@ var mysql = require('mysql');
 var fakeGenerator = require('./generateFakes');
 var data = require('./database.json');
 
-var connection = mysql.createConnection({
+let connection = mysql.createConnection({
 	host     : data['host'],
 	user     : data['root'],
 	password : data['root_password']
@@ -41,4 +41,4 @@ fakeGenerator.generateFake().then((result) => {
 	console.log('Failed to generate fake: \n' + reason);
 });
 
-connection.end();
+//connection.end();

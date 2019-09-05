@@ -79,8 +79,8 @@ function getInterests(bio) {
 //gen fakes and store'em
 var userid = 1;
 (function storeFake(id) {
-	if (id == 3) {
-		console.log('Generate all fakes');
+	if (id == 100) {
+		console.log('All fakes generated');
 		return ;
 	}
 	fakeGenerator.generateFake().then((result) => {

@@ -99,7 +99,7 @@ function generateImage(gender, age) {
     }
     let key = Math.floor(Math.random() * (max_key + 1));
     name += key + '.jpg';
-    return ('user_images/' + name);
+    return (name);
 }
 
 function generateFemale() {
@@ -134,7 +134,7 @@ function generateFemale() {
                 Fruit: generateFruit(),
                 Age: age,
                 Bio: generateBio(),
-                image: generateImage('female', age),
+                Image: generateImage('female', age),
                 Latitude: geo[0],
                 Longitude: geo[1]
             });

@@ -84,6 +84,9 @@ function generateMale() {
 function generateImage(gender, age) {
     let name;
     let max_key;
+    if (gender == 'Man') {
+        console.log('MAN');
+    }
     if (gender == 'Man' && age < 28) {
         name = 'male_20_';
         max_key = 10;

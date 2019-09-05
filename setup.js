@@ -78,8 +78,7 @@ function getInterests(bio) {
 
 //gen fakes and store'em
 var userid = 1;
-(function storeFake(id) {
-	let prog = 0;
+(function storeFake(id, prog) {
 	if (id > 600) {
 		console.log('All profiles generated');
 		return ;
@@ -126,8 +125,8 @@ var userid = 1;
 				console.log('Failed to store Fake user_image in database: ' + err.stack);
 			}
 		});
-		storeFake(id + 1);
+		storeFake(id + 1, prog);
 	}).catch((reason) => {
 		console.log('Failed to generate fake: \n' + reason);
 	});
-}) (1);
+}) (1, 0);

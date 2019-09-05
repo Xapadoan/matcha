@@ -610,7 +610,7 @@ module.exports = {
 	//	}
 	fetchMembers: function fetchMembers(options, fetcher) {
 		return (new Promise((resolve, reject) => {
-			query = 'SELECT u.id, u.username, u.fruit, e.age, e.gender, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN u.id = i.user';
+			query = 'SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN u.id = i.user';
 			query_values = [];
 			if (typeof options.age != 'undefined') {
 				query += ' AND e.age BETWEEN ? and ?';
@@ -623,7 +623,7 @@ module.exports = {
 			console.log(query);
 	
 			//For now just fetch one by id
-			connection.query('SELECT u.id, u.username, u.fruit, e.age, e.gender, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user AND u.id = ?', [
+			connection.query('SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user AND u.id = ?', [
 				1
 			], (err, results) => {
 				if (err) {

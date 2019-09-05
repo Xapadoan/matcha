@@ -1,10 +1,43 @@
 <!DOCTYPE html>
 <html lang="fr">
-    <%- include('head.ejs') %>
-    <body>
-        <%- include('header.ejs') %>
-        <p>Pour le moment, les matchs ne sont pas disponibles, mais on peut recupérer ici la localisation de l'utilisateur :</p>
-        <p>Vous etes à : <%= location.city %>, <%= location.country %></p>
-		<img src='young-1822656_640.jpg' />
-    </body>
+<%- include('head.ejs') %>
+
+<body>
+	<script>
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition((pos) => {
+				var lat = pos.coords.latitude;
+				var long = pos.coords.longitude;
+			}, (error) => {
+				switch (error.code) {
+					case (error.PERMISSION_DENIED):
+						console.log('User refused geolocation');
+						break;
+					case (error.POSITION_UNAVAILABLE):
+						console.log('Can\'t get location');
+						break;
+					case (error.TIMEOUT):
+						console.log('Timeout');
+						break;
+					default:
+						console.log('Undefined Error');
+						break;
+				}
+				lat = document.getElementById('lat').innerHTML;
+				lng = document.getElementById('lng').innerHTML;
+			});
+		} else {
+			lat = document.getElementById('lat').innerHTML;
+			lng = document.getElementById('lng').innerHTML;
+		}
+		console.log('lat : ' + lat + '; long = ' + long);
+	</script>
+	<%- include('header.ejs') %>
+	<p>Pour le moment, les matchs ne sont pas disponibles, mais on peut recupérer ici la localisation de l'utilisateur :
+	</p>
+	<p class='hidden' id='lat'><%= location.lat %></p>
+	<p class="hidden" id='lng'><%= location.lng %></p>
+	<img src='young-1822656_640.jpg' />
+</body>
+
 </html>

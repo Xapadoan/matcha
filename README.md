@@ -7,13 +7,13 @@
 
 - Creer la seed de fakes :
     - Ameliorer la generation de biographie
-    - Telecharger et choisir photos
 - Utiliser les events pour fermer la connection quand le setup est terminé
 - Autoriser l'utilisateur a supprimmer son compte
 - Autoriser l'utilisateur a supprimer ses photos
 - Gérer la geolocalisation :
     - On la recupère a la connection, et a la tentative de match (GET /match)
     - On la stocke dans la base de donne (lat lng)
+    - Au match, on prend dans un carre de distance
 - Gestion des interets :
     - Les matchs, on passe a travers les interets de l'utilisateur, et on cherche dans la table interet les utilisateurs qui correspondent
     - Matcher en fonction de la geocalisation / fruit sexe = geo proche & fruit social = geo moyenne

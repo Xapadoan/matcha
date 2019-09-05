@@ -442,7 +442,8 @@ module.exports = {
 				if (typeof results == 'undefined' || typeof results.id == 'undefined') {
 					reject('User is not recognized, please login and try again');
 				} else if (results.image1 == null) {
-					//Insert new picture
+					//Insert new picture'
+					console.log('Create new');
 					connection.query('INSERT INTO matcha.users_images (user, image1) VALUES (?, ?);', [
 						results.id,
 						image_path

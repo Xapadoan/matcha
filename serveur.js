@@ -40,7 +40,6 @@ app.get('/', csrfProtection, (req, res) => {
 		memberManager.getUserImages(req.session.username).then((images) => {
 			memberManager.getUserInfos(req.session.username).then((user_info) => {
 				memberManager.getUserExtended(req.session.username).then((user_extended) => {
-					console.log(user_extended);
 					res.render('home.ejs', {
 						user: req.username,
 						user_info: user_info,
@@ -129,11 +128,13 @@ app.post('/new_photo', csrfProtection, (req, res) => {
 	let type = image.mimetype;
 	if (type == 'image/png') {
 		if (imageChecker.checkPNG(image.data) !== true) {
+			console.log('FakeImage');
 			res.redirect(301, '/');
 			return ;
 		}
 	} else if (type == 'image/jpeg' || type == 'image/jpg') {
-		if (imageChecker.checkJPG(image.data) != true) {
+		if (imageChecker.checkJPG(image.data) !== true) {
+			console.log('FakeJPG');
 			res.redirect(301, '/');
 			return ;
 		}

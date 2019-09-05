@@ -82,7 +82,24 @@ function generateMale() {
 }
 
 function generateImage(gender, age) {
-    return ('no_image.png');
+    let name;
+    let max_key;
+    if (gender == 'male' && age < 28) {
+        name = 'male_20_';
+        max_key = 10;
+    } else if (gender == 'male') {
+        name = 'male_30_';
+        max_key = 11;
+    } else if (gender == 'female' && age < 28) {
+        name = 'female_20_';
+        max_key = 18;
+    } else {
+        name = 'female_30_';
+        max_key = 8
+    }
+    let key = Math.floor(Math.random() * (max_key + 1));
+    name += key + '.jpg';
+    return ('user_images/' + name);
 }
 
 function generateFemale() {

@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
 <%- include('head.ejs') %>
-
 <body>
 	<script>
 		if (navigator.geolocation) {
@@ -37,7 +36,10 @@
 	</p>
 	<p class='hidden' id='lat'><%= location.lat %></p>
 	<p class="hidden" id='lng'><%= location.lng %></p>
-	<img src='young-1822656_640.jpg' />
+	<article class='public_profile'>
+		<p><%= matchs.username %>, <%= matchs.age %></p>
+		<p><%= matchs.fruit %></p>
+	</article>
 </body>
 
 </html>

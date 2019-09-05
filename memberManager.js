@@ -595,5 +595,44 @@ module.exports = {
 				resolve(false);
 			}
 		}));
+	},
+	//fetch Members expects options to be like:
+	//	options = {
+	//		age: [min, max],
+	//		distance: max_distance(km),
+	//		orientation: fetcher's gender
+	//		tags: [tag1, tag2, tag3, ...],
+	//		popularity score: [min, max]
+	//	},
+	//	fetcher = {
+	//		gender: string,
+	//		location: [lat, lng]
+	//	}
+	fetchMembers: function fetchMembers(options, fetcher) {
+		return (new Promise((resolve, reject) => {
+			query = 'SELECT u.id, u.username, u.fruit, e.age, e.gender, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN u.id = i.user';
+			query_values = [];
+			if (typeof options.age != 'undefined') {
+				query += ' AND e.age BETWEEN ? and ?';
+				query_values.push(options.age[min], options.age[max]);
+			}
+			if (typeof options.orientation != 'undefined') {
+				query += ' AND (e.orientation == ? OR e.orientation == \'Both\')';
+				query_values.push(fetcher.orientation);
+			}
+			console.log(query);
+	
+			//For now just fetch one by id
+			connection.query('SELECT u.id, u.username, u.fruit, e.age, e.gender, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN u.id = i.user AND u.id = ?', [
+				1
+			], (err, results) => {
+				if (err) {
+					console.log(err.stack);
+					reject('Failed to fetch users');
+				} else {
+					resolve(results[0]);
+				}
+			})
+		}));
 	}
 };

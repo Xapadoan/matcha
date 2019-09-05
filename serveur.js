@@ -83,15 +83,21 @@ app.get('/', csrfProtection, (req, res) => {
 
 app.get('/match', (req, res) => {
 	locationFinder.getLatLngFromIp().then((result) => {
-		res.render('match.ejs', {
-			user: req.session.username,
-			location: result,
-		});
+		let location = result;
+		memberManager.fetchMembers({}, {}).then((results) => {
+			res.render('match.ejs', {
+				user: req.session.username,
+				matchs: results,
+				location: location,
+			});
+		}).catch ((reason) => {
+			console.log('An error occurred while fething db: ' + reason);
+		})
 	}).catch((reason) => {
 		console.log(reason);
 		error = 'Impossible de savoir ou vous etes';
 	});
-})
+});
 
 app.get('/login', csrfProtection, (req, res) => {
 	res.render('login.ejs', {

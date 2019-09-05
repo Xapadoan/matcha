@@ -8,8 +8,7 @@ module.exports = {
         }
     },
     checkJPG: function checkJPG(bin_data) {
-        let data = Buffer.from(bin_data).slice(0, 4);
-        console.log(data);
+        let data = Buffer.from(bin_data).slice(0, 2);
         if (data.toString('hex') != 'ffd8') {
             return (false);
         } else {

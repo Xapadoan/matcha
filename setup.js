@@ -42,5 +42,3 @@ fakeGenerator.generateFake().then((result) => {
 }).catch((reason) => {
 	console.log('Failed to generate fake: \n' + reason);
 });
-
-//connection.end();

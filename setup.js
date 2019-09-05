@@ -79,9 +79,14 @@ function getInterests(bio) {
 //gen fakes and store'em
 var userid = 1;
 (function storeFake(id) {
-	if (id == 20) {
-		console.log('All fakes generated');
+	let prog = 0;
+	if (id > 600) {
+		console.log('All profiles generated');
 		return ;
+	}
+	if (id % 30 == 0) {
+		console.log('Profiles generation: ' + prog + '%');
+		prog += 5;
 	}
 	fakeGenerator.generateFake().then((result) => {
 		//Insert in users
@@ -125,5 +130,4 @@ var userid = 1;
 	}).catch((reason) => {
 		console.log('Failed to generate fake: \n' + reason);
 	});
-	userid++;
 }) (1);

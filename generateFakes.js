@@ -99,7 +99,6 @@ function generateImage(gender, age) {
     }
     let key = Math.floor(Math.random() * (max_key + 1));
     name += key + '.jpg';
-    console.log(name);
     return (name);
 }
 

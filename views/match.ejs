@@ -36,10 +36,10 @@
 	</p>
 	<p class='hidden' id='lat'><%= location.lat %></p>
 	<p class="hidden" id='lng'><%= location.lng %></p>
-	<% for (var i in locals.matchs) {
-		match = locals.matchs[i];
+	<% 
+		match = locals.matchs[0];
 		include ('public_profile_mini.ejs');
-	} %>
+	 %>
 </body>
 
 </html>

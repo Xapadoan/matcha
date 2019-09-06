@@ -36,7 +36,7 @@
 	</p>
 	<p class='hidden' id='lat'><%= location.lat %></p>
 	<p class="hidden" id='lng'><%= location.lng %></p>
-	<% for (let i = 0, len = matchs.length; i < len; i++) {
+	<% for (let i = 0; len = matchs.length; i < len; i++) {
 		let match = matchs[i];
 		include ('public_profile_mini.ejs');
 	} %>

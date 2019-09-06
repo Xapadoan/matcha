@@ -5,6 +5,10 @@
 	#matches {
 		padding: 0px 15px;
 	}
+	
+	#matches p {
+		margin-left: 20px; 
+	}
 </style>
 <body>
 	<script>
@@ -57,7 +61,21 @@
 		</style>
 		<article id='user<%= matchs[i].id %>' class='public_profile'>
 			<p><%= matchs[i].firstname %> <%= matchs[i].lastname %>, <%= matchs[i].age %></p>
-			<p><%= matchs[i].fruit %> (<%= matchs[i].gender %>)</p>
+			<p>(<%= matchs[i].gender %>)</p>
+			<% switch (matchs[i].fruit) {
+				case ('#pasdecoupdunsoir'): %>
+			<img src='coconut.png' height="75" width="75" />
+			<% break;
+			case ('#unsoir'): %>
+			<img src='peach.png' height="75" width="75" />
+			<% break;
+			case ('#serieux'): %>
+			<img src='cherry.png' height="75" width="75" />
+			<% break;
+			case ('#pqr'): %>
+			<img src='spices.png' height="75" width="75" />
+			<% break;
+			} %>
 		</article>
 		<% } %>
 	</section>

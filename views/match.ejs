@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="fr">
 <%- include('head.ejs') %>
+<style>
+	#matches {
+		padding: 0px 15px;
+	}
+</style>
 <body>
 	<script>
 		if (navigator.geolocation) {
@@ -36,9 +41,11 @@
 	</p>
 	<p class='hidden' id='lat'><%= location.lat %></p>
 	<p class="hidden" id='lng'><%= location.lng %></p>
-	<% for (var i in locals.matchs) { %>
+	<section id='matches'>
+		<% for (var i in locals.matchs) { %>
 		<style>
-			#user<%= matchs[i].id %> {
+			#user<%=matchs[i].id %> {
+				display: inline-block;
 				border: 2px solid #f00;
 				background-image: url('user_images/<%= matchs[i].image1 %>');
 				background-size: cover;
@@ -52,7 +59,8 @@
 			<p><%= matchs[i].firstname %> <%= matchs[i].lastname %>, <%= matchs[i].age %></p>
 			<p><%= matchs[i].fruit %> (<%= matchs[i].gender %>)</p>
 		</article>
-	<% } %>
+		<% } %>
+	</section>
 </body>
 
 </html>

@@ -36,7 +36,7 @@
 	</p>
 	<p class='hidden' id='lat'><%= location.lat %></p>
 	<p class="hidden" id='lng'><%= location.lng %></p>
-	<% for (var i in locals.matchs) {
+	<% for (var i in locals.matchs) { %>
 		<style>
 			#user<%= matchs[i].id %> {
 				border: 2px solid #f00;
@@ -52,7 +52,7 @@
 			<p><%= matchs[i].firstname %> <%= matchs[i].lastname %>, <%= matchs[i].age %></p>
 			<p><%= matchs[i].fruit %> (<%= matchs[i].gender %>)</p>
 		</article>
-	} %>
+	<% } %>
 </body>
 
 </html>

@@ -7,8 +7,9 @@
 		overflow-x: scroll;
 		overflow-y: none;
 		height: 600px;
+		white-space: nowrap;
 	}
-	
+
 	#matches p {
 		margin-left: 20px;
 		display: inline;
@@ -17,7 +18,18 @@
 	#matches img {
 		float: right;
 	}
+
+	.public_profile_mini {
+		display: inline-block;
+		border: 2px solid #f00;
+		background-size: cover;
+		width: 400px;
+		height: 550px;
+		color: white;
+		text-shadow: 0 0 10px black;
+	}
 </style>
+
 <body>
 	<script>
 		if (navigator.geolocation) {
@@ -57,17 +69,10 @@
 		<% for (var i in locals.matchs) { %>
 		<style>
 			#user<%=matchs[i].id %> {
-				display: inline-block;
-				border: 2px solid #f00;
 				background-image: url('user_images/<%= matchs[i].image1 %>');
-				background-size: cover;
-				width: 400px;
-				height: 550px;
-				color: white;
-				text-shadow: 0 0 10px black;
 			}
 		</style>
-		<article id='user<%= matchs[i].id %>' class='public_profile'>
+		<article id='user<%= matchs[i].id %>' class='public_profile_mini'>
 			<p><%= matchs[i].firstname %> <%= matchs[i].lastname %>, <%= matchs[i].age %></p>
 			<p>(<%= matchs[i].gender %>)</p>
 			<% switch (matchs[i].fruit) {

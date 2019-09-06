@@ -85,6 +85,7 @@ app.get('/match', (req, res) => {
 	locationFinder.getLatLngFromIp().then((result) => {
 		let location = result;
 		memberManager.fetchMembers({}, {}).then((results) => {
+			console.log(results);
 			res.render('match.ejs', {
 				user: req.session.username,
 				matchs: results,

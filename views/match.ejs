@@ -29,6 +29,11 @@
 		color: white;
 		text-shadow: 0 0 10px black;
 	}
+
+	.public_profile_mini .bio {
+		height: 300px;
+		width: 100%;
+	}
 </style>
 
 <body>
@@ -90,6 +95,7 @@
 			<img src='spices.png' height="75" width="75" />
 			<% break;
 			} %>
+			<p class='bio'><%= matchs[i].bio %></p>
 		</article>
 		<% } %>
 	</section>

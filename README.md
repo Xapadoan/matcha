@@ -6,6 +6,7 @@
 #### Trucs a faire :
 
 - Creer la seed de fakes :
+    - Prendre plus d'images
     - Ameliorer la generation de biographie
 - Utiliser les events pour fermer la connection quand le setup est terminé
 - Autoriser l'utilisateur a supprimmer son compte

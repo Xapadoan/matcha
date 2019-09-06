@@ -1,7 +1,7 @@
 <style>
-    #user<%= match.id %> {
+    #user<%= matchs[i].id %> {
         border: 2px solid #f00;
-        background-image: url('user_images/<%= match.image1 %>');
+        background-image: url('user_images/<%= matchs[i].image1 %>');
         background-size: cover;
         width: 400px;
         height: 550px;
@@ -9,7 +9,7 @@
         text-shadow: 0 0 10px black;
     }
 </style>
-<article id='user<%= match.id %>' class='public_profile'>
-    <p><%= match.firstname %> <%= match.lastname %>, <%= match.age %></p>
-    <p><%= match.fruit %> (<%= match.gender %>)</p>
+<article id='user<%= matchs[i].id %>' class='public_profile'>
+    <p><%= matchs[i].firstname %> <%= matchs[i].lastname %>, <%= matchs[i].age %></p>
+    <p><%= matchs[i].fruit %> (<%= matchs[i].gender %>)</p>
 </article>

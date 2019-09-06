@@ -5,6 +5,7 @@
 
 #### Trucs a faire :
 
+- Gerer les matchs
 - Creer la seed de fakes :
     - Prendre plus d'images
     - Ameliorer la generation de biographie

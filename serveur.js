@@ -141,7 +141,6 @@ app.post('/new_photo', csrfProtection, (req, res) => {
 		}
 	} else if (type == 'image/jpeg' || type == 'image/jpg') {
 		if (imageChecker.checkJPG(image.data) !== true) {
-			console.log('FakeJPG');
 			res.redirect(301, '/');
 			return ;
 		}

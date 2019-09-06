@@ -36,21 +36,10 @@
 	</p>
 	<p class='hidden' id='lat'><%= location.lat %></p>
 	<p class="hidden" id='lng'><%= location.lng %></p>
-	<style>
-		#user<%= matchs.id %> {
-			border: 2px solid #f00;
-			background-image: url('user_images/<%= matchs.image1 %>');
-			background-size: cover;
-			width: 400px;
-			height: 550px;
-			color: white;
-			text-shadow: 0 0 10px black;
-		}
-	</style>
-	<article id='user<%= matchs.id %>' class='public_profile'>
-		<p><%= matchs.firstname %> <%= matchs.lastname %>, <%= matchs.age %></p>
-		<p><%= matchs.fruit %> (<%= matchs.gender %>)</p>
-	</article>
+	<% for (let i = 0, len = matchs.length; i < len; i++) {
+		let match = matchs[i];
+		include ('public_profile_mini.ejs');
+	} %>
 </body>
 
 </html>

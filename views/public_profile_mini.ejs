@@ -1,0 +1,15 @@
+<style>
+    #user<%=match.id %> {
+        border: 2px solid #f00;
+        background-image: url('user_images/<%= match.image1 %>');
+        background-size: cover;
+        width: 400px;
+        height: 550px;
+        color: white;
+        text-shadow: 0 0 10px black;
+    }
+</style>
+<article id='user<%= match.id %>' class='public_profile'>
+    <p><%= match.firstname %> <%= match.lastname %>, <%= match.age %></p>
+    <p><%= match.fruit %> (<%= match.gender %>)</p>
+</article>

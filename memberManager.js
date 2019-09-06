@@ -630,7 +630,7 @@ module.exports = {
 					console.log(err.stack);
 					reject('Failed to fetch users');
 				} else {
-					resolve(results[0]);
+					resolve(results);
 				}
 			})
 		}));

@@ -86,16 +86,16 @@ function generateImage(gender, age) {
     let max_key;
     if (gender == 'Man' && age < 28) {
         name = 'male_20_';
-        max_key = 10;
+        max_key = 27;
     } else if (gender == 'Man') {
         name = 'male_30_';
-        max_key = 11;
+        max_key = 21;
     } else if (gender == 'Woman' && age < 28) {
         name = 'female_20_';
-        max_key = 18;
+        max_key = 38;
     } else {
         name = 'female_30_';
-        max_key = 8
+        max_key = 28
     }
     let key = Math.floor(Math.random() * (max_key + 1));
     name += key + '.jpg';

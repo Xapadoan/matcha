@@ -42,7 +42,7 @@ app.get('/', csrfProtection, (req, res) => {
 			memberManager.getUserInfos(req.session.username).then((user_info) => {
 				memberManager.getUserExtended(req.session.username).then((user_extended) => {
 					res.render('home.ejs', {
-						user: req.username,
+						user: req.session.username,
 						user_info: user_info,
 						user_extended: user_extended,
 						images: images,
@@ -51,7 +51,7 @@ app.get('/', csrfProtection, (req, res) => {
 				}).catch((reason) => {
 					console.log('Failed to load extended profile: ' + reason);
 					res.render('home.ejs', {
-						user: req.username,
+						user: req.session.username,
 						user_info: user_info,
 						error: 'Une erreur est survenue au chargement de votre profil',
 						images: images,
@@ -61,7 +61,7 @@ app.get('/', csrfProtection, (req, res) => {
 			}).catch((reason) => {
 				console.log('Failed to load user infos: ' + reason);
 				res.render('home.ejs', {
-					user: req.username,
+					user: req.session.username,
 					error: 'Votre profil est introuvable',
 					images: images,
 					csrfToken: req.csrfToken()

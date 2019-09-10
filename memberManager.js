@@ -71,7 +71,8 @@ function validateFruit(fruit) {
 
 function update_user_extended(userid, age, gender, orientation, bio, interests) {
 	return (new Promise((resolve, reject) => {
-		connection.query('UPDATE matcha.users_extended SET age = ?, gender = ?, orientation = ?, bio = ?, interests = ? WHERE user = ?', [
+		console.log(userid + age);
+		connection.query('UPDATE matcha.users_extended SET age = ?, gender = ?, orientation = ?, bio = ?, interests = ? WHERE user = ?;', [
 			age,
 			gender,
 			orientation,
@@ -80,7 +81,7 @@ function update_user_extended(userid, age, gender, orientation, bio, interests) 
 			userid
 		], (err) => {
 			if (err) {
-				console.log(err.stack);
+				console.log(err.stack);q
 				reject('Something went wrong, we are trying to solve it');
 			} else {
 				resolve(true);

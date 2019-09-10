@@ -81,7 +81,7 @@ function update_user_extended(userid, age, gender, orientation, bio, interests) 
 			userid
 		], (err) => {
 			if (err) {
-				console.log(err.stack);q
+				console.log(err.stack);
 				reject('Something went wrong, we are trying to solve it');
 			} else {
 				resolve(true);
@@ -580,6 +580,7 @@ module.exports = {
 								reject('Somethimg went wrong, we are trying to solve it');
 							}
 							if (res == true) {
+								console.log(results[0].id)
 								resolve({
 									username: results[0].username,
 									id: results[0].id

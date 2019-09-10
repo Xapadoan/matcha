@@ -37,6 +37,7 @@ app.use(function (err, req, res, next) {
 
 app.get('/', csrfProtection, (req, res) => {
 	if (req.session.username) {
+		console.log(req.session.username);
 		memberManager.getUserImages(req.session.username).then((images) => {
 			memberManager.getUserInfos(req.session.username).then((user_info) => {
 				memberManager.getUserExtended(req.session.username).then((user_extended) => {

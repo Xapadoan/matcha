@@ -88,9 +88,9 @@ app.get('/match', (req, res) => {
 		locationFinder.getLatLngFromIp().then((result) => {
 			let location = result;
 			memberManager.fetchMembers({
-				username: req.session.username,
 				age: [user_profile.age - 5, user_profile.age + 5],
 			}, {
+				username: req.session.username,
 				gender: user_profile.gender,
 				location: [result.lat, result.lng]
 			}).then((results) => {

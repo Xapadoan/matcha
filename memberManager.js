@@ -669,7 +669,7 @@ module.exports = {
 			*/
 			query += ' LIMIT ?, 5';
 			query_values.push(0);
-			connection.query(query, [], (err, results) => {
+			connection.query(query, [0], (err, results) => {
 				if (err) {
 					console.log(err.stack);
 					reject('Failed to fetch users');

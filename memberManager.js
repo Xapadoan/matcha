@@ -642,6 +642,7 @@ module.exports = {
 				query_values.push(options.age[0], options.age[1]);
 			}
 			//use fetcher's gender
+			/*
 			if (typeof fetcher.gender != 'undefined') {
 				let orientation;
 				switch (fetcher.gender) {
@@ -658,6 +659,7 @@ module.exports = {
 				query += ' AND orientation = ?';
 				query_values.push(orientation);
 			}
+			*/
 			//use fetcher's orientation
 			if (typeof fetcher.orientation != 'undefined') {
 				if (fetcher.orientation == 'Men') {

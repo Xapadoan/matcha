@@ -342,9 +342,7 @@ module.exports = {
 		return (new Promise((resolve, reject) => {
 			//get user extended profile
 			this.getUserExtended(username).then((result) => {
-				console.log(result);
 				if (result.gender == null && result.orientation == null && result.age == null && result.bio == null && result.interests == null) {
-					console.log('create');
 					//extended profile doesn't exists, we have to create it
 					let interests = getInterests(bio);
 					digestInterests(result.id, interests);
@@ -364,7 +362,6 @@ module.exports = {
 						}
 					});
 				} else {
-					console.log('update');
 					//extended profile exists, we will udate it
 					if (typeof age != 'undefined' && age != "") {
 						result.age = age;

@@ -20,7 +20,7 @@ function generateMail(Firstname, Lastname) {
 }
 
 function generateOrientation () {
-    i = Math.floor(Math.random(3));
+    i = Math.floor(Math.random() * 3);
     if (i == 1) {
         return ('Women');
     } else if (i == 2) {

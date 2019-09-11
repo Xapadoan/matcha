@@ -93,6 +93,7 @@ var userid = 1;
 (function storeFake(id, prog) {
 	if (id > 50) {
 		fakes_generated = true;
+		endConnection(data_loaded, fakes_generated);
 		console.log('All profiles generated');
 		return ;
 	}

@@ -91,6 +91,7 @@ app.get('/match', (req, res) => {
 				age: [user_profile.age - 5, user_profile.age + 5],
 			}, {
 				username: req.session.username,
+				orientation: user_profile.orientation,
 				gender: user_profile.gender,
 				location: [result.lat, result.lng]
 			}).then((results) => {

@@ -1,6 +1,8 @@
 var mysql = require('mysql');
 var fakeGenerator = require('./generateFakes');
 var data = require('./database.json');
+var data_loaded = false;
+var fakes_generated = false;
 
 let connection = mysql.createConnection({
 	host: data['host'],
@@ -14,6 +16,14 @@ connection.connect((err) => {
 		console.error("This is most likely an error in settings : check 'database.json'");
 	}
 });
+
+function endConnection(data_loaded, fakes_generated) {
+	if (data_loaded && fakes_generated) {
+		connection.end();
+	} else {
+		console.log('Not ready to end connection yet');
+	}
+}
 
 connection.query('CREATE DATABASE IF NOT EXISTS ' + data['name']);
 connection.query('USE ' + data['name']);
@@ -30,6 +40,8 @@ connection.query('CREATE TABLE IF NOT EXISTS ip2location_db5(ip_from INT(10) UNS
 			if (err) {
 				console.log('Failed to load location data: ' + err.stack);
 			} else {
+				data_loaded = true;
+				endConnection(data_loaded, fakes_generated);
 				console.log('Loadind Data Over');
 			}
 		});
@@ -80,12 +92,13 @@ function getInterests(bio) {
 var userid = 1;
 (function storeFake(id, prog) {
 	if (id > 20) {
+		fakes_generated = true;
 		console.log('All profiles generated');
 		return ;
 	}
-	if (id % 30 == 0) {
+	if (id % 2 == 0) {
 		console.log('Profiles generation: ' + prog + '%');
-		prog += 5;
+		prog += 10;
 	}
 	fakeGenerator.generateFake().then((result) => {
 		//Insert in users

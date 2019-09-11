@@ -343,7 +343,7 @@ module.exports = {
 			//get user extended profile
 			this.getUserExtended(username).then((result) => {
 				console.log(result);
-				if (result == false) {
+				if (result.gender == null && result.orientation == null && result.age == null && result.bio == null && result.interests == null) {
 					console.log('create');
 					//extended profile doesn't exists, we have to create it
 					let interests = getInterests(bio);

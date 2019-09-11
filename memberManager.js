@@ -636,11 +636,11 @@ module.exports = {
 		return (new Promise((resolve, reject) => {
 			query = 'SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user WHERE u.username <> ?';
 			query_values = [fetcher.username];
-			/*
 			if (typeof options.age != 'undefined') {
 				query += ' AND e.age BETWEEN ? and ?';
 				query_values.push(options.age[0], options.age[1]);
 			}
+			/*
 			if (typeof fetcher.gender != 'undefined') {
 				let orientation;
 				switch (fetcher.gender) {

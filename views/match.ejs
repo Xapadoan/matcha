@@ -47,7 +47,7 @@
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition((pos) => {
 				var lat = pos.coords.latitude;
-				var long = pos.coords.longitude;
+				var lng = pos.coords.longitude;
 			}, (error) => {
 				switch (error.code) {
 					case (error.PERMISSION_DENIED):
@@ -63,15 +63,15 @@
 						console.log('Undefined Error');
 						break;
 				}
-				lat = document.getElementById('lat').innerHTML;
-				lng = document.getElementById('lng').innerHTML;
-				console.log('Location with ip: lat = ' + lat + '; long = ' + long)
+				var lat = document.getElementById('lat').innerHTML;
+				var lng = document.getElementById('lng').innerHTML;
+				console.log('Location with ip: lat = ' + lat + '; long = ' + lng)
 			});
 		} else {
 			lat = document.getElementById('lat').innerHTML;
 			lng = document.getElementById('lng').innerHTML;
 		}
-		console.log('lat : ' + lat + '; long = ' + long);
+		console.log('lat : ' + lat + '; long = ' + lng);
 	</script>
 	<%- include('header.ejs') %>
 	<p>Pour le moment, les matchs ne sont pas disponibles, mais on peut recupérer ici la localisation de l'utilisateur :

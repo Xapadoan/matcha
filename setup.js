@@ -97,7 +97,7 @@ var userid = 1;
 		return ;
 	}
 	if (id % 2 == 0) {
-		console.log('Profiles generation: ' + prog + '%');
+		console.log('\rProfiles generation: ' + prog + '%');
 		prog += 10;
 	}
 	fakeGenerator.generateFake().then((result) => {

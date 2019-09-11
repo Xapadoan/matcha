@@ -640,6 +640,7 @@ module.exports = {
 				query += ' AND e.age BETWEEN ? and ?';
 				query_values.push(options.age[0], options.age[1]);
 			}
+			/*
 			if (typeof fetcher.gender != 'undefined') {
 				let orientation;
 				switch (fetcher.gender) {
@@ -665,13 +666,13 @@ module.exports = {
 					query_values.push('Woman');
 				}
 			}
-			console.log(query);
-			//For now just fetch one by id
+			*/
 			connection.query(query, query_values, (err, results) => {
 				if (err) {
 					console.log(err.stack);
 					reject('Failed to fetch users');
 				} else {
+					console.log(results);
 					resolve(results);
 				}
 			})

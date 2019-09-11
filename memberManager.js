@@ -71,8 +71,8 @@ function validateFruit(fruit) {
 
 function update_user_extended(userid, age, gender, orientation, bio, interests) {
 	return (new Promise((resolve, reject) => {
-		console.log(userid + age);
-		connection.query('UPDATE matcha.users_extended SET age = ?, gender = ?, orientation = ?, bio = ?, interests = ? WHERE user = ?;', [
+		console.log(userid + '|' + age);
+		connection.query('UPDATE matcha.users_extended SET age = ?, gender = ?, orientation = ?, bio = ?, interests = ? WHERE user = ?', [
 			age,
 			gender,
 			orientation,
@@ -343,6 +343,7 @@ module.exports = {
 			//get user extended profile
 			this.getUserExtended(username).then((result) => {
 				if (result == false) {
+					console.log('create');
 					//extended profile doesn't exists, we have to create it
 					let interests = getInterests(bio);
 					digestInterests(result.id, interests);
@@ -362,6 +363,7 @@ module.exports = {
 						}
 					});
 				} else {
+					console.log('update');
 					//extended profile exists, we will udate it
 					if (typeof age != 'undefined' && age != "") {
 						result.age = age;
@@ -580,7 +582,6 @@ module.exports = {
 								reject('Somethimg went wrong, we are trying to solve it');
 							}
 							if (res == true) {
-								console.log(results[0].id)
 								resolve({
 									username: results[0].username,
 									id: results[0].id

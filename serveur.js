@@ -243,6 +243,7 @@ app.get('/logout', (req, res) => {
 });
 
 app.post('/complete', csrfProtection, (req, res) => {
+	console.log('user_extended_form recieved');
 	memberManager.create_user_extended(req.session.username, req.body.age, req.body.gender, req.body.orientation, req.body.bio).then((result) => {
 		if (result === true) {
 			res.redirect(301, '/');

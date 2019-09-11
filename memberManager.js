@@ -656,7 +656,7 @@ module.exports = {
 						orientation = 'Both'
 						break;
 				}
-				query += ' AND orientation = ?';
+				query += ' AND (orientation = ? OR orientation = \'Both\')';
 				query_values.push(orientation);
 			}
 			*/

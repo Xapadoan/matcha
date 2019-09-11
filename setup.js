@@ -91,12 +91,12 @@ function getInterests(bio) {
 //gen fakes and store'em
 var userid = 1;
 (function storeFake(id, prog) {
-	if (id > 20) {
+	if (id > 50) {
 		fakes_generated = true;
 		console.log('All profiles generated');
 		return ;
 	}
-	if (id % 2 == 0) {
+	if (id % 5 == 0) {
 		console.log('\rProfiles generation: ' + prog + '%');
 		prog += 10;
 	}

@@ -24,7 +24,7 @@ function generateOrientation () {
     if (i == 1) {
         return ('Women');
     } else if (i == 2) {
-        return ('Man');
+        return ('Men');
     } else {
         return ('Both');
     }

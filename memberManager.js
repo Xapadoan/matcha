@@ -628,13 +628,14 @@ module.exports = {
 	//		popularity score: [min, max]
 	//	},
 	//	fetcher = {
+	//		username: username (requiered)
 	//		gender: string,
 	//		location: [lat, lng]
 	//	}
 	fetchMembers: function fetchMembers(options, fetcher) {
 		return (new Promise((resolve, reject) => {
-			query = 'SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN u.id = i.user';
-			query_values = [];
+			query = 'SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user WHERE u.username <> ?';
+			query_values = [fetcher.username];
 			if (typeof options.age != 'undefined') {
 				query += ' AND e.age BETWEEN ? and ?';
 				query_values.push(options.age[0], options.age[1]);
@@ -655,12 +656,18 @@ module.exports = {
 				query += ' AND orientation = ?';
 				query_values.push(orientation);
 			}
+			if (typeof fetcher.orientation != 'undefined') {
+				if (fetcher.orientation == 'Men') {
+					query += ' AND gender = ?';
+					query_values.push('Man');
+				} else if (fetcher.orientation == 'Women') {
+					query += ' AND gender = ?';
+					query_values.push('Woman');
+				}
+			}
 			console.log(query);
 			//For now just fetch one by id
-			connection.query('SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user WHERE u.id BETWEEN ? AND ?;', [
-				1,
-				5
-			], (err, results) => {
+			connection.query(query, query_values, (err, results) => {
 				if (err) {
 					console.log(err.stack);
 					reject('Failed to fetch users');

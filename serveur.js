@@ -85,16 +85,15 @@ app.get('/', csrfProtection, (req, res) => {
 app.get('/match', (req, res) => {
 	//We have to check for a complete profile here
 	memberManager.getUserMatchProfile(req.session.username).then((user_profile) => {
-		console.log(user_profile);
 		locationFinder.getLatLngFromIp().then((result) => {
 			let location = result;
 			memberManager.fetchMembers({
+				username: req.session.username,
 				age: [user_profile.age - 5, user_profile.age + 5],
 			}, {
 				gender: user_profile.gender,
 				location: [result.lat, result.lng]
 			}).then((results) => {
-				console.log(results);
 				res.render('match.ejs', {
 					user: req.session.username,
 					matchs: results,

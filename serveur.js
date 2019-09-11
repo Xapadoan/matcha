@@ -83,22 +83,35 @@ app.get('/', csrfProtection, (req, res) => {
 });
 
 app.get('/match', (req, res) => {
-	locationFinder.getLatLngFromIp().then((result) => {
-		let location = result;
-		memberManager.fetchMembers({}, {}).then((results) => {
-			console.log(results);
-			res.render('match.ejs', {
-				user: req.session.username,
-				matchs: results,
-				location: location,
-			});
-		}).catch ((reason) => {
-			console.log('An error occurred while fething db: ' + reason);
-		})
+	//We have to check for a complete profile here
+	memberManager.getUserMatchProfile(req.session.username).then((user_profile) => {
+		locationFinder.getLatLngFromIp().then((result) => {
+			let location = result;
+			memberManager.fetchMembers({
+				age: [user_profile.age - 5, user_profile.age + 5],
+			}, {
+				gender: user_profile.gender,
+				location: [result.lat, result.lng]
+			}).then((results) => {
+				console.log(results);
+				res.render('match.ejs', {
+					user: req.session.username,
+					matchs: results,
+					location: location,
+				});
+			}).catch ((reason) => {
+				console.log('An error occurred while fething db: ' + reason);
+			})
+		}).catch((reason) => {
+			console.log(reason);
+			error = 'Impossible de savoir ou vous etes';
+		});
 	}).catch((reason) => {
-		console.log(reason);
-		error = 'Impossible de savoir ou vous etes';
-	});
+		res.render('match.ejs', {
+			user: req.session.username,
+			error: 'Une erreur est survenue. Veuillez réessayer dans quelques instants'
+		});
+	})
 });
 
 app.get('/login', csrfProtection, (req, res) => {

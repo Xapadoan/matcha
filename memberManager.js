@@ -389,6 +389,28 @@ module.exports = {
 			});
 		}));
 	},
+	//Pour les matchs auto, il faut:
+	//	fruit
+	//	lat
+	//	lng
+	//	orientation
+	//	genre
+	//	age
+	//	interests
+	getUserMatchProfile: function getUserMatchProfile(username) {
+		return (new Promise((resolve, reject) => {
+			connection.query('SELECT u.username, u.fruit, u.lat, u.lng, e.orientation, e.gender, e.age, e.interests FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user WHERE u.username = ?', [
+				username
+			], (err, result) => {
+				if (err) {
+					console.log('Failed to getUserMatchProfile :\n' + err.stack);
+					reject('An error occured while querying database');
+				} else {
+					resolve(result[0]);
+				}
+			});
+		}));
+	},
 	//This function return :
 	//On success : user object
 	//On failure : false
@@ -617,14 +639,25 @@ module.exports = {
 				query += ' AND e.age BETWEEN ? and ?';
 				query_values.push(options.age[min], options.age[max]);
 			}
-			if (typeof options.orientation != 'undefined') {
-				query += ' AND (e.orientation == ? OR e.orientation == \'Both\')';
-				query_values.push(fetcher.orientation);
+			if (typeof fetcher.gender != 'undefined') {
+				let orientation;
+				switch (fetcher.gender) {
+					case ('Man') :
+						orientation = 'Men';
+						break;
+					case ('Women') :
+						orientation = 'Women'
+						break;
+					default :
+						orientation = 'Both'
+						break;
+				}
+				query += ' AND orientation = ?';
+				query_values.push(orientation);
 			}
 			console.log(query);
-	
 			//For now just fetch one by id
-			connection.query('SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user AND u.id BETWEEN ? AND ?;', [
+			connection.query('SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user WHERE u.id BETWEEN ? AND ?;', [
 				1,
 				5
 			], (err, results) => {

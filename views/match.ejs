@@ -48,6 +48,7 @@
 			navigator.geolocation.getCurrentPosition((pos) => {
 				var lat = pos.coords.latitude;
 				var lng = pos.coords.longitude;
+				console.log('lat : ' + lat + '; long = ' + lng);
 			}, (error) => {
 				switch (error.code) {
 					case (error.PERMISSION_DENIED):
@@ -70,8 +71,8 @@
 		} else {
 			var lat = document.getElementById('lat').innerHTML;
 			var lng = document.getElementById('lng').innerHTML;
+			console.log('Location with ip: lat : ' + lat + '; long = ' + lng);
 		}
-		console.log('lat : ' + lat + '; long = ' + lng);
 	</script>
 	<%- include('header.ejs') %>
 	<p>Pour le moment, les matchs ne sont pas disponibles, mais on peut recupérer ici la localisation de l'utilisateur :

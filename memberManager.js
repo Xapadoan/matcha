@@ -667,7 +667,7 @@ module.exports = {
 				}
 			}
 			*/
-			query += ' LIMIT ? 5';
+			query += ' LIMIT ?, 5';
 			query_values.push(0);
 			connection.query(query, query_values, (err, results) => {
 				if (err) {

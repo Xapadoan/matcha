@@ -414,7 +414,7 @@ module.exports = {
 	},
 	getUserExtended: function getUserExtended(username) {
 		return (new Promise((resolve, reject) => {
-			connection.query('SELECT u.id, u.username, e.gender, e.orientation, e.age, e.bio, e.interests FROM matcha.users_extended e RIGHT JOIN matcha.users u ON u.id = e.user AND u.username = ?', [
+			connection.query('SELECT u.id, u.username, e.gender, e.orientation, e.age, e.bio, e.interests FROM matcha.users_extended e RIGHT JOIN matcha.users u ON u.id = e.user WHERE u.username = ?', [
 				username
 			], (err, results) => {
 				if (err) {

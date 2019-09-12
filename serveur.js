@@ -259,8 +259,10 @@ app.post('/update_location', csrfProtection, (req, res) => {
 		locationFinder.getLatLngFromLocation(req.body.street + ' ' + req.body.city, req.body.country).then((location) => {
 			console.log(location.lat + ', ' + location.lng);
 			memberManager.updateLatLng(req.session.username, location.lat, location.lng);
+			return ;
 		}).catch((reason) => {
 			console.log(reason);
+			return ;
 		})
 	}
 });

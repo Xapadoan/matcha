@@ -31,6 +31,7 @@ module.exports = {
 				}, (error, response, body) => {
 					if (!error && response.statusCode == 200) {
 						let result = JSON.parse(body);
+						console.log(result);
 						resolve({
 							lat: result['locations']['latitude'],
 							lng: result['locations']['longitude']

@@ -257,6 +257,7 @@ app.post('/update_location', csrfProtection, (req, res) => {
 	} else if (typeof req.body.city != 'undefined' && req.body.street != 'undefined' && typeof req.body.country != 'undefined') {
 		console.log('Form recieved');
 		locationFinder.getLatLngFromLocation(req.body.street + ' ' + req.body.city, req.body.country).then((location) => {
+			console.log(location.lat + ', ' + location.lng);
 			memberManager.updateLatLng(req.session.username, location.lat, location.lng);
 		}).catch((reason) => {
 			console.log(reason);

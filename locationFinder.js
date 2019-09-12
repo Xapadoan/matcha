@@ -33,8 +33,8 @@ module.exports = {
 						let result = JSON.parse(body);
 						console.log(result);
 						resolve({
-							lat: result['locations']['latitude'],
-							lng: result['locations']['longitude']
+							lat: result['locations'][0]['latitude'],
+							lng: result['locations'][0]['longitude']
 						});
 					} else {
 						reject('Failed to get Latitude and Longitude');

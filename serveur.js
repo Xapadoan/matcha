@@ -251,6 +251,10 @@ app.get('/logout', (req, res) => {
 	}
 });
 
+app.post('/search', csrfProtection, (req, res) => {
+	res.end(req.body.terms);
+})
+
 app.post('/update_location', csrfProtection, (req, res) => {
 	if (typeof req.body.lat != 'undefined' && req.body.lng != 'undefined') {
 		memberManager.updateLatLng(lat, lng, req.session.username);

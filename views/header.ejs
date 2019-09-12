@@ -94,6 +94,13 @@
 	<nav class="adaptative_nav_bar">
 		<a href="/" title="Acceuil">Acceuil</a>
 		<a href="/match" title="Match">Match</a>
+	</nav>
+	<form method="POST" action="/search" id='search_bar' name='search_bar'>
+		<input type='search' placeholder="Rechercher" name='terms' />
+		<input type="hidden" name="_csrf" value=<%= csrfToken %> />
+		<button>Go</button>
+	</form>
+	<nav>
 		<% if (typeof locals.user == 'undefined') { %>
 		<a href="/signup" title="Créer un compte">Créer un compte</a>
 		<a href="/login" title="Se connecter">Se connecter</a>

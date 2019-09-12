@@ -619,6 +619,22 @@ module.exports = {
 			}
 		}));
 	},
+	updateLatLng: function updateLatLng(username, lat, lng) {
+		return (new Promise((resolve, reject) => {
+			connection.query('UPDATE matcha.users SET lat = ?, lng = ? WHERE username = ?', [
+				lat,
+				lng,
+				username
+			], (err) => {
+				if (err) {
+					console.log("Failed to update lat lng for " + username + " :\n" + err.stack);
+					reject ('Une erreur est survenue lors de la mise a jour de la geolocalisation');
+				} else {
+					resolve (true);
+				}
+			});
+		}));
+	},
 	//fetch Members expects options to be like:
 	//	options = {
 	//		age: [min, max],
@@ -670,14 +686,11 @@ module.exports = {
 			}
 			query += ' LIMIT ?, 5';
 			query_values.push(0);
-			console.log(query);
-			console.log(query_values);
 			connection.query(query, query_values, (err, results) => {
 				if (err) {
 					console.log(err.stack);
 					reject('Failed to fetch users');
 				} else {
-					console.log(results);
 					resolve(results);
 				}
 			})

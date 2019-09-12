@@ -20,8 +20,6 @@
     - Matcher en fonction de la geocalisation / fruit sexe = geo proche & fruit social = geo moyenne
 - Gestion des autorisations
 - Ajouter bad crsf error handler
-- Ne pas proposer directement la modification de profil si celui-ci est deja complet.
-- **Du front quoi, ça ressemble a rien la** (mais a la toute fin)
 
 Pour cette version, on essaye de faire marcher la creation d'utilisateurs
 

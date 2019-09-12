@@ -37,7 +37,6 @@ app.use(function (err, req, res, next) {
 
 app.get('/', csrfProtection, (req, res) => {
 	if (req.session.username) {
-		console.log(req.session.username);
 		memberManager.getUserImages(req.session.username).then((images) => {
 			memberManager.getUserInfos(req.session.username).then((user_info) => {
 				memberManager.getUserExtended(req.session.username).then((user_extended) => {
@@ -202,10 +201,6 @@ app.post('/reset_password', csrfProtection, (req, res) => {
 	});
 });
 
-app.get('/road', (req, res) => {
-	res.end('Not available yet');
-});
-
 app.get('/recover', csrfProtection, (req, res) => {
 	let token = req.query.token;
 	let username = req.query.user;
@@ -253,6 +248,18 @@ app.get('/logout', (req, res) => {
 		});
 	} else {
 		res.redirect('/');
+	}
+});
+
+app.post('/update_location', (req, res) => {
+	if (typeof req.body.lat != 'undefined' && req.body.lng != 'undefined') {
+		memberManager.updateLatLng(lat, lng, req.session.username);
+	} else if (typeof req.body.city != 'undefined' && req.body.street != 'undefined' && typeof req.body.country != 'undefined') {
+		locationFinder.getLatLngFromLocation(req.body.street + ' ' + req.body.city, req.body.country).then((location) => {
+			memberManager.updateLatLng(req.session.username, location.lat, location.lng);
+		}).catch((reason) => {
+			console.log(reason);
+		})
 	}
 });
 

@@ -75,8 +75,6 @@
 		}
 	</script>
 	<%- include('header.ejs') %>
-	<p>Pour le moment, les matchs ne sont pas disponibles, mais on peut recupérer ici la localisation de l'utilisateur :
-	</p>
 	<p class='hidden' id='lat'><%= location.lat %></p>
 	<p class="hidden" id='lng'><%= location.lng %></p>
 	<section id='matches'>
@@ -91,16 +89,16 @@
 			<p>(<%= matchs[i].gender %>)</p>
 			<% switch (matchs[i].fruit) {
 				case ('#pasdecoupdunsoir'): %>
-			<img src='coconut.png' height="75" width="75" />
+			<img src='coconut.png' height="75" width="75" title="#pasdecoupdunsoir" />
 			<% break;
 			case ('#unsoir'): %>
-			<img src='peach.png' height="75" width="75" />
+			<img src='peach.png' height="75" width="75" title="#unsoir" />
 			<% break;
 			case ('#serieux'): %>
-			<img src='cherry.png' height="75" width="75" />
+			<img src='cherry.png' height="75" width="75" title="#serieux" />
 			<% break;
 			case ('#pqr'): %>
-			<img src='spices.png' height="75" width="75" />
+			<img src='spices.png' height="75" width="75" title="#pqr" />
 			<% break;
 			} %>
 			<p class='bio'><%= matchs[i].bio %></p>

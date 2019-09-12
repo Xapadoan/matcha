@@ -16,6 +16,31 @@ function ip2long(ip) {
 }
 
 module.exports = {
+	getLatLngFromLocation: function getLatLngFromLocation(address, country) {
+		return (new Promise((resolve, reject) => {
+			let params = {
+				'user-id': serv.neutrino_id,
+				'api-key': serv.neutrino_api,
+				'address': address,
+				'country-code': country,
+			};
+			request.post(
+				'https://neutrinoapi.com/geocode-address', {
+					form: params
+				}, (error, response, body) => {
+					if (!error && response.statusCode == 200) {
+						let result = JSON.parse(body);
+						resolve({
+							lat: result['locations']['latitude'],
+							lng: result['locations']['longitude']
+						});
+					} else {
+						reject('Failed to get Latitude and Longitude');
+					}
+				}
+			)
+		}))
+	},
 	getLocationFromLatLng: function getLocationFromLatLng(lat, lng) {
 		return (new Promise((resolve, reject) => {
 			let params = {

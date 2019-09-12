@@ -413,7 +413,7 @@ module.exports = {
 	},
 	searchName: function searchName(name) {
 		return (new Promise((resolve, reject) => {
-			connection.query('SELECT * FROM matcha.users WHERE username LIKE ? OR firstname LIKE ? OR lastname LIKE ?',[
+			connection.query('SELECT u.id, u.username, u.firstname, u.lastname, u.fruit, u.lat, u.lng, e.age, e.gender, e.orientation, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user WHERE username LIKE ? OR firstname LIKE ? OR lastname LIKE ?',[
 				name,
 				name,
 				name

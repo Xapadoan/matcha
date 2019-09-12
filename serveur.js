@@ -265,6 +265,7 @@ app.post('/search', csrfProtection, (req, res) => {
 	} else {
 		memberManager.searchName(terms).then((result) => {
 			console.log(result);
+			res.end(result.username);
 		}).catch((reason) => {
 			console.log(reason);
 		});

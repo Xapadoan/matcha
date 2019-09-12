@@ -38,11 +38,13 @@
 			<input type="hidden" name="_csrf" value=<%= csrfToken %> />
 			<button>OK</button>
 		</form>
-		<form>
+		<form method="POST" id='update_location' name='update_location' action="/update_location">
 			<p>Où êtes vous actuellement ?<br />Nous chercherons les utilisateurs près de vous</p>
 			<input type='text' name='street' placeholder="Nom de la rue" />
 			<input type='text' name='city' placeholder="Nom de la ville" />
 			Pays : <select name='country'>
+				<option value="BE">Belgique</option>
+				<option value="DE">Deutschland</option>
 				<option value="EN">England</option>
 				<option value='FR'>France</option>
 				<option value='US'>United States</option>

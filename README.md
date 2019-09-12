@@ -6,9 +6,9 @@
 #### Trucs a faire :
 
 - Gerer les matchs
+    - Prendre en compte la localisation
 - Creer la seed de fakes :
     - Ameliorer la generation de biographie
-- Utiliser les events pour fermer la connection quand le setup est terminé
 - Autoriser l'utilisateur a supprimmer son compte
 - Autoriser l'utilisateur a supprimer ses photos
 - Gérer la geolocalisation :

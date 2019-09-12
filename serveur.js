@@ -81,9 +81,10 @@ app.get('/home', csrfProtection, (req, res) => {
 	}
 });
 
-app.get('/', (req, res) => {
+app.get('/', csrfProtection, (req, res) => {
 	res.render('index.ejs', {
-		user: req.session.username
+		user: req.session.username,
+		csrfToken: req.csrfToken()
 	});
 })
 

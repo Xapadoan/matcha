@@ -8,6 +8,7 @@
 		<% if (typeof locals.user != 'undefined') { %>
 			<form method="POST" action='/search' id='search_bar' name='search_bar' >
 				<input type="search" name='terms' />
+				<input type="hidden" name="_csrf" value=<%= csrfToken %> />
 				<button>OK</button>
 			</form>
 		<% } %>

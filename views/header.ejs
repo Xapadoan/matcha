@@ -64,6 +64,10 @@
 		z-index: 1;
 	}
 
+	header nav {
+		display: inline-block;
+	}
+
 	#user_notification {
 		background-color: #d33;
 		position: absolute;
@@ -95,7 +99,6 @@
 		<a href="/" title="Acceuil">Acceuil</a>
 		<a href="/match" title="Match">Match</a>
 	</nav>
-
 	<nav>
 		<% if (typeof locals.user == 'undefined') { %>
 		<a href="/signup" title="Créer un compte">Créer un compte</a>

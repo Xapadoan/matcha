@@ -417,7 +417,7 @@ module.exports = {
 				name,
 				name,
 				name
-			], (err, resuts) => {
+			], (err, results) => {
 				if (err) {
 					console.log("Failed to searchName :\n" + err.stack);
 					reject('Failed to search for user');

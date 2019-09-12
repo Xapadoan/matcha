@@ -35,7 +35,7 @@ app.use(function (err, req, res, next) {
 	next();
 });
 
-app.get('/', csrfProtection, (req, res) => {
+app.get('/home', csrfProtection, (req, res) => {
 	if (req.session.username) {
 		memberManager.getUserImages(req.session.username).then((images) => {
 			memberManager.getUserInfos(req.session.username).then((user_info) => {
@@ -80,6 +80,12 @@ app.get('/', csrfProtection, (req, res) => {
 		});
 	}
 });
+
+app.get('/', (res, req) => {
+	res.render('index.ejs', {
+		user: req.session.username
+	});
+})
 
 app.get('/match', (req, res) => {
 	//We have to check for a complete profile here

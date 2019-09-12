@@ -46,9 +46,10 @@
 				<option value="BE">Belgique</option>
 				<option value="DE">Deutschland</option>
 				<option value="EN">England</option>
-				<option value='FR'>France</option>
+				<option value='FR' selected >France</option>
 				<option value='US'>United States</option>
 			</select>
+			<input type="hidden" name="_csrf" value=<%= csrfToken %> />
 			<button>Mettre à jour</button>
 		</form>
 		<% if (typeof locals.images != 'undefined' && locals.images.image1 != null) { %>

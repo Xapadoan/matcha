@@ -251,10 +251,11 @@ app.get('/logout', (req, res) => {
 	}
 });
 
-app.post('/update_location', (req, res) => {
+app.post('/update_location', csrfProtection, (req, res) => {
 	if (typeof req.body.lat != 'undefined' && req.body.lng != 'undefined') {
 		memberManager.updateLatLng(lat, lng, req.session.username);
 	} else if (typeof req.body.city != 'undefined' && req.body.street != 'undefined' && typeof req.body.country != 'undefined') {
+		console.log('Form recieved');
 		locationFinder.getLatLngFromLocation(req.body.street + ' ' + req.body.city, req.body.country).then((location) => {
 			memberManager.updateLatLng(req.session.username, location.lat, location.lng);
 		}).catch((reason) => {

@@ -263,7 +263,7 @@ app.post('/search', csrfProtection, (req, res) => {
 	if (terms[0] == '#') {
 		res.end('interests');
 	} else {
-		memberManager.searchName(name).then((result) => {
+		memberManager.searchName(terms).then((result) => {
 			console.log(result);
 		}).catch((reason) => {
 			console.log(reason);

@@ -411,6 +411,22 @@ module.exports = {
 			});
 		}));
 	},
+	searchName: function searchName(name) {
+		return (new Promise((resolve, reject) => {
+			connection.query('SELECT * FROM matcha.users WHERE username LIKE ? OR firstname LIKE ? OR lastname LIKE ?',[
+				name,
+				name,
+				name
+			], (err, resuts) => {
+				if (err) {
+					console.log("Failed to searchName :\n" + err.stack);
+					reject('Failed to search for user');
+				} else {
+					resolve(results);
+				}
+			})
+		}));
+	},
 	//This function return :
 	//On success : user object
 	//On failure : false

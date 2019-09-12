@@ -259,8 +259,17 @@ app.get('/logout', (req, res) => {
 });
 
 app.post('/search', csrfProtection, (req, res) => {
-	res.end(req.body.terms);
-})
+	let terms = req.body.terms;
+	if (terms[0] == '#') {
+		res.end('interests');
+	} else {
+		memberManager.searchName(name).then((result) => {
+			console.log(result);
+		}).catch((reason) => {
+			console.log(reason);
+		});
+	}
+});
 
 app.post('/update_location', csrfProtection, (req, res) => {
 	if (typeof req.body.lat != 'undefined' && req.body.lng != 'undefined') {

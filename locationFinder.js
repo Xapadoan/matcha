@@ -1,6 +1,7 @@
 var request = require('request');
 var mysql = require('mysql');
 var data = require('./database.json');
+var serv = require('./server_settings.json');
 
 let connection = mysql.createConnection({
 	host: data['host'],

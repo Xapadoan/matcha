@@ -9,24 +9,33 @@
             }
         </style>
         <%- include('header.ejs') %>
-        <article id='public_profile'>
-            <h3><%= profile.username %></h3>
-            <p><%= profile.firstname %> <%= profile.lastname %>, <%= profile.age %></p>
-            <p><%= profile.gender %></p>
-            <% switch (profile.fruit) {
-				case ('#pasdecoupdunsoir'): %>
-			<img src='coconut.png' height="75" width="75" title="#pasdecoupdunsoir" />
-			<% break;
-			case ('#unsoir'): %>
-			<img src='peach.png' height="75" width="75" title="#unsoir" />
-			<% break;
-			case ('#serieux'): %>
-			<img src='cherry.png' height="75" width="75" title="#serieux" />
-			<% break;
-			case ('#pqr'): %>
-			<img src='spices.png' height="75" width="75" title="#pqr" />
-			<% break;
-			} %>
-        </article>
+        <section id='matches'>
+                <% for (var i in locals.matchs) { %>
+                <style>
+                    #user<%=matchs[i].id %> {
+                        background-image: url('user_images/<%= matchs[i].image1 %>');
+                    }
+                </style>
+                <article id='user<%= matchs[i].id %>' class='public_profile_mini'>
+                    <p><%= matchs[i].firstname %> <%= matchs[i].lastname %>, <%= matchs[i].age %></p>
+                    <p>(<%= matchs[i].gender %>)</p>
+                    <% switch (matchs[i].fruit) {
+                        case ('#pasdecoupdunsoir'): %>
+                    <img src='coconut.png' height="75" width="75" title="#pasdecoupdunsoir" />
+                    <% break;
+                    case ('#unsoir'): %>
+                    <img src='peach.png' height="75" width="75" title="#unsoir" />
+                    <% break;
+                    case ('#serieux'): %>
+                    <img src='cherry.png' height="75" width="75" title="#serieux" />
+                    <% break;
+                    case ('#pqr'): %>
+                    <img src='spices.png' height="75" width="75" title="#pqr" />
+                    <% break;
+                    } %>
+                    <p class='bio'><%= matchs[i].bio %></p>
+                </article>
+                <% } %>
+            </section>
     </body>
 </html>

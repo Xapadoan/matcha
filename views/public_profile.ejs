@@ -1,13 +1,47 @@
 <!DOCTYPE html>
 <html lang="fr">
     <%- include('head.ejs') %>
-    <body>
-        <style>
-            #public_profile {
-                background-image: url('user_images/<%= profile.image1 %>');
+    <style>
+            #matches {
+                margin-left: 25px;
+                margin-top: 5px;
+                overflow-x: scroll;
+                overflow-y: none;
+                height: 600px;
+                white-space: nowrap;
+            }
+        
+            #matches p {
+                margin-left: 20px;
+                display: inline;
+            }
+        
+            #matches img {
+                float: right;
+            }
+        
+            .public_profile_mini {
+                display: inline-block;
+                border: 2px solid #f00;
                 background-size: cover;
+                width: 400px;
+                height: 550px;
+                color: white;
+                text-shadow: 0 0 10px black;
+                position: relative;
+            }
+        
+            .public_profile_mini .bio {
+                max-height: 300px;
+                overflow-y: scroll;
+                width: 100%;
+                display: block;
+                position: absolute;
+                bottom: 0px;
+                left: 5px;
             }
         </style>
+    <body>
         <%- include('header.ejs') %>
         <section id='matches'>
                 <% for (var i in locals.matchs) { %>

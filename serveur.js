@@ -82,9 +82,13 @@ app.get('/home', csrfProtection, (req, res) => {
 });
 
 app.get('/', (res, req) => {
-	res.render('index.ejs', {
-		user: req.session.username
-	});
+	if (typeof req.session != 'undefined') {
+		res.render('index.ejs', {
+			user: req.session.username
+		});
+	} else {
+		res.render('index.ejs');
+	}
 })
 
 app.get('/match', (req, res) => {

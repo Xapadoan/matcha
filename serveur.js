@@ -81,14 +81,10 @@ app.get('/home', csrfProtection, (req, res) => {
 	}
 });
 
-app.get('/', (res, req) => {
-	if (typeof req.session == 'undefined') {
-		res.render('index.ejs');
-	} else {
-		res.render('index.ejs', {
-			user: req.session.username
-		});
-	}
+app.get('/', (req, res) => {
+	res.render('index.ejs', {
+		user: req.session.username
+	});
 })
 
 app.get('/match', (req, res) => {
@@ -99,19 +95,19 @@ app.get('/match', (req, res) => {
 			memberManager.fetchMembers({
 				age: [user_profile.age - 5, user_profile.age + 5],
 			}, {
-				username: req.session.username,
-				orientation: user_profile.orientation,
-				gender: user_profile.gender,
-				location: [result.lat, result.lng]
-			}).then((results) => {
-				res.render('match.ejs', {
-					user: req.session.username,
-					matchs: results,
-					location: location,
-				});
-			}).catch ((reason) => {
-				console.log('An error occurred while fething db: ' + reason);
-			})
+					username: req.session.username,
+					orientation: user_profile.orientation,
+					gender: user_profile.gender,
+					location: [result.lat, result.lng]
+				}).then((results) => {
+					res.render('match.ejs', {
+						user: req.session.username,
+						matchs: results,
+						location: location,
+					});
+				}).catch((reason) => {
+					console.log('An error occurred while fething db: ' + reason);
+				})
 		}).catch((reason) => {
 			console.log(reason);
 			error = 'Impossible de savoir ou vous etes';
@@ -161,20 +157,20 @@ app.post('/new_photo', csrfProtection, (req, res) => {
 		if (imageChecker.checkPNG(image.data) !== true) {
 			console.log('FakeImage');
 			res.redirect(301, '/');
-			return ;
+			return;
 		}
 	} else if (type == 'image/jpeg' || type == 'image/jpg') {
 		if (imageChecker.checkJPG(image.data) !== true) {
 			res.redirect(301, '/');
-			return ;
+			return;
 		}
 	}
 	if (type != 'image/png' && type != 'image/jpg' && type != 'image/jpeg') {
 		res.end(image.name + " : Format is not supported");
-		return ;
+		return;
 	} else if (image.size == 0) {
 		res.end("Can't upload empty file");
-		return ;
+		return;
 	} else {
 		image.mv(__dirname + '/resources/user_images/' + image.name, (err) => {
 			if (err) {
@@ -277,10 +273,10 @@ app.post('/update_location', csrfProtection, (req, res) => {
 			}).catch((reason) => {
 				console.log(reason);
 			});
-			return ;
+			return;
 		}).catch((reason) => {
 			console.log(reason);
-			return ;
+			return;
 		})
 	}
 });

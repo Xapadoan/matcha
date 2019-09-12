@@ -265,7 +265,10 @@ app.post('/search', csrfProtection, (req, res) => {
 	} else {
 		memberManager.searchName(terms).then((result) => {
 			console.log(result);
-			res.end(result.username);
+			res.render('public_profile.ejs', {
+				profile: result,
+				user: req.session.username
+			});
 		}).catch((reason) => {
 			console.log(reason);
 		});

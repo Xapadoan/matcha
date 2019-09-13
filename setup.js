@@ -89,7 +89,6 @@ function getInterests(bio) {
 }
 
 //gen fakes and store'em
-var userid = 1;
 (function storeFake(id, prog) {
 	if (id > 50) {
 		fakes_generated = true;
@@ -131,7 +130,7 @@ var userid = 1;
 			}
 		});
 		//Digest interests
-		digestInterests(userid, interests);
+		digestInterests(id, interests);
 		//Insert image
 		connection.query('INSERT INTO users_images (user, image1) VALUES (?, ?);', [
 			id,

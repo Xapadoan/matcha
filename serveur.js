@@ -108,7 +108,7 @@ app.get('/match', (req, res) => {
 					});
 				}).catch((reason) => {
 					console.log('An error occurred while fething db: ' + reason);
-				})
+				});
 		}).catch((reason) => {
 			console.log(reason);
 			error = 'Impossible de savoir ou vous etes';

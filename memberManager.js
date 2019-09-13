@@ -413,14 +413,13 @@ module.exports = {
 	},
 	searchInterest: function searchInterest(interest) {
 		return (new Promise((resolve, reject) => {
-			connection.query('SELECT u.id, u.username FROM matcha.users u INNER JOIN matcha.users_interests n ON u.id = n.user WHERE n.name LIKE ? LIMIT 0, 5', [
+			connection.query('SELECT u.id, u.username, u.firstname, u.lastname, u.fruit, u.lat, u.lng, e.age, e.gender, e.orientation, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_interests n ON u.id = n.user INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user WHERE n.name LIKE ? LIMIT 0, 5', [
 				interest
 			], (err, result) => {
 				if (err) {
 					console.log('Failed to searchInterests:\n' + err.stack);
 					reject('Failed to searchInterests');
 				} else {
-					console.log(result);
 					resolve(result);
 				}
 			})

@@ -411,16 +411,16 @@ module.exports = {
 			});
 		}));
 	},
-	searchInterests: function searchInterests(interests) {
+	searchInterest: function searchInterest(interest) {
 		return (new Promise((resolve, reject) => {
-			let list = new String(interests).replace('#', ', #').slice(2);
-			connection.query('SELECT u.i u.username FROM matcha.users u INNER JOIN matcha.users_interests n ON u.id = n.user WHERE n.name IN (?)', [
-				list
+			connection.query('SELECT u.i u.username FROM matcha.users u INNER JOIN matcha.users_interests n ON u.id = n.user WHERE n.name LIKE ? LIMIT 0, 5', [
+				interest
 			], (err, result) => {
 				if (err) {
 					console.log('Failed to searchInterests:\n' + err.stack);
 					reject('Failed to searchInterests');
 				} else {
+					console.log(result);
 					resolve(result);
 				}
 			})

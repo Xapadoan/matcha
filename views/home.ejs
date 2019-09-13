@@ -27,9 +27,7 @@
 				<option value="Both" <% if (typeof locals.user_extended != 'undefined' && locals.user_extended.orientation == 'Both') { %> selected <% } %> >Les deux</option>
 				<option value="Others" <% if (typeof locals.user_extended != 'undefined' && locals.user_extended.gender == 'Others') { %> selected <% } %> >Autres</option>
 			</select>
-			Bio : <textarea name='bio' form="extended_infos">
-				<% if (typeof locals.user_extended != 'undefined' && locals.user_extended.bio != null) { %><%= user_extended.bio %><% } %>
-			</textarea>
+			Bio : <textarea name='bio' form="extended_infos"><% if (typeof locals.user_extended != 'undefined' && locals.user_extended.bio != null) { %><%= user_extended.bio %><% } %></textarea>
 			<input type="hidden" name="_csrf" value=<%= csrfToken %> />
 			<button>OK</button>
 		</form>

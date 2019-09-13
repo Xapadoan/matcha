@@ -261,7 +261,15 @@ app.get('/logout', (req, res) => {
 app.post('/search', csrfProtection, (req, res) => {
 	let terms = req.body.terms;
 	if (terms[0] == '#') {
-		res.end('interests');
+		memberManager.searchInterest(terms).then((results) => {
+			res.render('public_profile.ejs', {
+				matchs: results,
+				user: req.session.username
+			});
+		}).catch((reason) => {
+			console.log(reason);
+			res.redirect('/');
+		})
 	} else {
 		memberManager.searchName(terms).then((result) => {
 			console.log(result);

@@ -413,7 +413,7 @@ module.exports = {
 	},
 	searchInterest: function searchInterest(interest) {
 		return (new Promise((resolve, reject) => {
-			connection.query('SELECT u.i u.username FROM matcha.users u INNER JOIN matcha.users_interests n ON u.id = n.user WHERE n.name LIKE ? LIMIT 0, 5', [
+			connection.query('SELECT u.i, u.username FROM matcha.users u INNER JOIN matcha.users_interests n ON u.id = n.user WHERE n.name LIKE ? LIMIT 0, 5', [
 				interest
 			], (err, result) => {
 				if (err) {

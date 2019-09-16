@@ -1,0 +1,9 @@
+node_modules
+resources
+mail_data.json
+database.json
+IP2LOCATION-LITE*
+LICENSE_LITE.TXT
+README_LITE.TXT
+server.pid
+error.log

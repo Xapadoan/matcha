@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang='fr'>
+	<%- include('head.ejs'); %>
+	<body>
+		<%- include('header.ejs'); %>
+		<h1>Matcha</h1>
+		<p>Voila l'accueil du site.</p>
+		<% if (typeof locals.user != 'undefined') { %>
+			<form method="POST" action='/search' id='search_bar' name='search_bar' >
+				<input type="search" name='terms' />
+				<input type="hidden" name="_csrf" value=<%= csrfToken %> />
+				<button>OK</button>
+			</form>
+		<% } %>
+	</body>
+</html>

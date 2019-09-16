@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <%- include('head.ejs') %>
+    <style>
+            #matches {
+                margin-left: 25px;
+                margin-top: 5px;
+                overflow-x: scroll;
+                overflow-y: unset;
+                height: 600px;
+                white-space: nowrap;
+            }
+        
+            .public_profile_mini p {
+                margin-left: 20px;
+                display: inline-block;
+            }
+        
+            #matches img {
+                float: right;
+            }
+        
+            .public_profile_mini {
+                display: inline-block;
+                border: 2px solid #f00;
+                background-size: cover;
+                width: 400px;
+                height: 550px;
+                color: white;
+                text-shadow: 0 0 10px black;
+                position: relative;
+            }
+        
+            .public_profile_mini .bio {
+                margin-left: 0px;
+                position: absolute;
+                width: 390px;
+                bottom: 0px;
+                left: 0px;
+                border: #fff solid 2px;
+                word-break: normal;
+                overflow: wrap;
+            }
+        </style>
+    <body>
+        <%- include('header.ejs') %>
+        <section id='matches'>
+                <% for (var i in locals.matchs) { %>
+                <style>
+                    #user<%=matchs[i].id %> {
+                        background-image: url('user_images/<%= matchs[i].image1 %>');
+                    }
+                </style>
+                <article id='user<%= matchs[i].id %>' class='public_profile_mini'>
+                    <p><%= matchs[i].firstname %> <%= matchs[i].lastname %>, <%= matchs[i].age %></p>
+                    <p>(<%= matchs[i].gender %>)</p>
+                    <% switch (matchs[i].fruit) {
+                        case ('#pasdecoupdunsoir'): %>
+                    <img src='coconut.png' height="75" width="75" title="#pasdecoupdunsoir" />
+                    <% break;
+                    case ('#unsoir'): %>
+                    <img src='peach.png' height="75" width="75" title="#unsoir" />
+                    <% break;
+                    case ('#serieux'): %>
+                    <img src='cherry.png' height="75" width="75" title="#serieux" />
+                    <% break;
+                    case ('#pqr'): %>
+                    <img src='spices.png' height="75" width="75" title="#pqr" />
+                    <% break;
+                    } %>
+                    <p class='bio'><%= matchs[i].bio %></p>
+                </article>
+                <% } %>
+            </section>
+    </body>
+</html>

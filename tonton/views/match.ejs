@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<%- include('head.ejs') %>
+<style>
+	#matches {
+		margin-left: 25px;
+		margin-top: 5px;
+		overflow-x: scroll;
+		overflow-y: none;
+		height: 600px;
+		white-space: nowrap;
+	}
+
+	#matches p {
+		margin-left: 20px;
+		display: inline;
+	}
+
+	#matches img {
+		float: right;
+	}
+
+	.public_profile_mini {
+		display: inline-block;
+		border: 2px solid #f00;
+		background-size: cover;
+		width: 400px;
+		height: 550px;
+		color: white;
+		text-shadow: 0 0 10px black;
+		position: relative;
+	}
+
+	.public_profile_mini .bio {
+		max-height: 300px;
+		overflow-y: scroll;
+		width: 100%;
+		display: block;
+		position: absolute;
+		bottom: 0px;
+		left: 5px;
+	}
+</style>
+
+<body>
+	<script>
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition((pos) => {
+				var lat = pos.coords.latitude;
+				var lng = pos.coords.longitude;
+				console.log('lat : ' + lat + '; long = ' + lng);
+			}, (error) => {
+				switch (error.code) {
+					case (error.PERMISSION_DENIED):
+						console.log('User refused geolocation');
+						break;
+					case (error.POSITION_UNAVAILABLE):
+						console.log('Can\'t get location');
+						break;
+					case (error.TIMEOUT):
+						console.log('Timeout');
+						break;
+					default:
+						console.log('Undefined Error');
+						break;
+				}
+				var lat = document.getElementById('lat').innerHTML;
+				var lng = document.getElementById('lng').innerHTML;
+				console.log('Location with ip: lat = ' + lat + '; long = ' + lng)
+			});
+		} else {
+			var lat = document.getElementById('lat').innerHTML;
+			var lng = document.getElementById('lng').innerHTML;
+			console.log('Location with ip: lat : ' + lat + '; long = ' + lng);
+		}
+	</script>
+	<%- include('header.ejs') %>
+	<p class='hidden' id='lat'><%= location.lat %></p>
+	<p class="hidden" id='lng'><%= location.lng %></p>
+	<section id='matches'>
+		<% for (var i in locals.matchs) { %>
+		<style>
+			#user<%=matchs[i].id %> {
+				background-image: url('user_images/<%= matchs[i].image1 %>');
+			}
+		</style>
+		<article id='user<%= matchs[i].id %>' class='public_profile_mini'>
+			<p><%= matchs[i].firstname %> <%= matchs[i].lastname %>, <%= matchs[i].age %></p>
+			<p>(<%= matchs[i].gender %>)</p>
+			<% switch (matchs[i].fruit) {
+				case ('#pasdecoupdunsoir'): %>
+			<img src='coconut.png' height="75" width="75" title="#pasdecoupdunsoir" />
+			<% break;
+			case ('#unsoir'): %>
+			<img src='peach.png' height="75" width="75" title="#unsoir" />
+			<% break;
+			case ('#serieux'): %>
+			<img src='cherry.png' height="75" width="75" title="#serieux" />
+			<% break;
+			case ('#pqr'): %>
+			<img src='spices.png' height="75" width="75" title="#pqr" />
+			<% break;
+			} %>
+			<p class='bio'><%= matchs[i].bio %></p>
+		</article>
+		<% } %>
+	</section>
+</body>
+
+</html>

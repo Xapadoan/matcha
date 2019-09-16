@@ -5,7 +5,7 @@ var csrf = require('csurf');
 var settings = require("./server_settings.json");
 var memberManager = require("./memberManager.js");
 var imageChecker = require("./imageChecker.js");
-var locationFinder = require("./locationFinder");
+var locationFinder = require("./locationFinder.js");
 
 var app = express();
 
@@ -25,7 +25,8 @@ app.use(session({
 app.use(fileUpload());
 
 //Error handler
-app.use(function (err, req, res, next) {
+app.use(function (err, req, res, next)
+ {
 	console.log('OK');
 	if (err.code !== 'EBADCSRFTOKEN') {
 		return next(err)
@@ -153,6 +154,7 @@ app.post('/new_photo', csrfProtection, (req, res) => {
 		res.write('No file');
 	}
 	let image = req.files.image;
+	console.log(req.files.image);
 	let type = image.mimetype;
 	if (type == 'image/png') {
 		if (imageChecker.checkPNG(image.data) !== true) {

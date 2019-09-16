@@ -153,10 +153,10 @@ app.post('/new_photo', csrfProtection, (req, res) => {
 	if (typeof req.files == 'undefined') {
 		res.write('No file');
 	}
-	let image = req.files.image;
 	if (req.files != null) {
 		res.redirect('/home');
 	}
+	let image = req.files.image;
 	let type = image.mimetype;
 	if (type == 'image/png') {
 		if (imageChecker.checkPNG(image.data) !== true) {

@@ -153,7 +153,8 @@ app.post('/new_photo', csrfProtection, (req, res) => {
 	if (typeof req.files == 'undefined') {
 		res.write('No file');
 	}
-	if (req.files != null) {
+	console.log(req.files);
+	if (req.files == null) {
 		res.redirect('/home');
 	}
 	let image = req.files.image;

@@ -6,6 +6,7 @@
 #### Trucs a faire :
 
 - Gerer les matchs
+    - Afficher la geolocalisation sous forme d'adresse si dans la bdd
     - Prendre en compte la localisation
 - Creer la seed de fakes :
     - Ameliorer la generation de biographie

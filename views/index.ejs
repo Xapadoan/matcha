@@ -7,6 +7,7 @@
 		<p>Voila l'accueil du site.</p>
 		<% if (typeof locals.user != 'undefined') { %>
 			<form method="POST" action='/search' id='search_bar' name='search_bar' >
+				<p>Rechercher un utilisateur :</p>
 				<input type="search" name='terms' />
 				<input type="hidden" name="_csrf" value=<%= csrfToken %> />
 				<button>OK</button>

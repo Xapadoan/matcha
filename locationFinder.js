@@ -112,10 +112,14 @@ module.exports = {
 						console.log('Failed to getLocationFromIp : ' + err.stack);
 						reject('An error occurred while fetching geolocation');
 					} else {
-						resolve({
-							'lat': results[0].latitude,
-							'lng': results[0].longitude
-						});
+						if (results.length != 0) {
+							resolve({
+								'lat': results[0].latitude,
+								'lng': results[0].longitude
+							});
+						} else {
+							resolve(false);
+						}
 					}
 				})
 			})

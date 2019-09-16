@@ -7,6 +7,7 @@ var fakes_generated = false;
 let connection = mysql.createConnection({
 	host: data['host'],
 	user: data['root'],
+	port: data['port'],
 	password: data['root_password']
 });
 

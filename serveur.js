@@ -156,6 +156,7 @@ app.post('/new_photo', csrfProtection, (req, res) => {
 	console.log(req.files);
 	if (req.files == null) {
 		res.redirect('/home');
+		return ;
 	}
 	let image = req.files.image;
 	let type = image.mimetype;

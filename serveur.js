@@ -154,7 +154,9 @@ app.post('/new_photo', csrfProtection, (req, res) => {
 		res.write('No file');
 	}
 	let image = req.files.image;
-	console.log(req.files.image);
+	if (req.files != null) {
+		res.redirect('/home');
+	}
 	let type = image.mimetype;
 	if (type == 'image/png') {
 		if (imageChecker.checkPNG(image.data) !== true) {

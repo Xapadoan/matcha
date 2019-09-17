@@ -37,7 +37,7 @@ app.use((err, req, res, next) => {
 
 //Session notfication and errors
 var error = null;
-var notfication = null;
+var notification = null;
 app.use((req, res, next) => {
 	if (req.session.error) {
 		error = req.session.error;
@@ -166,8 +166,27 @@ app.post('/login', csrfProtection, (req, res) => {
 	memberManager.logg_user(req.body.username, req.body.password).then((result) => {
 		if (result !== false) {
 			req.session.username = result.username;
+			req.session.lat = result.lat;
+			req.session.lng = result.lng;
 			req.session.userid = result.id;
-			res.redirect('/');
+			//User didn't give address
+			if (req.session.lat == null || req.session.lng == null) {
+				locationFinder.getLatLngFromIp().then((result) => {
+					if (result != false) {
+						req.session.lat = result.lat,
+						req.session.lng = result.lng
+						req.session.notification = 'Bienvenue ' + req.session.username + " !";
+						res.redirect('/home');
+					}
+				}).catch((reason) => {
+					console.log(reason);
+					req.session.notification = 'Bienvenue ' + req.session.username + " !";
+					res.redirect('/home');
+				})
+			} else {
+				req.session.notification = 'Bienvenue ' + req.session.username + " !";
+				res.redirect('/home');
+			}
 		} else {
 			res.render('login.ejs', {
 				error: 'Le nom d\'utilisateur et le mot de passe ne correspondent pas',
@@ -353,25 +372,28 @@ app.post('/search', csrfProtection, (req, res) => {
 			});
 		}
 	} else if (typeof req.body.min_age != 'undefined' && typeof req.body.max_age != 'undefined' && typeof req.body.gender != 'undefined' && typeof req.body.distance != 'undefined') {
-		memberManager.fetchMembers({
-			age: [req.body.min_age, req.body.max_age],
-			gender: req.body.gender,
-			distance: req.body.distance
-		}, {
-			username: req.session.username
-		}).then((results) => {
-			res.render('public_profile.ejs', {
-				matchs: results,
-				error: error,
-				notfication: notification,
-				user: req.session.username,
-				csrfToken: req.csrfToken()
+		memberManager.getUserInfos(req.body.username).then((result) => {
+			memberManager.fetchMembers({
+				age: [req.body.min_age, req.body.max_age],
+				gender: req.body.gender,
+				distance: req.body.distance
+			}, {
+				location: [req.session.lat, req.session.lng],
+				username: req.session.username
+			}).then((results) => {
+				res.render('public_profile.ejs', {
+					matchs: results,
+					error: error,
+					notfication: notification,
+					user: req.session.username,
+					csrfToken: req.csrfToken()
+				});
+			}).catch((reason) => {
+				console.log(reason);
+				req.session.error = 'Quelque chose cloche, nous enquêtons';
+				res.redirect(301, '/');
+				return ;
 			});
-		}).catch((reason) => {
-			console.log(reason);
-			req.session.error = 'Quelque chose cloche, nous enquêtons';
-			res.redirect(301, '/');
-			return ;
 		});
 	}
 });
@@ -383,8 +405,9 @@ app.post('/update_location', csrfProtection, (req, res) => {
 		console.log('Form recieved');
 		locationFinder.getLatLngFromLocation(req.body.street + ' ' + req.body.city, req.body.country).then((location) => {
 			console.log(location.lat + ', ' + location.lng);
-			memberManager.updateLatLng(req.session.username, location.lat, location.lng).then((res) => {
-				console.log('OK')
+			memberManager.updateLatLng(req.session.username, location.lat, location.lng).then((result) => {
+				req.session.lat = result.lat;
+				req.session.lng = result.lng;
 				res.end();
 			}).catch((reason) => {
 				req.session.error = 'Quelque chose cloche, nous enquêtons';

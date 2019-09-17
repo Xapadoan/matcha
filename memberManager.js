@@ -617,7 +617,7 @@ module.exports = {
 	logg_user: function logg_user(username, password) {
 		return (new Promise((resolve, reject) => {
 			if (username && password) {
-				connection.query('SELECT id, username, password, status FROM matcha.users WHERE username = ?', [username], function (error, results) {
+				connection.query('SELECT id, username, password, status, lat, lng FROM matcha.users WHERE username = ?', [username], function (error, results) {
 					if (error) {
 						console.log(error.stack);
 						reject('Failed to connect member');
@@ -634,6 +634,8 @@ module.exports = {
 							if (res == true) {
 								resolve({
 									username: results[0].username,
+									lat: results[0].lat,
+									lng: results[0].lng,
 									id: results[0].id
 								});
 							} else {
@@ -660,7 +662,10 @@ module.exports = {
 					console.log("Failed to update lat lng for " + username + " :\n" + err.stack);
 					reject ('Une erreur est survenue lors de la mise a jour de la geolocalisation');
 				} else {
-					resolve (true);
+					resolve ({
+						lat: lat,
+						lng: lng
+					});
 				}
 			});
 		}));
@@ -705,8 +710,6 @@ module.exports = {
 				let dpos = options.distance / (2 * 3.14 * 6400) * 360;
 				query += ' AND lat BETWEEN ? AND ? AND lng BETWEEN ? AND ?';
 				query_values.push([fetcher.location[0] - dpos, fetcher.location[0] + dpos, fetcher.location[1] - dpos, fetcher.location[1] + dpos]);
-			} else if (typeof options.distance != 'undefined' && typeof fetcher.location == 'undefined') {
-				console.log('Trying to find users with max distance but no origin is declared')
 			}
 			//use fetcher's gender
 			if (typeof fetcher.gender != 'undefined') {
@@ -742,9 +745,6 @@ module.exports = {
 					console.log(err.stack);
 					reject('Failed to fetch users');
 				} else {
-					console.log(query);
-					console.log(query_values);
-					console.log(results);
 					resolve(results);
 				}
 			})

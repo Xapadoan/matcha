@@ -40,13 +40,22 @@
                 left: 0px;
                 white-space: normal;
             }
+
+            #search_filters {
+                width: 100%;
+            }
         </style>
     <body>
         <%- include('header.ejs') %>
         <form id='search_filters' name='search_filters' method="POST">
-            Age max : <input type='number' name='min_age' min=18 max=77 value="18" />
-            Age min : <input type="number" name='max_age' min=18 max=77 value="77" />
-            Interets: <input type='search' name='interests' placeholder='#skateboard#slackline' <% if (typeof locals.interests != 'undefined') { %>value=<%= interests %><% } %> /><br />
+            Age min : <input type='number' name='min_age' min=18 max=77 value="18" />
+            Age max : <input type="number" name='max_age' min=18 max=77 value="77" />
+            Interets : <input type='search' name='interests' placeholder='#skateboard#slackline' <% if (typeof locals.interests != 'undefined') { %>value=<%= interests %><% } %> /><br />
+            Genre : <select name="gender">
+				<option value="Both" selected >Les deux</option>
+				<option value="Woman" >Femmes</option>
+				<option value="Man" >Hommes</option>
+			</select>
             Fruit :
             <%- include('fruits_boxes.ejs') %><br />
             <button>Affiner la recherche</button>

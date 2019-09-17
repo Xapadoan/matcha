@@ -334,6 +334,7 @@ app.post('/search', csrfProtection, (req, res) => {
 				console.log(reason);
 				req.session.error = 'Quelque chose cloche, nous enquêtons';
 				res.redirect(301, '/search');
+				return ;
 			})
 		} else {
 			memberManager.searchName(terms).then((result) => {
@@ -349,6 +350,7 @@ app.post('/search', csrfProtection, (req, res) => {
 				console.log(reason);
 				req.session.error = 'Quelque chose cloche, nous enquêtons';
 				res.redirect(301, '/search');
+				return ;
 			});
 		}
 	} else if (typeof req.body.search_filters != 'undefined') {

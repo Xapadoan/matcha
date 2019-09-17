@@ -353,8 +353,8 @@ app.post('/search', csrfProtection, (req, res) => {
 				return ;
 			});
 		}
-	} else if (typeof req.body.search_filters != 'undefined') {
-		res.end(req.body.search_filters);
+	} else if (typeof req.body.min_age != 'undefined' && typeof req.body.max_age != 'undefined' && typeof req.body.gender != 'undefined') {
+		res.end('OK');
 	}
 });
 

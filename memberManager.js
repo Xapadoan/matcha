@@ -687,6 +687,26 @@ module.exports = {
 				query += ' AND e.age BETWEEN ? and ?';
 				query_values.push(options.age[0], options.age[1]);
 			}
+			//use gender
+			if (typeof options.gender != 'undefined' && typeof fetcher.orientation == 'undefined') {
+				if (typeof options.gender != 'undefined') {
+					if (options.gender == 'Man') {
+						query += ' AND gender = ?';
+						query_values.push('Man');
+					} else if (options.gender == 'Woman') {
+						query += ' AND gender = ?';
+						query_values.push('Woman');
+					}
+				}
+			}
+			//use distance
+			if (typeof options.distance != 'undefined' && typeof fetcher.location != 'undefined') {
+				let dpos = options.distance / (2 * 3.14 * 6400) * 360;
+				query += ' AND lat BETWEEN ? AND ? AND lng BETWEEN ? AND ?';
+				query_values.push([fetcher.location[0] - dpos, fetcher.location[0] + dpos, fetcher.location[1] - dpos, fetcher.location[1] + dpos]);
+			} else if (typeof options.distance != 'undefined' && typeof fetcher.location == 'undefined') {
+				console.log('Trying to find users with max distance but no origin is declared')
+			}
 			//use fetcher's gender
 			if (typeof fetcher.gender != 'undefined') {
 				let orientation;

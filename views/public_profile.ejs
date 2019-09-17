@@ -50,12 +50,13 @@
         <form id='search_filters' name='search_filters' method="POST">
             Age min : <input type='number' name='min_age' min=18 max=77 value="18" />
             Age max : <input type="number" name='max_age' min=18 max=77 value="77" />
-            Interets : <input type='search' name='interests' placeholder='#skateboard#slackline' <% if (typeof locals.interests != 'undefined') { %>value=<%= interests %><% } %> /><br />
+            Interets : <input type='search' name='interests' placeholder='#skateboard#slackline' <% if (typeof locals.interests != 'undefined') { %>value=<%= interests %><% } %> />
             Genre : <select name="gender">
 				<option value="Both" selected >Les deux</option>
 				<option value="Woman" >Femmes</option>
 				<option value="Man" >Hommes</option>
-			</select>
+            </select>
+            Distance maximale : <input type='number' name='distance' step='0.1' value="20" />km<br />
             Fruit :
             <%- include('fruits_boxes.ejs') %><br />
             <button>Affiner la recherche</button>

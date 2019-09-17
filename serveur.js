@@ -338,7 +338,6 @@ app.post('/search', csrfProtection, (req, res) => {
 			})
 		} else {
 			memberManager.searchName(terms).then((result) => {
-				console.log(result);
 				res.render('public_profile.ejs', {
 					matchs: result,
 					error: error,
@@ -353,8 +352,25 @@ app.post('/search', csrfProtection, (req, res) => {
 				return ;
 			});
 		}
-	} else if (typeof req.body.min_age != 'undefined' && typeof req.body.max_age != 'undefined' && typeof req.body.gender != 'undefined') {
-		res.end('OK');
+	} else if (typeof req.body.min_age != 'undefined' && typeof req.body.max_age != 'undefined' && typeof req.body.gender != 'undefined' && typeof req.body.distance != 'undefined') {
+		memberManager.fetchMembers({
+			age: [req.body.min_age, req.body.max_age],
+			gender: req.body.gender
+		}, {
+		}).then((results) => {
+			res.render('public_profile.ejs', {
+				matchs: result,
+				error: error,
+				notfication: notification,
+				user: req.session.username,
+				csrfToken: req.csrfToken()
+			});
+		}).catch((reason) => {
+			console.log(reason);
+			req.session.error = 'Quelque chose cloche, nous enquêtons';
+			res.redirect(301, '/search');
+			return ;
+		});
 	}
 });
 

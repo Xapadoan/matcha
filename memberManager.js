@@ -669,7 +669,8 @@ module.exports = {
 	//	options = {
 	//		age: [min, max],
 	//		distance: max_distance(km),
-	//		orientation: fetcher's gender
+	//		orientation: fetcher's gender,
+	//		fruit: [fruit1, fruit2],
 	//		tags: [tag1, tag2, tag3, ...],
 	//		popularity score: [min, max]
 	//	},

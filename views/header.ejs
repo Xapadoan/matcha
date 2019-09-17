@@ -110,8 +110,8 @@
 	</nav>
 </header>
 
-<p class='hidden' id='lat'><% if (typeof locals.location != 'undefined') { %><%= location.lat %><% } $></p>
-<p class="hidden" id='lng'><% if (typeof locals.location != 'undefined') { %><%= location.lng %><% } $></p>
+<p class='hidden' id='lat'><% if (typeof locals.location != 'undefined') { %><%= location.lat %><% } %></p>
+<p class="hidden" id='lng'><% if (typeof locals.location != 'undefined') { %><%= location.lng %><% } %></p>
 
 <% if (typeof locals.error != 'undefined' && locals.error != null) {
 		%><p id="user_error"><%= locals.error %></p>

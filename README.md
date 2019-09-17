@@ -9,9 +9,11 @@
     - poubelle
     - commentaire
     - like
+- Recherches :
+    - Prendre en compte les interets
 - Gerer les matchs
+    - Prendre en compte les interets
     - Afficher la geolocalisation sous forme d'adresse si dans la bdd
-    - Prendre en compte la localisation
 - Creer la seed de fakes :
     - Ameliorer la generation de biographie
 - Autoriser l'utilisateur a supprimmer son compte

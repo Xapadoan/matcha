@@ -124,11 +124,12 @@ app.get('/match', (req, res) => {
 			let location = result;
 			memberManager.fetchMembers({
 				age: [user_profile.age - 5, user_profile.age + 5],
+				distance: 200
 			}, {
 				username: req.session.username,
 				orientation: user_profile.orientation,
 				gender: user_profile.gender,
-				location: [result.lat, result.lng]
+				location: [req.session.lat, req.session.lng]
 			}).then((results) => {
 				res.render('match.ejs', {
 					user: req.session.username,

@@ -43,6 +43,12 @@
         </style>
     <body>
         <%- include('header.ejs') %>
+        <form id='search_filters' name='search_filters' method="POST">
+            Age max : <input type='number' name='min_age' min=18 max=77 value="18" />
+            Age min : <input type="number" name='max_age' min=18 max=77 value="77" />
+            Fruit :
+            <%- include('fruits_boxes.ejs') %>
+        </form>
         <section id='matches'>
                 <% for (var i in locals.matchs) { %>
                 <style>

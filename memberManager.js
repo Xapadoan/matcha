@@ -713,7 +713,8 @@ module.exports = {
 			}
 			//use fruit
 			if (typeof options.fruit != 'undefined') {
-				console.log(options.fruit);
+				query += ' AND fruit IN (?)';
+				query_values.push(options.fruit);
 			}
 			//use fetcher's gender
 			if (typeof fetcher.gender != 'undefined') {

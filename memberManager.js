@@ -742,6 +742,9 @@ module.exports = {
 					console.log(err.stack);
 					reject('Failed to fetch users');
 				} else {
+					console.log(query);
+					console.log(query_values);
+					console.log(results);
 					resolve(results);
 				}
 			})

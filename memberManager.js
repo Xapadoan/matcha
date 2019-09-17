@@ -493,7 +493,7 @@ module.exports = {
 		return (new Promise((resolve, reject) => {
 			this.getUserImages(username).then((results) => {
 				if (typeof results == 'undefined' || typeof results.id == 'undefined') {
-					reject('User is not recognized, please login and try again');
+					reject('Vous n\'avez pas été reconnu');
 				} else if (results.image1 == null) {
 					//Insert new picture'
 					console.log('Create new');
@@ -503,7 +503,7 @@ module.exports = {
 					], (err) => {
 						if (err) {
 							console.log(err.stack);
-							reject('Something went wrong, we aretrying to solve it');
+							reject('Quelque chose cloche, nous enquêtons');
 						} else {
 							resolve(true);
 						}

@@ -25,8 +25,7 @@ app.use(session({
 app.use(fileUpload());
 
 //Error handler
-app.use(function (err, req, res, next)
- {
+app.use((err, req, res, next) => {
 	console.log('OK');
 	if (err.code !== 'EBADCSRFTOKEN') {
 		return next(err)
@@ -36,14 +35,21 @@ app.use(function (err, req, res, next)
 	next();
 });
 
-//Session notfication
+//Session notfication and errors
 var error = null;
+var notfication = null;
 app.use((req, res, next) => {
 	if (req.session.error) {
 		error = req.session.error;
 		req.session.error = null;
 	} else {
 		error = null;
+	}
+	if (req.session.notification) {
+		notification = req.session.notification;
+		req.session.notification = null;
+	} else {
+		notification = null;
 	}
 	next();
 })
@@ -56,6 +62,7 @@ app.get('/home', csrfProtection, (req, res) => {
 					res.render('home.ejs', {
 						user: req.session.username,
 						error: error,
+						notfication: notification,
 						user_info: user_info,
 						user_extended: user_extended,
 						images: images,
@@ -65,6 +72,8 @@ app.get('/home', csrfProtection, (req, res) => {
 					console.log('Failed to load extended profile: ' + reason);
 					res.render('home.ejs', {
 						user: req.session.username,
+						error: error,
+						notfication: notification,
 						user_info: user_info,
 						error: 'Une erreur est survenue au chargement de votre profil',
 						images: images,
@@ -76,6 +85,7 @@ app.get('/home', csrfProtection, (req, res) => {
 				res.render('home.ejs', {
 					user: req.session.username,
 					error: 'Votre profil est introuvable',
+					notfication: notification,
 					images: images,
 					csrfToken: req.csrfToken()
 				});
@@ -85,11 +95,14 @@ app.get('/home', csrfProtection, (req, res) => {
 			res.render('home.ejs', {
 				user: req.session.username,
 				error: 'Vos photos sont introuvables',
+				notfication: notification,
 				csrfToken: req.csrfToken()
 			});
 		});
 	} else {
 		res.render('index.ejs', {
+			error: error,
+			notfication: notification,
 			user: req.session.username
 		});
 	}
@@ -98,6 +111,7 @@ app.get('/home', csrfProtection, (req, res) => {
 app.get('/', csrfProtection, (req, res) => {
 	res.render('index.ejs', {
 		error: error,
+		notfication: notification,
 		user: req.session.username,
 		csrfToken: req.csrfToken()
 	});
@@ -111,19 +125,21 @@ app.get('/match', (req, res) => {
 			memberManager.fetchMembers({
 				age: [user_profile.age - 5, user_profile.age + 5],
 			}, {
-					username: req.session.username,
-					orientation: user_profile.orientation,
-					gender: user_profile.gender,
-					location: [result.lat, result.lng]
-				}).then((results) => {
-					res.render('match.ejs', {
-						user: req.session.username,
-						matchs: results,
-						location: location,
-					});
-				}).catch((reason) => {
-					console.log('An error occurred while fething db: ' + reason);
+				username: req.session.username,
+				orientation: user_profile.orientation,
+				gender: user_profile.gender,
+				location: [result.lat, result.lng]
+			}).then((results) => {
+				res.render('match.ejs', {
+					user: req.session.username,
+					error: error,
+					notfication: notification,
+					matchs: results,
+					location: location,
 				});
+			}).catch((reason) => {
+				console.log('An error occurred while fething db: ' + reason);
+			});
 		}).catch((reason) => {
 			console.log(reason);
 			error = 'Impossible de savoir ou vous etes';
@@ -131,6 +147,7 @@ app.get('/match', (req, res) => {
 	}).catch((reason) => {
 		res.render('match.ejs', {
 			user: req.session.username,
+			notfication: notification,
 			error: 'Une erreur est survenue. Veuillez réessayer dans quelques instants'
 		});
 	})
@@ -139,6 +156,8 @@ app.get('/match', (req, res) => {
 app.get('/login', csrfProtection, (req, res) => {
 	res.render('login.ejs', {
 		user: req.session.username,
+		error: error,
+		notfication: notification,
 		csrfToken: req.csrfToken()
 	});
 });
@@ -148,17 +167,18 @@ app.post('/login', csrfProtection, (req, res) => {
 		if (result !== false) {
 			req.session.username = result.username;
 			req.session.userid = result.id;
-			req.session.error = 'success';
 			res.redirect('/');
 		} else {
 			res.render('login.ejs', {
 				error: 'Le nom d\'utilisateur et le mot de passe ne correspondent pas',
+				notfication: notification,
 				csrfToken: req.csrfToken()
 			});
 		}
 	}).catch((reason) => {
 		res.render('login.ejs', {
 			error: 'Une erreur est survenue, si cette erreur persiste, contactez nous.',
+			notfication: notification,
 			csrfToken: req.csrfToken()
 		});
 	});
@@ -169,6 +189,7 @@ app.post('/new_photo', csrfProtection, (req, res) => {
 		res.write('No file');
 	}
 	if (req.files == null) {
+		req.session.error = 'Vous devez choisir une image à uploader'
 		res.redirect('/home');
 		return ;
 	}
@@ -177,30 +198,37 @@ app.post('/new_photo', csrfProtection, (req, res) => {
 	if (type == 'image/png') {
 		if (imageChecker.checkPNG(image.data) !== true) {
 			console.log('FakeImage');
-			res.redirect(301, '/');
+			req.session.error = 'Cette image n\'est ppas valide';
+			res.redirect(301, '/home');
 			return;
 		}
 	} else if (type == 'image/jpeg' || type == 'image/jpg') {
 		if (imageChecker.checkJPG(image.data) !== true) {
-			res.redirect(301, '/');
+			req.session.error = 'Cette image n\'est pas valide';
+			res.redirect(301, '/home');
 			return;
 		}
 	}
 	if (type != 'image/png' && type != 'image/jpg' && type != 'image/jpeg') {
-		res.end(image.name + " : Format is not supported");
+		req.session.error = 'Ce format n\'est pas supporté';
+		res.redirect(301, '/home');
 		return;
 	} else if (image.size == 0) {
-		res.end("Can't upload empty file");
+		req.session.error = 'L\'image semble vide';
+		res.redirect(301, '/home');
 		return;
 	} else {
 		image.mv(__dirname + '/resources/user_images/' + image.name, (err) => {
 			if (err) {
 				console.log(err.stack);
-				res.end('Error');
+				req.session.error = 'Une erreur exceptionnelle est survenue, si elle persiste, veuillez nous contacter';
+				res.redirect(301, '/home');
 			}
 			memberManager.addUserImage(req.session.username, image.name).then((result) => {
+				req.session.notfication = 'L\'image à été uploadée avec succes';
 				res.redirect(301, '/');
 			}).catch((reason) => {
+				req.session.error = reason;
 				res.redirect(301, '/');
 			});
 		});
@@ -213,18 +241,21 @@ app.post('/reset_password', csrfProtection, (req, res) => {
 	let token = req.body.token;
 	memberManager.changePasswordOf(username, newpass, token).then((result) => {
 		if (result == true) {
+			req.session.notification = 'Le mot de passe à bien été modifié'
 			res.redirect('/');
 		} else {
 			res.render('password_recovery_form.ejs', {
 				error: res,
 				user: req.session.username,
+				notfication: notification,
 				username: username,
 				token: token
 			});
 		}
 	}).catch((err) => {
 		console.log(err);
-		res.end('Error');
+		req.session.error = 'Quelque chose cloche, nous enquêtons';
+		res.redirect(301, '/');
 	});
 });
 
@@ -234,6 +265,8 @@ app.get('/recover', csrfProtection, (req, res) => {
 	if (typeof token != 'undefined' && typeof username != 'undefined') {
 		res.render('password_recovery_form.ejs', {
 			user: req.session.username,
+			error: error,
+			notfication: notification,
 			username: username,
 			token: token,
 			csrfToken: req.csrfToken()
@@ -241,6 +274,8 @@ app.get('/recover', csrfProtection, (req, res) => {
 	} else {
 		res.render('recover.ejs', {
 			user: req.session.username,
+			notfication: notification,
+			error: error,
 			csrfToken: req.csrfToken()
 		});
 	}
@@ -252,13 +287,16 @@ app.post('/recover', csrfProtection, (req, res) => {
 	memberManager.sendpasswordRecoveryMail(username, mail).then((result) => {
 		res.render('recover.ejs', {
 			user: req.session.username,
+			error: error,
+			notfication: notification,
 			mail_sent: true
 		});
 	}).catch((err) => {
 		console.log(err);
 		res.render('recover.ejs', {
 			user: req.session.username,
-			error: 'Something went wrong, we are trying to solve it'
+			notfication: notification,
+			error: 'Quelque chose cloche, nous enquêtons'
 		});
 	});
 });
@@ -271,6 +309,7 @@ app.get('/logout', (req, res) => {
 			}
 			res.render('index.ejs', {
 				notification: 'Vous etes maintenant deconnecté',
+				error: error,
 			});
 		});
 	} else {
@@ -284,10 +323,13 @@ app.post('/search', csrfProtection, (req, res) => {
 		memberManager.searchInterest(terms).then((results) => {
 			res.render('public_profile.ejs', {
 				matchs: results,
+				error: error,
+				notfication: notification,
 				user: req.session.username
 			});
 		}).catch((reason) => {
 			console.log(reason);
+			req.session.error = 'Quelque chose cloche, nous enquêtons';
 			res.redirect('/');
 		})
 	} else {
@@ -295,10 +337,14 @@ app.post('/search', csrfProtection, (req, res) => {
 			console.log(result);
 			res.render('public_profile.ejs', {
 				matchs: result,
+				error: error,
+				notfication: notification,
 				user: req.session.username
 			});
 		}).catch((reason) => {
 			console.log(reason);
+			req.session.error = 'Quelque chose cloche, nous enquêtons';
+			res.redirect('/search');
 		});
 	}
 });
@@ -312,12 +358,17 @@ app.post('/update_location', csrfProtection, (req, res) => {
 			console.log(location.lat + ', ' + location.lng);
 			memberManager.updateLatLng(req.session.username, location.lat, location.lng).then((res) => {
 				console.log('OK')
+				res.end();
 			}).catch((reason) => {
+				req.session.error = 'Quelque chose cloche, nous enquêtons';
 				console.log(reason);
+				res.end();
 			});
 			return;
 		}).catch((reason) => {
+			req.session.error = 'Quelque chose cloche, nous enquêtons';
 			console.log(reason);
+			res.end();
 			return;
 		})
 	}
@@ -326,13 +377,16 @@ app.post('/update_location', csrfProtection, (req, res) => {
 app.post('/complete', csrfProtection, (req, res) => {
 	memberManager.create_user_extended(req.session.username, req.body.age, req.body.gender, req.body.orientation, req.body.bio).then((result) => {
 		if (result === true) {
-			res.redirect(301, '/');
+			req.session.notification = 'Votre profil à été mis à jour avec succès';
+			res.redirect(301, '/home');
 		} else {
-			res.end('WTF');
+			req.session.error = 'Quelque chose cloche, nous enquêtons'
+			res.redirect(301, '/home')
 		}
 	}).catch((err) => {
 		console.log('Error while creating new extended profile : ' + err.stack);
-		res.end('error');
+		req.session.error = 'Quelque chose cloche, nous enquêtons';
+		res.redirect(301, '/home')
 	});
 });
 
@@ -342,18 +396,17 @@ app.post('/update', csrfProtection, (req, res) => {
 			res.render('home.ejs', {
 				user: req.session.username,
 				error: results,
+				notfication: notification,
 				csrfToken: req.csrfToken()
 			});
 		} else {
-			res.redirect(301, '/');
+			req.session.notification = 'Votre profil à été mis à jour avec succès';
+			res.redirect(301, '/home');
 		}
 	}).catch((reason) => {
 		console.log(reason);
-		res.render('home.ejs', {
-			user: req.session.username,
-			error: "Une erreur est survenue, si elle persiste, veuillez nous contacter.",
-			csrfToken: req.csrfToken()
-		});
+		req.session.error = 'Quelque chose cloche, nous enquêtons';
+		res.redirect(301, '/home');
 	});
 })
 
@@ -362,18 +415,22 @@ app.get('/signup', csrfProtection, (req, res) => {
 	let username = req.query.user;
 	if (typeof token != 'undefined' && typeof username != 'undefined') {
 		memberManager.validateUser(username, token).then((result) => {
+			req.session.notification = 'Votre compte à été validé avec succès, vous pouvez maintenant vous connecter'
 			res.redirect('/login');
 		}).catch((err) => {
 			console.log(err);
 			res.render('signup.ejs', {
 				user: req.session.username,
-				error: 'Something went wrong, we are trying to solve it',
+				notfication: notification,
+				error: 'Quelque chose cloche, nous enquêtons',
 				csrfToken: req.csrfToken()
 			});
 		});
 	} else {
 		res.render('signup.ejs', {
 			user: req.session.username,
+			error: error,
+			notfication: notification,
 			csrfToken: req.csrfToken()
 		});
 	}
@@ -385,11 +442,14 @@ app.post('/signup', csrfProtection, (req, res) => {
 			res.render('signup.ejs', {
 				user: req.session.username,
 				error: result,
+				notfication: notification,
 				csrfToken: req.csrfToken(),
 			});
 		} else {
 			res.render('signup_step1.ejs', {
 				user: req.session.username,
+				error: error,
+				notfication: notification,
 				username: req.body.Username,
 				mail: req.body.Mail,
 			});
@@ -398,7 +458,8 @@ app.post('/signup', csrfProtection, (req, res) => {
 		console.log(reason);
 		res.render('signup.ejs', {
 			user: req.session.username,
-			error: 'Something went wrong we are trying to solve it',
+			error: 'Quelque chose cloche, nous enquêtons',
+			notfication: notification,
 			csrfToken: req.csrfToken()
 		});
 	});

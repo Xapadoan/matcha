@@ -376,7 +376,8 @@ app.post('/search', csrfProtection, (req, res) => {
 			memberManager.fetchMembers({
 				age: [req.body.min_age, req.body.max_age],
 				gender: req.body.gender,
-				distance: req.body.distance
+				distance: req.body.distance,
+				fruit: req.body.fruit
 			}, {
 				location: [req.session.lat, req.session.lng],
 				username: req.session.username

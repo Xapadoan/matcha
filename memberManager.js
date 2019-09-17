@@ -711,6 +711,10 @@ module.exports = {
 				query += ' AND lat BETWEEN ? AND ? AND lng BETWEEN ? AND ?';
 				query_values.push(fetcher.location[0] - dpos, fetcher.location[0] + dpos, fetcher.location[1] - dpos, fetcher.location[1] + dpos);
 			}
+			//use fruit
+			if (typeof options.fruit != 'undefined') {
+				console.log(options.fruit);
+			}
 			//use fetcher's gender
 			if (typeof fetcher.gender != 'undefined') {
 				let orientation;

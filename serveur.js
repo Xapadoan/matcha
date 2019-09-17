@@ -318,34 +318,37 @@ app.get('/logout', (req, res) => {
 });
 
 app.post('/search', csrfProtection, (req, res) => {
-	let terms = req.body.terms;
-	if (terms[0] == '#') {
-		memberManager.searchInterest(terms).then((results) => {
-			res.render('public_profile.ejs', {
-				matchs: results,
-				error: error,
-				notfication: notification,
-				user: req.session.username
+	if (typeof req.body.terms != 'undefined') {
+		let terms = req.body.terms;
+		if (terms[0] == '#') {
+			memberManager.searchInterest(terms).then((results) => {
+				res.render('public_profile.ejs', {
+					matchs: results,
+					interests: terms,
+					error: error,
+					notfication: notification,
+					user: req.session.username
+				});
+			}).catch((reason) => {
+				console.log(reason);
+				req.session.error = 'Quelque chose cloche, nous enquêtons';
+				res.redirect('/');
+			})
+		} else {
+			memberManager.searchName(terms).then((result) => {
+				console.log(result);
+				res.render('public_profile.ejs', {
+					matchs: result,
+					error: error,
+					notfication: notification,
+					user: req.session.username
+				});
+			}).catch((reason) => {
+				console.log(reason);
+				req.session.error = 'Quelque chose cloche, nous enquêtons';
+				res.redirect('/search');
 			});
-		}).catch((reason) => {
-			console.log(reason);
-			req.session.error = 'Quelque chose cloche, nous enquêtons';
-			res.redirect('/');
-		})
-	} else {
-		memberManager.searchName(terms).then((result) => {
-			console.log(result);
-			res.render('public_profile.ejs', {
-				matchs: result,
-				error: error,
-				notfication: notification,
-				user: req.session.username
-			});
-		}).catch((reason) => {
-			console.log(reason);
-			req.session.error = 'Quelque chose cloche, nous enquêtons';
-			res.redirect('/search');
-		});
+		}
 	}
 });
 

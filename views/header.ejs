@@ -110,7 +110,7 @@
 	</nav>
 </header>
 
-<% if (typeof locals.error != 'undefined') {
+<% if (typeof locals.error != 'undefined' && locals.error != null) {
 		%><p id="user_error"><%= locals.error %></p>
 		<script>
 		window.setTimeout(function() {
@@ -120,7 +120,7 @@
 		</script><%
 } %>
 
-<% if (typeof locals.notification != 'undefined') {
+<% if (typeof locals.notification != 'undefined' && locals.error != null) {
 	%><p id="user_notification"><%= locals.notification %></p>
 	<script>
 	window.setTimeout(function() {

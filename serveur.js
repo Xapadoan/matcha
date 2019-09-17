@@ -36,6 +36,18 @@ app.use(function (err, req, res, next)
 	next();
 });
 
+//Session notfication
+var error = null;
+app.use((req, res, next) => {
+	if (req.session.error) {
+		error = req.session.error;
+		req.session.error = null;
+	} else {
+		error = null;
+	}
+	next();
+})
+
 app.get('/home', csrfProtection, (req, res) => {
 	if (req.session.username) {
 		memberManager.getUserImages(req.session.username).then((images) => {
@@ -43,6 +55,7 @@ app.get('/home', csrfProtection, (req, res) => {
 				memberManager.getUserExtended(req.session.username).then((user_extended) => {
 					res.render('home.ejs', {
 						user: req.session.username,
+						error: error,
 						user_info: user_info,
 						user_extended: user_extended,
 						images: images,
@@ -84,10 +97,11 @@ app.get('/home', csrfProtection, (req, res) => {
 
 app.get('/', csrfProtection, (req, res) => {
 	res.render('index.ejs', {
+		error: error;
 		user: req.session.username,
 		csrfToken: req.csrfToken()
 	});
-})
+});
 
 app.get('/match', (req, res) => {
 	//We have to check for a complete profile here
@@ -134,6 +148,7 @@ app.post('/login', csrfProtection, (req, res) => {
 		if (result !== false) {
 			req.session.username = result.username;
 			req.session.userid = result.id;
+			req.session.error = 'success';
 			res.redirect('/');
 		} else {
 			res.render('login.ejs', {

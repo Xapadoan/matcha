@@ -333,7 +333,7 @@ app.post('/search', csrfProtection, (req, res) => {
 			}).catch((reason) => {
 				console.log(reason);
 				req.session.error = 'Quelque chose cloche, nous enquêtons';
-				res.redirect(301, '/search');
+				res.redirect(301, '/');
 				return ;
 			})
 		} else {
@@ -348,7 +348,7 @@ app.post('/search', csrfProtection, (req, res) => {
 			}).catch((reason) => {
 				console.log(reason);
 				req.session.error = 'Quelque chose cloche, nous enquêtons';
-				res.redirect(301, '/search');
+				res.redirect(301, '/');
 				return ;
 			});
 		}
@@ -359,7 +359,7 @@ app.post('/search', csrfProtection, (req, res) => {
 		}, {
 		}).then((results) => {
 			res.render('public_profile.ejs', {
-				matchs: result,
+				matchs: results,
 				error: error,
 				notfication: notification,
 				user: req.session.username,
@@ -368,7 +368,7 @@ app.post('/search', csrfProtection, (req, res) => {
 		}).catch((reason) => {
 			console.log(reason);
 			req.session.error = 'Quelque chose cloche, nous enquêtons';
-			res.redirect(301, '/search');
+			res.redirect(301, '/');
 			return ;
 		});
 	}

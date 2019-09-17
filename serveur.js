@@ -357,6 +357,7 @@ app.post('/search', csrfProtection, (req, res) => {
 			age: [req.body.min_age, req.body.max_age],
 			gender: req.body.gender
 		}, {
+			username: req.session.username
 		}).then((results) => {
 			res.render('public_profile.ejs', {
 				matchs: results,

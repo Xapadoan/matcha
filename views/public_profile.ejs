@@ -50,6 +50,7 @@
             Fruit :
             <%- include('fruits_boxes.ejs') %><br />
             <button>Affiner la recherche</button>
+            <input type="hidden" name="_csrf" value=<%= csrfToken %> />
         </form>
         <section id='matches'>
                 <% for (var i in locals.matchs) { %>

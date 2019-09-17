@@ -97,7 +97,7 @@ app.get('/home', csrfProtection, (req, res) => {
 
 app.get('/', csrfProtection, (req, res) => {
 	res.render('index.ejs', {
-		error: error;
+		error: error,
 		user: req.session.username,
 		csrfToken: req.csrfToken()
 	});

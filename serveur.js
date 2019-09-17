@@ -327,7 +327,8 @@ app.post('/search', csrfProtection, (req, res) => {
 					interests: terms,
 					error: error,
 					notfication: notification,
-					user: req.session.username
+					user: req.session.username,
+					csrfToken: req.csrfToken()
 				});
 			}).catch((reason) => {
 				console.log(reason);
@@ -341,7 +342,8 @@ app.post('/search', csrfProtection, (req, res) => {
 					matchs: result,
 					error: error,
 					notfication: notification,
-					user: req.session.username
+					user: req.session.username,
+					csrfToken: req.csrfToken()
 				});
 			}).catch((reason) => {
 				console.log(reason);

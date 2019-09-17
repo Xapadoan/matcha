@@ -676,7 +676,7 @@ module.exports = {
 	//		distance: max_distance(km),
 	//		orientation: fetcher's gender,
 	//		fruit: [fruit1, fruit2],
-	//		tags: [tag1, tag2, tag3, ...],
+	//		interests: [tag1, tag2, tag3, ...],
 	//		popularity score: [min, max]
 	//	},
 	//	fetcher = {
@@ -716,6 +716,8 @@ module.exports = {
 				query += ' AND fruit IN (?)';
 				query_values.push(options.fruit);
 			}
+			//use interests
+
 			//use fetcher's gender
 			if (typeof fetcher.gender != 'undefined') {
 				let orientation;

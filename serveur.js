@@ -52,7 +52,17 @@ app.use((req, res, next) => {
 		notification = null;
 	}
 	next();
-})
+});
+
+function getIntersetsTab(interests) {
+	var interests = [];
+	let regex = new RegExp("#[A-Za-z0-9]+", "g");
+	let match;
+	while ((match = regex.exec(bio)) != null) {
+		interests.push(match[0]);
+	}
+	return (interests);
+}
 
 app.get('/home', csrfProtection, (req, res) => {
 	if (req.session.username) {
@@ -129,7 +139,7 @@ app.get('/match', (req, res) => {
 				username: req.session.username,
 				orientation: user_profile.orientation,
 				gender: user_profile.gender,
-				location: [req.session.lat, req.session.lng]
+				location: [req.session.lat, req.session.lng],
 			}).then((results) => {
 				res.render('match.ejs', {
 					user: req.session.username,
@@ -344,7 +354,7 @@ app.post('/search', csrfProtection, (req, res) => {
 			memberManager.searchInterest(terms).then((results) => {
 				res.render('public_profile.ejs', {
 					matchs: results,
-					interests: terms,
+					search: req.body,
 					error: error,
 					notfication: notification,
 					user: req.session.username,
@@ -378,12 +388,14 @@ app.post('/search', csrfProtection, (req, res) => {
 				age: [req.body.min_age, req.body.max_age],
 				gender: req.body.gender,
 				distance: req.body.distance,
-				fruit: req.body.fruit
+				fruit: req.body.fruit,
+				interests: getIntersetsTab(req.body.interests)
 			}, {
 				location: [req.session.lat, req.session.lng],
 				username: req.session.username
 			}).then((results) => {
 				res.render('public_profile.ejs', {
+					search: req.body,
 					matchs: results,
 					error: error,
 					notfication: notification,

@@ -686,7 +686,7 @@ module.exports = {
 	//	}
 	fetchMembers: function fetchMembers(options, fetcher) {
 		return (new Promise((resolve, reject) => {
-			query = 'SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user WHERE u.username <> ?';
+			query = 'SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_interests n ON u.id = n.user WHERE u.username <> ?';
 			query_values = [fetcher.username];
 			//use age
 			if (typeof options.age != 'undefined') {
@@ -708,16 +708,19 @@ module.exports = {
 			//use distance
 			if (typeof options.distance != 'undefined' && typeof fetcher.location != 'undefined') {
 				let dpos = options.distance / (2 * 3.14 * 6400) * 360;
-				query += ' AND lat BETWEEN ? AND ? AND lng BETWEEN ? AND ?';
+				query += ' AND u.lat BETWEEN ? AND ? AND u.lng BETWEEN ? AND ?';
 				query_values.push(fetcher.location[0] - dpos, fetcher.location[0] + dpos, fetcher.location[1] - dpos, fetcher.location[1] + dpos);
 			}
 			//use fruit
 			if (typeof options.fruit != 'undefined') {
-				query += ' AND fruit IN (?)';
+				query += ' AND u.fruit IN (?)';
 				query_values.push(options.fruit);
 			}
 			//use interests
-
+			if (typeof options.interest != 'undefined') {
+				query += ' AND n.name IN (?)';
+				query_values.push(options.interests);
+			}
 			//use fetcher's gender
 			if (typeof fetcher.gender != 'undefined') {
 				let orientation;

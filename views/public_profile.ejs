@@ -48,15 +48,15 @@
     <body>
         <%- include('header.ejs') %>
         <form id='search_filters' name='search_filters' method="POST">
-            Age min : <input type='number' name='min_age' min=18 max=77 value="18" />
-            Age max : <input type="number" name='max_age' min=18 max=77 value="77" />
-            Interets : <input type='search' name='interests' placeholder='#skateboard#slackline' <% if (typeof locals.interests != 'undefined') { %>value=<%= interests %><% } %> />
+            Age min : <input type='number' name='min_age' min=18 max=77 value='<% if (typeof locals.search.min_age) { %><%= search.min_age %><% } else { %>18<% } %>' />
+            Age max : <input type="number" name='max_age' min=18 max=77 value='<% if (typeof locals.search.min_age) { %><%= search.max_age %><% } else { %>77<% } %>' />
+            Interets : <input type='search' name='interests' placeholder='#skateboard#slackline' <% if (typeof locals.search.interests != 'undefined') { %>value=<%= interests %><% } %> />
             Genre : <select name="gender">
-				<option value="Both" selected >Les deux</option>
-				<option value="Woman" >Femmes</option>
-				<option value="Man" >Hommes</option>
+				<option value="Both" <% if (typeof locals.search.gender == 'Both') { %>selected<% } %> >Les deux</option>
+				<option value="Woman" <% if (typeof locals.search.gender == 'Woman') { %>selected<% } %> >Femmes</option>
+				<option value="Man" <% if (typeof locals.search.gender == 'Man') { %>selected<% } %> >Hommes</option>
             </select>
-            Distance maximale : <input type='number' name='distance' step='0.1' value="20" />km<br />
+            Distance maximale : <input type='number' name='distance' step='0.1' value='<% if (typeof locals.search.min_age) { %><%= search.min_age %><% } else { %>20<% } %>' />km<br />
             Fruit :
             <%- include('fruits_boxes.ejs') %><br />
             <button>Affiner la recherche</button>

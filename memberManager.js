@@ -718,6 +718,8 @@ module.exports = {
 			}
 			//use interests
 			if (typeof options.interests != 'undefined') {
+				console.log(query);
+				console.log(options.interests)
 				query += ' AND n.name IN (?)';
 				query_values.push(options.interests);
 			}

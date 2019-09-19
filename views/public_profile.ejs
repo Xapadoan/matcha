@@ -50,7 +50,7 @@
         <form id='search_filters' name='search_filters' method="POST">
             Age min : <input type='number' name='min_age' min=18 max=77 value='<% if (typeof locals.search.min_age) { %><%= search.min_age %><% } else { %>18<% } %>' />
             Age max : <input type="number" name='max_age' min=18 max=77 value='<% if (typeof locals.search.min_age) { %><%= search.max_age %><% } else { %>77<% } %>' />
-            Interets : <input type='search' name='interests' placeholder='#skateboard#slackline' <% if (typeof locals.search.interests != 'undefined') { %>value=<%= interests %><% } %> />
+            Interets : <input type='search' name='interests' placeholder='#skateboard#slackline' <% if (typeof locals.search.interests != 'undefined') { %>value=<%= search.interests %><% } %> />
             Genre : <select name="gender">
 				<option value="Both" <% if (typeof locals.search.gender == 'Both') { %>selected<% } %> >Les deux</option>
 				<option value="Woman" <% if (typeof locals.search.gender == 'Woman') { %>selected<% } %> >Femmes</option>

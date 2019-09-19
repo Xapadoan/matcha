@@ -55,13 +55,13 @@ app.use((req, res, next) => {
 });
 
 function getIntersetsTab(interests) {
-	var interests = [];
+	var tab = [];
 	let regex = new RegExp("#[A-Za-z0-9]+", "g");
 	let match;
-	while ((match = regex.exec(bio)) != null) {
-		interests.push(match[0]);
+	while ((match = regex.exec(interests)) != null) {
+		tab.push(match[0]);
 	}
-	return (interests);
+	return (tab);
 }
 
 app.get('/home', csrfProtection, (req, res) => {

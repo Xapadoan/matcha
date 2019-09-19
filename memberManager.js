@@ -717,7 +717,7 @@ module.exports = {
 				query_values.push(options.fruit);
 			}
 			//use interests
-			if (typeof options.interests != 'undefined') {
+			if (typeof options.interests != 'undefined' && options.interests != []) {
 				console.log(query);
 				console.log(options.interests)
 				query += ' AND n.name IN (?)';

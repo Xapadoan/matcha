@@ -5,9 +5,15 @@
 
 #### Trucs a faire :
 
+- Choper des icones:
+    - poubelle
+    - commentaire
+    - like
+- Recherches :
+    - Prendre en compte les interets
 - Gerer les matchs
+    - Prendre en compte les interets
     - Afficher la geolocalisation sous forme d'adresse si dans la bdd
-    - Prendre en compte la localisation
 - Creer la seed de fakes :
     - Ameliorer la generation de biographie
 - Autoriser l'utilisateur a supprimmer son compte
@@ -34,9 +40,9 @@ PRIMARY KEY | VARCHAR(100) | VARCHAR(100) | VARCHAR(100) | VARCHAR(255) | VARCHA
 
 #### users_extended
 
-id  | user | gender | orientation | age | bio | interests
+id  | user | gender | orientation | age | bio | interests | lat | lng
 --- | ---- | ------ | ----------- | --- | --- | ---------
-PRIMARY KEY | FOREIGN KEY (users.id) | INT | VARCHAR(50) | INT | TEXT(500) | VARCHAR(255)
+PRIMARY KEY | FOREIGN KEY (users.id) | INT | VARCHAR(50) | INT | TEXT(500) | VARCHAR(255) | VARCHAR(20) | VARCHAR(20)
 
 #### users_images
 

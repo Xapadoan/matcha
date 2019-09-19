@@ -3,7 +3,7 @@
 		font-size: 18px;
 		width: 100vw;
 		margin: 0px;
-		margin-top: 50px;
+		margin-top: 60px;
 		top: 0px;
 		left: 0px;
 		background-image: url('background.png');
@@ -110,7 +110,10 @@
 	</nav>
 </header>
 
-<% if (typeof locals.error != 'undefined') {
+<p class='hidden' id='lat'><% if (typeof locals.location != 'undefined') { %><%= location.lat %><% } %></p>
+<p class="hidden" id='lng'><% if (typeof locals.location != 'undefined') { %><%= location.lng %><% } %></p>
+
+<% if (typeof locals.error != 'undefined' && locals.error != null) {
 		%><p id="user_error"><%= locals.error %></p>
 		<script>
 		window.setTimeout(function() {
@@ -120,7 +123,7 @@
 		</script><%
 } %>
 
-<% if (typeof locals.notification != 'undefined') {
+<% if (typeof locals.notification != 'undefined' && locals.error != null) {
 	%><p id="user_notification"><%= locals.notification %></p>
 	<script>
 	window.setTimeout(function() {

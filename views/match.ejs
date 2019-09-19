@@ -50,6 +50,10 @@
 				var lat = pos.coords.latitude;
 				var lng = pos.coords.longitude;
 				console.log('lat : ' + lat + '; long = ' + lng);
+				//update lat lng
+				let request = new XMLHttpRequest('POST', '/updateLocation', true);
+				request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+				request.send('lat=' + lat + '&lng=' + lng);
 			}, (error) => {
 				switch (error.code) {
 					case (error.PERMISSION_DENIED):
@@ -76,8 +80,6 @@
 		}
 	</script>
 	<%- include('header.ejs') %>
-	<p class='hidden' id='lat'><%= location.lat %></p>
-	<p class="hidden" id='lng'><%= location.lng %></p>
 	<section id='matches'>
 		<% for (var i in locals.matchs) { %>
 		<style>

@@ -493,7 +493,7 @@ module.exports = {
 		return (new Promise((resolve, reject) => {
 			this.getUserImages(username).then((results) => {
 				if (typeof results == 'undefined' || typeof results.id == 'undefined') {
-					reject('User is not recognized, please login and try again');
+					reject('Vous n\'avez pas été reconnu');
 				} else if (results.image1 == null) {
 					//Insert new picture'
 					console.log('Create new');
@@ -503,7 +503,7 @@ module.exports = {
 					], (err) => {
 						if (err) {
 							console.log(err.stack);
-							reject('Something went wrong, we aretrying to solve it');
+							reject('Quelque chose cloche, nous enquêtons');
 						} else {
 							resolve(true);
 						}
@@ -617,7 +617,7 @@ module.exports = {
 	logg_user: function logg_user(username, password) {
 		return (new Promise((resolve, reject) => {
 			if (username && password) {
-				connection.query('SELECT id, username, password, status FROM matcha.users WHERE username = ?', [username], function (error, results) {
+				connection.query('SELECT id, username, password, status, lat, lng FROM matcha.users WHERE username = ?', [username], function (error, results) {
 					if (error) {
 						console.log(error.stack);
 						reject('Failed to connect member');
@@ -634,6 +634,8 @@ module.exports = {
 							if (res == true) {
 								resolve({
 									username: results[0].username,
+									lat: results[0].lat,
+									lng: results[0].lng,
 									id: results[0].id
 								});
 							} else {
@@ -660,7 +662,10 @@ module.exports = {
 					console.log("Failed to update lat lng for " + username + " :\n" + err.stack);
 					reject ('Une erreur est survenue lors de la mise a jour de la geolocalisation');
 				} else {
-					resolve (true);
+					resolve ({
+						lat: lat,
+						lng: lng
+					});
 				}
 			});
 		}));
@@ -669,8 +674,9 @@ module.exports = {
 	//	options = {
 	//		age: [min, max],
 	//		distance: max_distance(km),
-	//		orientation: fetcher's gender
-	//		tags: [tag1, tag2, tag3, ...],
+	//		orientation: fetcher's gender,
+	//		fruit: [fruit1, fruit2],
+	//		interests: [tag1, tag2, tag3, ...],
 	//		popularity score: [min, max]
 	//	},
 	//	fetcher = {
@@ -687,6 +693,31 @@ module.exports = {
 				query += ' AND e.age BETWEEN ? and ?';
 				query_values.push(options.age[0], options.age[1]);
 			}
+			//use gender
+			if (typeof options.gender != 'undefined' && typeof fetcher.orientation == 'undefined') {
+				if (typeof options.gender != 'undefined') {
+					if (options.gender == 'Man') {
+						query += ' AND gender = ?';
+						query_values.push('Man');
+					} else if (options.gender == 'Woman') {
+						query += ' AND gender = ?';
+						query_values.push('Woman');
+					}
+				}
+			}
+			//use distance
+			if (typeof options.distance != 'undefined' && typeof fetcher.location != 'undefined') {
+				let dpos = options.distance / (2 * 3.14 * 6400) * 360;
+				query += ' AND lat BETWEEN ? AND ? AND lng BETWEEN ? AND ?';
+				query_values.push(fetcher.location[0] - dpos, fetcher.location[0] + dpos, fetcher.location[1] - dpos, fetcher.location[1] + dpos);
+			}
+			//use fruit
+			if (typeof options.fruit != 'undefined') {
+				query += ' AND fruit IN (?)';
+				query_values.push(options.fruit);
+			}
+			//use interests
+
 			//use fetcher's gender
 			if (typeof fetcher.gender != 'undefined') {
 				let orientation;

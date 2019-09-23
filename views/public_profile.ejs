@@ -48,15 +48,15 @@
     <body>
         <%- include('header.ejs') %>
         <form id='search_filters' name='search_filters' method="POST">
-            Age min : <input type='number' name='min_age' min=18 max=77 value='<% if (typeof locals.search.min_age != "undefined" && locals.search.min_age != null) { %><%= search.min_age %><% } else { %>18<% } %>' />
-            Age max : <input type="number" name='max_age' min=18 max=77 value='<% if (typeof locals.search.min_age != "undefined" && locals.search.max_age != null) { %><%= search.max_age %><% } else { %>77<% } %>' />
-            Interets : <input type='search' name='interests' placeholder='#skateboard#slackline' <% if (typeof locals.search.interests != 'undefined' && locals.search.interests != null && locals.search.interests != '') { %>value=<%= search.interests %><% } %> />
+            Age min : <input type='number' name='min_age' min=18 max=77 value='<% if (typeof locals.search != "undefined" && typeof locals.search.min_age != "undefined" && locals.search.min_age != null) { %><%= search.min_age %><% } else { %>18<% } %>' />
+            Age max : <input type="number" name='max_age' min=18 max=77 value='<% if (typeof locals.search != "undefined" && typeof locals.search.min_age != "undefined" && locals.search.max_age != null) { %><%= search.max_age %><% } else { %>77<% } %>' />
+            Interets : <input type='search' name='interests' placeholder='#skateboard#slackline' <% if (typeof locals.search != "undefined" && typeof locals.search.interests != 'undefined' && locals.search.interests != null && locals.search.interests != '') { %>value=<%= search.interests %><% } %> />
             Genre : <select name="gender">
-				<option value="Both" <% if (locals.search.gender == 'Both') { %>selected<% } %> >Les deux</option>
-				<option value="Woman" <% if (locals.search.gender == 'Woman') { %>selected<% } %> >Femmes</option>
-				<option value="Man" <% if (locals.search.gender == 'Man') { %>selected<% } %> >Hommes</option>
+				<option value="Both" <% if (typeof locals.search != "undefined" && locals.search.gender == 'Both') { %>selected<% } %> >Les deux</option>
+				<option value="Woman" <% if (typeof locals.search != "undefined" && locals.search.gender == 'Woman') { %>selected<% } %> >Femmes</option>
+				<option value="Man" <% if (typeof locals.search != "undefined" && locals.search.gender == 'Man') { %>selected<% } %> >Hommes</option>
             </select>
-            Distance maximale : <input type='number' name='distance' step='0.1' value='<% if (typeof locals.search.distance != "undefined"  && locals.search.distance != null) { %><%= search.distance %><% } else { %>20<% } %>' />km<br />
+            Distance maximale : <input type='number' name='distance' step='0.1' value='<% if (typeof locals.search != "undefined" && typeof locals.search.distance != "undefined"  && locals.search.distance != null) { %><%= search.distance %><% } else { %>20<% } %>' />km<br />
             Fruit :
             <%- include('fruits_boxes.ejs') %><br />
             <button>Affiner la recherche</button>

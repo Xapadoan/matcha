@@ -347,6 +347,10 @@ app.get('/logout', (req, res) => {
 	}
 });
 
+app.get('/like/:id', (req, res) => {
+	res.end('id : ' + req.params.id);
+})
+
 app.post('/search', csrfProtection, (req, res) => {
 	if (typeof req.body.terms != 'undefined') {
 		let terms = req.body.terms;

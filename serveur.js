@@ -394,7 +394,7 @@ app.post('/search', csrfProtection, (req, res) => {
 				location: [req.session.lat, req.session.lng],
 				username: req.session.username
 			}).then((results) => {
-				console.log(req.body.search);
+				console.log(req.body);
 				res.render('public_profile.ejs', {
 					search: req.body,
 					matchs: results,
@@ -406,7 +406,7 @@ app.post('/search', csrfProtection, (req, res) => {
 			}).catch((reason) => {
 				console.log(reason);
 				req.session.error = 'Quelque chose cloche, nous enquêtons';
-				res.redirect(301, '/home');
+				res.redirect(301, '/');
 				return ;
 			});
 		});

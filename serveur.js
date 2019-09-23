@@ -406,7 +406,7 @@ app.post('/search', csrfProtection, (req, res) => {
 			}).catch((reason) => {
 				console.log(reason);
 				req.session.error = 'Quelque chose cloche, nous enquêtons';
-				res.redirect(301, '/');
+				res.redirect(301, '/home');
 				return ;
 			});
 		});

@@ -708,7 +708,7 @@ module.exports = {
 			//use distance
 			if (typeof options.distance != 'undefined' && typeof fetcher.location != 'undefined') {
 				let dpos = options.distance / (2 * 3.14 * 6400) * 360;
-				query += ' AND u.lat BETWEEN ? AND ? AND uq.lng BETWEEN ? AND ?';
+				query += ' AND u.lat BETWEEN ? AND ? AND u.lng BETWEEN ? AND ?';
 				query_values.push(fetcher.location[0] - dpos, fetcher.location[0] + dpos, fetcher.location[1] - dpos, fetcher.location[1] + dpos);
 			}
 			//use fruit

@@ -489,6 +489,42 @@ module.exports = {
 			});
 		}))
 	},
+	getUserLikes: function getUserLikes(username) {
+		return (new Promise((resolve, reject) => {
+			connection.query('SELECT l.liked FROM matcha.users u INNER JOIN matcha.users_likes l ON u.id = l.liker WHERE u.username = ?', [
+				username
+			], (err, results) => {
+				if (err) {
+					console.log('Failed to getUserLikes ' + err.stack);
+					reject('Failed to get likes');
+				} else {
+					if (results.length > 0) {
+						resolve(results);
+					} else {
+						resolve(false);
+					}
+				}
+			})
+		}))
+	},
+	getUserVisits: function getUserVisits(username) {
+		return (new Promise((resolve, reject) => {
+			connection.query('SELECT v.visited FROM matcha.users u INNER JOIN matcha.users_visits v ON u.id = l.liker WHERE u.username = ?', [
+				username
+			], (err, results) => {
+				if (err) {
+					console.log('Failed to getUserVisits ' + err.stack);
+					reject('Failed to get visits');
+				} else {
+					if (results.length > 0) {
+						resolve(results);
+					} else {
+						resolve(false);
+					}
+				}
+			})
+		}))
+	},
 	addUserImage: function addUserImage(username, image_path) {
 		return (new Promise((resolve, reject) => {
 			this.getUserImages(username).then((results) => {
@@ -575,6 +611,65 @@ module.exports = {
 						}
 					});
 				}
+			});
+		}));
+	},
+	like: function like(liker, likedid) {
+		return (new Promise((resolve, reject) => {
+			//Ckeck if liker doesn't already liked
+			this.getUserLikes(liker).then((results) => {
+				if (results != false) {
+					//Check in results
+					for (let i = 0; i < results.length; i++) {
+						if (results[i].liked == likedid) {
+							resolve(true);
+						}
+					}
+				}
+				connection.query('INSERT INTO matcha.users_likes (liker, liked) SELECT matcha.users.id, ? FROM matcha.users WHERE matcha.users.username = ?', [
+					likedid,
+					liker
+				], (err) => {
+					if (err) {
+						console.log('Failed to register like:\n' + err.stack);
+						reject('Failed to register like');
+					} else {
+						resolve(true);
+					}
+				})
+			}).catch((err) => {
+				console.log(err);
+				reject('Failed to check likes');
+			});
+			//Insert new raw
+		}));
+	},
+	visit: function visit(visitor, visitedid) {
+		return (new Promise((resolve, reject) => {
+			//Ckeck if liker doesn't already liked
+			this.getUserVisits(visitor).then((results) => {
+				if (results != false) {
+					//Check in results
+					for (let i = 0; i < results.length; i++) {
+						if (results[i].visited == visitedid) {
+							resolve(true);
+						}
+					}
+				}
+				connection.query('INSERT INTO matcha.users_visits (visitor, visited) SELECT matcha.users.id, ? FROM matcha.users WHERE matcha.users.username = ?', [
+					visitedid,
+					visitor
+				], (err) => {
+					if (err) {
+						console.log('Failed to register visit:\n' + err.stack);
+						reject('Failed to register visit');
+					} else {
+						resolve(true);
+					}
+				})
+			}).catch((err) => {
+				console.log(err);
+				reject('Failed to check visits');
 			});
 		}));
 	},

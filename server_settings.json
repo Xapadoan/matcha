@@ -1,5 +1,6 @@
 {
-    "name": "10.11.254.223",
+    "name": "10.12.254.223",
+    "root": "/root/matcha",
     "port": 80,
     "neutrino_id": "Holl",
     "neutrino_api": "SMaDCpvO5aUu8wgjelURQsgqMWLQwj1QTMUmWdENTWoNlcAB"

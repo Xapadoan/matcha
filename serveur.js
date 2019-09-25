@@ -348,7 +348,22 @@ app.get('/logout', (req, res) => {
 });
 
 app.get('/like/:id', (req, res) => {
-	res.end('id : ' + req.params.id);
+	memberManager.like(req.session.username, req.params.id).then((results) => {
+		console.log(results);
+		res.redirect(301, req.headers.referer);
+	}).catch((err) => {
+		session.error = 'Echec lors du like';
+		res.redirect(301, req.headers.referer);
+	});
+});
+
+app.get('/search', csrfProtection, (req, res) => {
+	res.render('public_profile.ejs', {
+		user: req.session.username,
+		error: error,
+		notification: notification,
+		csrfToken: req.csrfToken()
+	})
 })
 
 app.post('/search', csrfProtection, (req, res) => {
@@ -398,7 +413,6 @@ app.post('/search', csrfProtection, (req, res) => {
 				location: [req.session.lat, req.session.lng],
 				username: req.session.username
 			}).then((results) => {
-				console.log(req.body);
 				res.render('public_profile.ejs', {
 					search: req.body,
 					matchs: results,

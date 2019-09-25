@@ -19,8 +19,11 @@
 - Gestion des autorisations
 - Ajouter bad crsf error handler
 - faire le chat
-- compte likable
-- notifiacations en temps reel
+- Faire une page perso
+- Gerer les likes:
+    - Afficher les comptes likes et likeurs
+    - Envoyer notification
+- notifications en temps reel
 
 Pour cette version, on essaye de faire marcher la creation d'utilisateurs
 

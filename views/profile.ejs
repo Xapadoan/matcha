@@ -4,9 +4,9 @@
 	<body>
 		<%- include('header.ejs') %>
 		<h1><%= user %></h1>
-		<p><% if (typeof locals.user_info != 'undefined') { %> value='<%= user_info.firstname %>' <% } %></p>
-		<p><% if (typeof locals.user_info != 'undefined') { %> value='<%= user_info.lastname %>' <% } %></p>
-		<p><% if (typeof locals.user_info != 'undefined') { %> value='<%= user_info.email %>' <% } %></p>
+		<p><% if (typeof locals.user_info != 'undefined') { %><%= user_info.firstname %><% } %></p>
+		<p><% if (typeof locals.user_info != 'undefined') { %><%= user_info.lastname %><% } %></p>
+		<p><% if (typeof locals.user_info != 'undefined') { %><%= user_info.email %>ß<% } %></p>
 		<br />
 		<h3>Fruit: </h3>
 		<%- include('fruits.ejs') %>

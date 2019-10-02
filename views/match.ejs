@@ -87,6 +87,7 @@
 				background-image: url('user_images/<%= matchs[i].image1 %>');
 			}
 		</style>
+		<a href='/profile/<%= matchs[i].id %>' title='visit'>
 		<article id='user<%= matchs[i].id %>' class='public_profile_mini'>
 			<p><%= matchs[i].firstname %> <%= matchs[i].lastname %>, <%= matchs[i].age %></p>
 			<p>(<%= matchs[i].gender %>)</p><br />
@@ -107,6 +108,7 @@
 			} %>
 			<p class='bio'><%= matchs[i].bio %></p>
 		</article>
+		</a>
 		<% } %>
 	</section>
 </body>

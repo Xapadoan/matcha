@@ -25,7 +25,7 @@ function endConnection(data_loaded, fakes_generated) {
 	} else {
 		console.log('Not ready to end connection yet');
 	}
-}q
+}
 
 connection.query('CREATE DATABASE IF NOT EXISTS ' + data['name']);
 connection.query('USE ' + data['name']);

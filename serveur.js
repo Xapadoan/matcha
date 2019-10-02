@@ -311,6 +311,47 @@ app.get('/recover', csrfProtection, (req, res) => {
 	}
 });
 
+app.get('/profile/:id', (req, res) => {
+	memberManager.getUserImages(req.session.username).then((images) => {
+		memberManager.getUserInfos(req.session.username).then((user_info) => {
+			memberManager.getUserExtended(req.session.username).then((user_extended) => {
+				res.render('profile.ejs', {
+					user: req.session.username,
+					error: error,
+					notfication: notification,
+					user_info: user_info,
+					user_extended: user_extended,
+					images: images,
+				});
+			}).catch((reason) => {
+				console.log('Failed to get extended profile :\n' + err.stack);
+				res.render('profile.ejs', {
+					user: req.session.username,
+					error: error,
+					notfication: notification,
+					user_info: user_info,
+					images: images,
+				});
+			});
+		}).catch((reason) => {
+			console.log('Failed to get profile :\n' + err.stack);
+			res.render('profile.ejs', {
+				user: req.session.username,
+				error: error,
+				notification: notification,
+				images: images,
+			});
+		});
+	}).catch((reason) => {
+		console.log('Failed to get images:\n' + err.stack);
+		res.render('profile.ejs', {
+			user: req.session.username,
+			error: error,
+			notification: notification
+		});
+	});
+})
+
 app.post('/recover', csrfProtection, (req, res) => {
 	let username = req.body.username;
 	let mail = req.body.mail;

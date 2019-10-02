@@ -7,12 +7,6 @@
 		<p><% if (typeof locals.user_info != 'undefined') { %><%= user_info.firstname %><% } %></p>
 		<p><% if (typeof locals.user_info != 'undefined') { %><%= user_info.lastname %><% } %></p>
 		<p><% if (typeof locals.user_info != 'undefined') { %><%= user_info.email %>ß<% } %></p>
-		<br />
-		<h3>Fruit: </h3>
-		<%- include('fruits.ejs') %>
-		<p>Age :<% if (typeof locals.user_extended != 'undefined' && locals.user_extended != null) { %><%= user_extended.age %><% } %></p>
-		<p>Genre :<% if (typeof locals.user_extended != 'undefined') { %><%= user_extended.gender %><% } %></p>
-		<p>Orientation :<% if (typeof locals.user_extended != 'undefined' { %><%= user_extended.orientation %><% } %></p>
-		<p>Bio :<% if (typeof locals.user_extended != 'undefined' && locals.user_extended.bio != null) { %><%= user_extended.bio %><% } %></textarea>
 
+	</body>
 </html>

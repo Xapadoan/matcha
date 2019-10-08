@@ -16,6 +16,7 @@ connection.connect((err) => {
 	if (err) {
 		console.error("Mysql : Connection failed: " + err.stack);
 		console.error("This is most likely an error in settings : check 'database.json'");
+		process.exit(1);
 	}
 });
 

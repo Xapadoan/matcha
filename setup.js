@@ -102,7 +102,7 @@ function getInterests(bio) {
 		return ;
 	}
 	if (id % 5 == 0) {
-		console.log('\rProfiles generation: ' + prog + '%');
+		console.log('Profiles generation: ' + prog + '%\r\c');
 		prog += 10;
 	}
 	fakeGenerator.generateFake().then((result) => {

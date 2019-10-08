@@ -589,4 +589,4 @@ app.post('/signup', csrfProtection, (req, res) => {
 	});
 });
 
-app.listen(settings['port']);
+app.listen(settings['port'], settings.name);

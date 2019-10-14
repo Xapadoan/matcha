@@ -5,6 +5,7 @@
         <%- include('header.ejs') %>
         <form action='#' method="POST">
             <textarea maxlength="200"></textarea>
+            <input type="hidden" name="_csrf" value=<%= csrfToken %> />
             <button>Signaler</button>
         </form>
         <p>Vous êtes sur le point de signaler un comportement indésirable de la part de <%= name %>. Veuillez décrire la nature du désagrément : </p>

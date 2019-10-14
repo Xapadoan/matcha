@@ -401,6 +401,9 @@ app.get('/dislike/:id', (req, res) => {
 			req.session.notification = 'Vous n\'aimez pas cette personne';
 			res.redirect(301, req.header.referer)
 		}
+	}).catch((reason) => {
+		req.session.error = 'Echec du non - amour';
+		res.redirect(301, '/');
 	})
 })
 
@@ -413,6 +416,9 @@ app.get('/unlike/:id', (req, res) => {
 			req.session.notification = 'Vous n\'aimez plus cette personne';
 			res.redirect(301, req.header.referer)
 		}
+	}).catch((reason) => {
+		req.session.error = 'Echec du non - amour';
+		res.redirect(301, '/')
 	})
 })
 
@@ -425,6 +431,9 @@ app.get('/block/:id', (req, res) => {
 			req.session.notification = 'Utilisateur bloqué';
 			res.redirect(301, '/')
 		}
+	}).catch((reason) => {
+		req.session.error = 'Echec du blocage de l\'utilisateur';
+		res.redirect(301, '/');
 	})
 });
 

@@ -751,8 +751,7 @@ module.exports = {
 	},
 	unlike: function unlike(unliker, unlikedid) {
 		return (new Promise((resolve, reject) => {
-			console.log(unliker + ' / ' + unlikedid)
-			connection.query('DELETE FROM matcha.users_likes l WHERE matcha.users_likes.likedid = ? AND l.liker = (SELECT id FROM matcha.users WHERE username = ?)', [
+			connection.query('DELETE FROM matcha.users_likes WHERE matcha.users_likes.likedid = ? AND matcha.users_likes.liker = (SELECT id FROM matcha.users WHERE username = ?)', [
 				unlikedid,
 				unliker,
 			], (err) => {

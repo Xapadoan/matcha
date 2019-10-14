@@ -313,6 +313,7 @@ app.get('/recover', csrfProtection, (req, res) => {
 
 app.get('/profile/:id', (req, res) => {
 	memberManager.getUserFullProfile(req.params.id).then((profile) => {
+		console.log(profile);
 		res.render('profile.ejs', {
 			user: req.session.username,
 			notfication: notification,

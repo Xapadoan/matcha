@@ -712,6 +712,7 @@ module.exports = {
 	},
 	dislike: function dislike(disliker, dislikedid) {
 		return (new Promise((resolve, reject) => {
+			console.log('BEG')
 			//Ckeck if disliker doesn't already disliked
 			this.getUserDislikes(disliker).then((results) => {
 				if (results != false) {
@@ -719,7 +720,7 @@ module.exports = {
 					for (let i = 0; i < results.length; i++) {
 						if (results[i].disliked == dislikedid) {
 							resolve(true);
-							console.log('END')
+							console.log('END');
 							return ;
 						}
 					}

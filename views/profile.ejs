@@ -3,7 +3,7 @@
 	<%- include('head.ejs'); %>
 	<body>
 		<%- include('header.ejs') %>
-		<h1><%= user %></h1>
+		<h1><%= profile.username %></h1>
 		<p><% if (typeof locals.profile != 'undefined') { %><%= profile.firstname %><% } %></p>
 		<p><% if (typeof locals.profile != 'undefined') { %><%= profile.lastname %><% } %></p>
 		<br />

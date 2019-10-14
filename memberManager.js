@@ -443,7 +443,7 @@ module.exports = {
 	},
 	getUserPopScore: function getUserPopScore(userid) {
 		return (new Promise((resolve, reject) => {
-			connection.query('SELECT COUNT(DISTINCT v.visitor), COUNT(DISTINCT l.liker) FROM matcha.users_visits v INNER JOIN matcha.users_likes l ON l.user = v.user WHERE v.visited = ?', [
+			connection.query('SELECT COUNT(DISTINCT v.visitor), COUNT(DISTINCT l.liker) FROM matcha.users_visits v INNER JOIN matcha.users_likes l ON l.liked = v.visited WHERE v.visited = ?', [
 				userid
 			], (err, results) => {
 				if (err) {

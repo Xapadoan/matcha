@@ -778,7 +778,7 @@ module.exports = {
 						}
 					}
 				}
-				connection.query('INSERT INTO matcha.users_blocks (blocker, blockedid) SELECT matcha.users.id, ? FROM matcha.users WHERE matcha.users.username = ?', [
+				connection.query('INSERT INTO matcha.users_blocks (blocker, blocked) SELECT matcha.users.id, ? FROM matcha.users WHERE matcha.users.username = ?', [
 					blockedid,
 					blocker
 				], (err) => {

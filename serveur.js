@@ -378,6 +378,7 @@ app.get('/like/:id', (req, res) => {
 		if (results != true) {
 			res.redirect(301, req.header.referer)
 		} else {
+			console.log('OUT')
 			res.redirect(301, '/profile/' + req.params.id);
 		}
 	}).catch((err) => {

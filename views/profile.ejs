@@ -3,6 +3,12 @@
 	<%- include('head.ejs'); %>
 	<body>
 		<%- include('header.ejs') %>
+		<h1><%= user %></h1>
+		<p><% if (typeof locals.profile != 'undefined') { %><%= profile.firstname %><% } %></p>
+		<p><% if (typeof locals.profile != 'undefined') { %><%= profile.lastname %><% } %></p>
+		<br />
+		<h3>Fruit: </h3>
+		<%- include('fruits.ejs') %>
 
 		<% if (typeof locals.profile != 'undefined' && locals.profile.image1 != null) { %>
 		<section id='user_images'>

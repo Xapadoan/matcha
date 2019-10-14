@@ -376,9 +376,9 @@ app.get('/logout', (req, res) => {
 app.get('/like/:id', (req, res) => {
 	memberManager.like(req.session.username, req.params.id).then((results) => {
 		if (results != true) {
+			console.log('OUT')
 			res.redirect(301, req.header.referer)
 		} else {
-			console.log('OUT')
 			res.redirect(301, '/profile/' + req.params.id);
 		}
 	}).catch((err) => {

@@ -387,8 +387,33 @@ app.get('/like/:id', (req, res) => {
 	});
 });
 
-app.get('/report/:id', (req, res) => {
+app.get('/report/:id', csrfProtection, (req, res) => {
+	memberManager.getUserName((name) => {
+		res.render('report.ejs', {
+			user: req.session.username,
+			error: error,
+			notification: notification,
+			csrfToken: req.csrfToken(),
+			name: name
+		})
+	})
 	res.end('Not ready yet !');
+})
+
+app.post('/report/:id', csrfProtection, (req, res) => {
+	memberManager.report(req.params.id, req.body.message).then((result) => {
+		if (result != true) {
+			req.session.error = 'Impossible de signaler l\'utilisateur';
+			res.redirect(301, '/');
+		} else {
+			req.session.notification = 'L\'utilisateur à bien été signalé';
+			res.redirect(301, '/');
+		}
+	}).catch((reason) => {
+		console.log('Failed to report user : ' + reason);
+		req.session.error = 'Impossible de signaler l\'utilisateur';
+		res.redirect('/');
+	})
 })
 
 app.get('/dislike/:id', (req, res) => {

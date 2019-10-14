@@ -37,6 +37,7 @@ connection.query('CREATE TABLE IF NOT EXISTS users_likes (id INT(9) UNSIGNED AUT
 connection.query('CREATE TABLE IF NOT EXISTS users_dislikes (id INT(9) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL, disliker INT(9) UNSIGNED, disliked INT(9) UNSIGNED NOT NULL)');
 connection.query('CREATE TABLE IF NOT EXISTS users_blocks (id INT(9) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL, blocker INT(9) UNSIGNED, blocked INT(9) UNSIGNED NOT NULL)');
 connection.query('CREATE TABLE IF NOT EXISTS users_visits (id INT(9) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL, visitor INT(9) UNSIGNED, visited INT(9) UNSIGNED NOT NULL)');
+connection.query('CREATE TABLE IF NOT EXISTS users_reports (id INT(9) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL, reported INT(9) UNSIGNED, message VARCHAR(200) UNSIGNED NOT NULL)');
 connection.query('CREATE TABLE IF NOT EXISTS users_interests (id INT(9) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL, name VARCHAR(50) NOT NULL, user INT NOT NULL)');
 connection.query('CREATE TABLE IF NOT EXISTS ip2location_db5(ip_from INT(10) UNSIGNED, ip_to INT(10) UNSIGNED, country_code CHAR(2), country_name VARCHAR(64), region_name VARCHAR(128), city_name VARCHAR(128), latitude DOUBLE, longitude DOUBLE, INDEX idx_ip_from (`ip_from`), INDEX idx_ip_to (`ip_to`), INDEX idx_ip_from_to (`ip_from`, `ip_to`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;', (err) => {
 	if (err) {

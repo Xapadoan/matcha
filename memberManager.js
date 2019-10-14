@@ -455,6 +455,20 @@ module.exports = {
 			})
 		}))
 	},
+	getUserName: function getUserName(userid) {
+		return (new Promise((resolve, reject) => {
+			connection.query('SELECT username FROM matcha.users WHERE id = ?', [
+				userid
+			], (err, result) => {
+				if (err) {
+					console.log('Failed to getUserName:\n' + err.stack);
+					reject('Failed to getUserName');
+				} else {
+					resolve(result[0]);
+				}
+			})
+		}));
+	},
 	getUserFullProfile: function getUserFullProfile(userid) {
 		return (new Promise((resolve, reject) => {
 			connection.query('SELECT u.id, u.username, u.lastname, u.firstname, u.fruit, u.lat, u.lng, e.gender, e.orientation, e.age, e.bio, i.image1, i.image2, i.image3, i.image4, i.image5 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user WHERE u.id = ?', [
@@ -744,6 +758,21 @@ module.exports = {
 				reject('Failed to check dislikes');
 			});
 		}));
+	},
+	report: function report(reported, message) {
+		return (new Promise((resolve, reject) => {
+			connection.query('INSERT INTO matcha.users_reports (reported, message) VALUES ?, ?', [
+				reported,
+				message
+			], (err) => {
+				if (err) {
+					console.log('Failed to report user');
+					reject('Failed to report user');
+				} else {
+					resolve(true);
+				}
+			})
+		}))
 	},
 	unlike: function unlike(unliker, unlikedid) {
 		return (new Promise((resolve, reject) => {

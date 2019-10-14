@@ -9,7 +9,7 @@
     - poubelle
     - like
 - Recupérer les images des fakes
-- Unliker, bloquer, signaler, disliker
+- Prendre en compte les relations pour le match
 - Choper des sons:
     - claque
     - bisous

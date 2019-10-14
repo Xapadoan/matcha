@@ -583,9 +583,9 @@ module.exports = {
 					reject('Failed to get visits');
 				} else {
 					if (results.length > 0) {
+						console.log(results);
 						resolve(results);
 					} else {
-						console.log('NONO')
 						resolve(false);
 					}
 				}

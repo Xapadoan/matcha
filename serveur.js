@@ -392,14 +392,13 @@ app.get('/report/:id', (req, res) => {
 })
 
 app.get('/dislike/:id', (req, res) => {
-	console.log('DISlike')
 	memberManager.dislike(req.session.username, req.params.id).then((results) => {
 		if (results != true) {
 			req.session.error = 'Echec du non - amour';
 			res.redirect(301, '/');
 		} else {
 			req.session.notification = 'Vous n\'aimez pas cette personne';
-			res.redirect(301, req.header.referer)
+			res.redirect(301, '/')
 		}
 	}).catch((reason) => {
 		req.session.error = 'Echec du non - amour';

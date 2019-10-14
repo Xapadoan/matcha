@@ -752,9 +752,9 @@ module.exports = {
 	unlike: function unlike(unliker, unlikedid) {
 		return (new Promise((resolve, reject) => {
 			console.log(unliker + ' / ' + unlikedid)
-			connection.query('DELETE FROM matcha.users_likes LEFT JOIN matcha.users u ON u.id = matcha.users_likes.liker WHERE u.username = ? AND matcha.users_likes.likedid = ?', [
+			connection.query('DELETE FROM matcha.users_likes l WHERE matcha.users_likes.likedid = ? AND l.liker = (SELECT id FROM matcha.users WHERE username = ?)', [
+				unlikedid,
 				unliker,
-				unlikedid
 			], (err) => {
 				if (err) {
 					console.log('Failed to unlike user :\n' + err.stack);

@@ -452,7 +452,7 @@ module.exports = {
 				} else {
 					console.log(results)
 					console.log(results[0]);
-					resolve(resolve[0][0] + results[0][1]);
+					resolve(results[0][0] + results[0][1]);
 				}
 			})
 		}))

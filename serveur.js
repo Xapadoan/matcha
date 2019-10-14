@@ -311,15 +311,6 @@ app.get('/recover', csrfProtection, (req, res) => {
 	}
 });
 
-app.get('/pop/:id', (req, res) => {
-	memberManager.getUserPopScore(req.params.id).then((result) => {
-		console.log(result);
-		res.end(new String(result));
-	}).catch((reason) => {
-		res.end('Error')
-	})
-})
-
 app.get('/profile/:id', (req, res) => {
 	memberManager.getUserFullProfile(req.params.id).then((profile) => {
 		if (profile == false) {

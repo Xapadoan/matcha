@@ -1,40 +1,50 @@
 <!DOCTYPE html>
 <html lang="fr">
-	<%- include('head.ejs'); %>
-	<body>
-		<%- include('header.ejs') %>
-		<h1><%= profile.username %></h1>
-		<p><% if (typeof locals.profile != 'undefined') { %><%= profile.firstname %><% } %></p>
-		<p><% if (typeof locals.profile != 'undefined') { %><%= profile.lastname %><% } %></p>
-		<br />
-		<h3>Fruit: </h3>
-		<%- include('fruits.ejs') %>
-		<p>Age :<% if (typeof locals.profile != 'undefined' && locals.profile != null) { %><%= profile.age %><% } %></p>
-		<p>Genre :<% if (typeof locals.profile != 'undefined') { %><%= profile.gender %><% } %></p>
-		<p>Orientation :<% if (typeof locals.profile != 'undefined') { %><%= profile.orientation %><% } %></p>
-		<p>Bio :<% if (typeof locals.profile != 'undefined' && locals.profile.bio != null) { %><%= profile.bio %><% } %></textarea>
+<%- include('head.ejs'); %>
+
+<body>
+	<%- include('header.ejs') %>
+	<h1><%= profile.username %></h1>
+	<p><% if (typeof locals.profile != 'undefined') { %><%= profile.firstname %><% } %></p>
+	<p><% if (typeof locals.profile != 'undefined') { %><%= profile.lastname %><% } %></p>
+	<br />
+	<h3>Fruit: </h3>
+	<% if (typeof locals.user_info != 'undefined' && locals.user_info.fruit == '#pasdecoupdunsoir') { %><img
+		id='coco_img' src='/coconut.png' width="75" height="75" title="#pasdecoupdunsoir" />
+	<% } else if (typeof locals.user_info != 'undefined' && locals.user_info.fruit == '#unsoir') { %><img
+		src='/peach.png' width="75" height="75" title="#unsoir" />
+	<% } else if (typeof locals.user_info != 'undefined' && locals.user_info.fruit == '#serieux') { %><img
+		src='/cherry.png' width="75" height="75" title="#serieux" />
+	<% } else { %><img src='/spices.png' width="75" height="75" title="#pqr" /><% } %>
+
+	<p>Age :<% if (typeof locals.profile != 'undefined' && locals.profile != null) { %><%= profile.age %><% } %></p>
+	<p>Genre :<% if (typeof locals.profile != 'undefined') { %><%= profile.gender %><% } %></p>
+	<p>Orientation :<% if (typeof locals.profile != 'undefined') { %><%= profile.orientation %><% } %></p>
+	<p>Bio
+		:<% if (typeof locals.profile != 'undefined' && locals.profile.bio != null) { %><%= profile.bio %><% } %></textarea>
 		<% if (typeof locals.profile != 'undefined' && locals.profile.image1 != null) { %>
 		<section id='user_images'>
 			<h2>Vos photos</h2>
 			<% if (locals.profile.image1 != null) { %>
 			<figure>
-				<img src='user_images/<%= profile.image1 %>' width="200", height="150">
+				<img src='user_images/<%= profile.image1 %>' width="200" , height="150">
 				<figcaption>Photo de profil</figcaption>
 			</figure>
 			<% }
 			if (locals.profile.image2 != null) { %>
-			<img src='user_images/<%= profile.image2 %>' width="200", height="150">
+			<img src='user_images/<%= profile.image2 %>' width="200" , height="150">
 			<% }
 			if (locals.profile.image3 != null) { %>
-			<img src='user_images/<%= profile.image3 %>' width="200", height="150">
+			<img src='user_images/<%= profile.image3 %>' width="200" , height="150">
 			<% }
 			if (locals.profile.image4 != null) { %>
-			<img src='user_images/<%= profile.image4 %>' width="200", height="150">
+			<img src='user_images/<%= profile.image4 %>' width="200" , height="150">
 			<% }
 			if (locals.profile.image5 != null) { %>
-			<img src='user_images/<%= profile.image5 %>' width="200", height="150">
+			<img src='user_images/<%= profile.image5 %>' width="200" , height="150">
 			<% } %>
 		</section>
 		<% } %>
-	</body>
+</body>
+
 </html>

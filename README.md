@@ -9,7 +9,9 @@
     - poubelle
     - like
 - Recupérer les images des fakes
+- Unliker, bloquer, signaler
 - Gerer les matchs
+    - Prendre en compte les unlikes
     - Prendre en compte les interets
     - Afficher la geolocalisation sous forme d'adresse si dans la bdd
 - Autoriser l'utilisateur a supprimer son compte

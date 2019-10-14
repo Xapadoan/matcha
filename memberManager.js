@@ -464,6 +464,7 @@ module.exports = {
 					console.log('Failed to getUserName:\n' + err.stack);
 					reject('Failed to getUserName');
 				} else {
+					console.log(result[0])
 					resolve(result[0]);
 				}
 			})

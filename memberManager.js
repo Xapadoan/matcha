@@ -441,6 +441,20 @@ module.exports = {
 			})
 		}));
 	},
+	getUserFullProfile: function getUserFullProfile(userid) {
+		return (new Promise((resolve, reject) => {
+			connection.query('SELECT u.username, u.lastname, u.firstname, u.fruit, u.lat, u.lng, e.gender, e.orientation, e.age, e.bio, i.image1, i.image2, i.image3, i.image4, i.image5 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user WHERE u.id = ?', [
+				userid
+			], (err, results) => {
+				if (err) {
+					console.log('Failed to getUserFullProfile :\n' + err.stack);
+					reject('Une erreur est survenue, nous enquêtons');
+				} else {
+					resolve(results[0]);
+				}
+			})
+		}));
+	},
 	//This function return :
 	//On success : user object
 	//On failure : false

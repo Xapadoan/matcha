@@ -8,6 +8,7 @@
 - Choper des icones:
     - poubelle
     - like
+- Recupérer les images des fakes
 - Gerer les matchs
     - Prendre en compte les interets
     - Afficher la geolocalisation sous forme d'adresse si dans la bdd

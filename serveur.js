@@ -381,7 +381,7 @@ app.get('/like/:id', (req, res) => {
 			res.redirect(301, '/profile/' + req.params.id);
 		}
 	}).catch((err) => {
-		session.error = 'Echec lors du like';
+		req.session.error = 'Echec lors du like';
 		res.redirect(301, req.headers.referer);
 	});
 });

@@ -312,10 +312,7 @@ app.get('/recover', csrfProtection, (req, res) => {
 });
 
 app.get('/profile/:id', (req, res) => {
-	console.log('==== GET ====')
 	memberManager.getUserFullProfile(req.params.id).then((profile) => {
-		console.log(profile);
-		console.log('END')
 		if (profile == false) {
 			req.session.error = 'Cet utilisateur ne semble pas exister'
 			res.redirect(301, '/search');

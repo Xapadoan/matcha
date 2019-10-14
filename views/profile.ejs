@@ -9,7 +9,10 @@
 		<br />
 		<h3>Fruit: </h3>
 		<%- include('fruits.ejs') %>
-
+		<p>Age :<% if (typeof locals.profile != 'undefined' && locals.profile != null) { %><%= profile.age %><% } %></p>
+		<p>Genre :<% if (typeof locals.profile != 'undefined') { %><%= profile.gender %><% } %></p>
+		<p>Orientation :<% if (typeof locals.profile != 'undefined') { %><%= profile.orientation %><% } %></p>
+		<p>Bio :<% if (typeof locals.profile != 'undefined' && locals.profile.bio != null) { %><%= profile.bio %><% } %></textarea>
 		<% if (typeof locals.profile != 'undefined' && locals.profile.image1 != null) { %>
 		<section id='user_images'>
 			<h2>Vos photos</h2>

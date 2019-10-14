@@ -323,6 +323,13 @@ app.get('/profile/:id', (req, res) => {
 				error: error,
 				profile: profile
 			})
+			memberManager.visit(req.session.username, req.params.id).then((result) => {
+				if (result != true) {
+					console.log('Failed to account visit');
+				}
+			}).catch((reason) => {
+				console.log('Failed to perform visit :\n' + reason);
+			})
 		}
 	}).catch((reason) => {
 		req.session.error = 'Quelque chose cloche, nous enquêtons'
@@ -368,8 +375,11 @@ app.get('/logout', (req, res) => {
 
 app.get('/like/:id', (req, res) => {
 	memberManager.like(req.session.username, req.params.id).then((results) => {
-		console.log(results);
-		res.redirect(301, req.headers.referer);
+		if (results != true) {
+			res.redirect(301, req.header.referer)
+		} else {
+			res.redirect(301, '/profile/' + req.params.id);
+		}
 	}).catch((err) => {
 		session.error = 'Echec lors du like';
 		res.redirect(301, req.headers.referer);

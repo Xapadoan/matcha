@@ -660,6 +660,9 @@ module.exports = {
 			//Insert new raw
 		}));
 	},
+	//This function expects 2 parameters:
+	//	- visitor (the username of the visitor)
+	//	- visitedid (the id of the user being watched)
 	visit: function visit(visitor, visitedid) {
 		return (new Promise((resolve, reject) => {
 			//Ckeck if liker doesn't already liked

@@ -585,6 +585,7 @@ module.exports = {
 					if (results.length > 0) {
 						resolve(results);
 					} else {
+						console.log('NONO')
 						resolve(false);
 					}
 				}

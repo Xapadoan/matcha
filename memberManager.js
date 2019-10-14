@@ -525,7 +525,7 @@ module.exports = {
 	},
 	getUserVisits: function getUserVisits(username) {
 		return (new Promise((resolve, reject) => {
-			connection.query('SELECT v.visited FROM matcha.users u INNER JOIN matcha.users_visits v ON u.id = l.liker WHERE u.username = ?', [
+			connection.query('SELECT v.visited FROM matcha.users u INNER JOIN matcha.users_visits v ON u.id = v.visitor WHERE u.username = ?', [
 				username
 			], (err, results) => {
 				if (err) {
@@ -683,6 +683,7 @@ module.exports = {
 						console.log('Failed to register visit:\n' + err.stack);
 						reject('Failed to register visit');
 					} else {
+						console.log('DONE')
 						resolve(true);
 					}
 				})

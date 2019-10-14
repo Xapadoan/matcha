@@ -521,7 +521,7 @@ module.exports = {
 	},
 	getUserDislikes: function getUserDislikes(username) {
 		return (new Promise((resolve, reject) => {
-			connection.query('SELECT l.liked FROM matcha.users u INNER JOIN matcha.users_dislikes l ON u.id = l.liker WHERE u.username = ?', [
+			connection.query('SELECT d.disliked FROM matcha.users u INNER JOIN matcha.users_dislikes d ON u.id = d.disliker WHERE u.username = ?', [
 				username
 			], (err, results) => {
 				if (err) {

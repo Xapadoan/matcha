@@ -583,7 +583,6 @@ module.exports = {
 					reject('Failed to get visits');
 				} else {
 					if (results.length > 0) {
-						console.log(results);
 						resolve(results);
 					} else {
 						resolve(false);
@@ -808,6 +807,7 @@ module.exports = {
 					for (let i = 0; i < results.length; i++) {
 						if (results[i].visited == visitedid) {
 							resolve(true);
+							return ;
 						}
 					}
 				}

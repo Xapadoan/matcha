@@ -766,7 +766,7 @@ module.exports = {
 				message
 			], (err) => {
 				if (err) {
-					console.log('Failed to report user');
+					console.log('Failed to report user:\n' + err.stack);
 					reject('Failed to report user');
 				} else {
 					resolve(true);

@@ -452,7 +452,7 @@ module.exports = {
 				} else {
 					console.log(results[0]);
 					console.log(results[0]['COUNT(DISTINCT v.visitor)']);
-					resolve(results[0][0] + results[0][1]);
+					resolve(results[0]['COUNT(DISTINCT v.visitor)'] + 5 * results[0]['COUNT(DISTINCT l.liker']);
 				}
 			})
 		}))

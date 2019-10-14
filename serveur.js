@@ -386,6 +386,46 @@ app.get('/like/:id', (req, res) => {
 	});
 });
 
+app.get('/report/:id', (req, res) => {
+	res.end('Not ready yet !');
+})
+
+app.get('/dislike/:id', (req, res) => {
+	memberManager.dislike(req.session.username, req.params.id).then((results) => {
+		if (results != true) {
+			req.session.error = 'Echec du non - amour';
+			res.redirect(301, '/');
+		} else {
+			req.session.notification = 'Vous n\'aimez pas cette personne';
+			res.redirect(301, req.header.referer)
+		}
+	})
+})
+
+app.get('/unlike/:id', (req, res) => {
+	memberManager.unlike(req.session.username, req.params.id).then((results) => {
+		if (results != true) {
+			req.session.error = 'Echec du non - amour';
+			res.redirect(301, '/');
+		} else {
+			req.session.notification = 'Vous n\'aimez plus cette personne';
+			res.redirect(301, req.header.referer)
+		}
+	})
+})
+
+app.get('/block/:id', (req, res) => {
+	memberManager.block(req.session.username, req.params.id).then((results) => {
+		if (results != true) {
+			req.session.error = 'Echec du bloquage de l\'utilisateur';
+			res.redirect(301, req.header.referer)
+		} else {
+			req.session.notification = 'Utilisateur bloqué';
+			res.redirect(301, '/')
+		}
+	})
+});
+
 app.get('/search', csrfProtection, (req, res) => {
 	res.render('public_profile.ejs', {
 		user: req.session.username,

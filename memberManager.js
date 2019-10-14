@@ -457,7 +457,7 @@ module.exports = {
 	},
 	getUserFullProfile: function getUserFullProfile(userid) {
 		return (new Promise((resolve, reject) => {
-			connection.query('SELECT u.username, u.lastname, u.firstname, u.fruit, u.lat, u.lng, e.gender, e.orientation, e.age, e.bio, i.image1, i.image2, i.image3, i.image4, i.image5 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user WHERE u.id = ?', [
+			connection.query('SELECT u.id, u.username, u.lastname, u.firstname, u.fruit, u.lat, u.lng, e.gender, e.orientation, e.age, e.bio, i.image1, i.image2, i.image3, i.image4, i.image5 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user WHERE u.id = ?', [
 				userid
 			], (err, results) => {
 				if (err) {
@@ -519,6 +519,24 @@ module.exports = {
 			});
 		}))
 	},
+	getUserDislikes: function getUserDislikes(username) {
+		return (new Promise((resolve, reject) => {
+			connection.query('SELECT l.liked FROM matcha.users u INNER JOIN matcha.users_dislikes l ON u.id = l.liker WHERE u.username = ?', [
+				username
+			], (err, results) => {
+				if (err) {
+					console.log('Failed to getUserDislikes ' + err.stack);
+					reject('Failed to getDislikes');
+				} else {
+					if (results.length > 0) {
+						resolve(results);
+					} else {
+						resolve(false);
+					}
+				}
+			})
+		}))
+	},
 	getUserLikes: function getUserLikes(username) {
 		return (new Promise((resolve, reject) => {
 			connection.query('SELECT l.liked FROM matcha.users u INNER JOIN matcha.users_likes l ON u.id = l.liker WHERE u.username = ?', [
@@ -527,6 +545,24 @@ module.exports = {
 				if (err) {
 					console.log('Failed to getUserLikes ' + err.stack);
 					reject('Failed to get likes');
+				} else {
+					if (results.length > 0) {
+						resolve(results);
+					} else {
+						resolve(false);
+					}
+				}
+			})
+		}))
+	},
+	getUserBlocks: function getUserBlocks(username) {
+		return (new Promise((resolve, reject) => {
+			connection.query('SELECT b.blocked FROM matcha.users u INNER JOIN matcha.users_blocks b ON u.id = b.blocker WHERE u.username = ?', [
+				username
+			], (err, results) => {
+				if (err) {
+					console.log('Failed to getUserBlocks ' + err.stack);
+					reject('Failed to get blocks');
 				} else {
 					if (results.length > 0) {
 						resolve(results);
@@ -671,6 +707,91 @@ module.exports = {
 				console.log(err);
 				reject('Failed to check likes');
 			});
+		}));
+	},
+	dislike: function dislike(disliker, dislikedid) {
+		return (new Promise((resolve, reject) => {
+			//Ckeck if disliker doesn't already disliked
+			this.getUserDislikes(disliker).then((results) => {
+				if (results != false) {
+					//Check in results
+					for (let i = 0; i < results.length; i++) {
+						if (results[i].disliked == dislikedid) {
+							resolve(true);
+						}
+					}
+				}
+				connection.query('INSERT INTO matcha.users_dislikes (disliker, disliked) SELECT matcha.users.id, ? FROM matcha.users WHERE matcha.users.username = ?', [
+					dislikedid,
+					disliker
+				], (err) => {
+					if (err) {
+						console.log('Failed to register dislike:\n' + err.stack);
+						reject('Failed to register dislike');
+					} else {
+						this.unlike(disliker, dislikedid).then((result) => {
+							resolve(result)
+						}).catch((reason) => {
+							console.log('Failed to unlike after dislike:\n' + reason)
+							reject('Failed to unlike');
+						})
+					}
+				})
+			}).catch((err) => {
+				console.log(err);
+				reject('Failed to check dislikes');
+			});
+		}));
+	},
+	unlike: function unlike(unliker, unlikedid) {
+		return (new Promise((resolve, reject) => {
+			connection.query('DELETE FROM matcha.users_likes l INNER JOIN matcha.users u ON u.id = l.liker WHERE u.username = ? AND l.likedid = ?', [
+				unliker,
+				unlikedid
+			], (err) => {
+				if (err) {
+					console.log('Failed to unlike user :\n' + err.stack);
+					reject('Failed to unlike user')
+				} else {
+					resolve(true);
+				}
+			})
+		}))
+	},
+	block: function block(blocker, blockedid) {
+		return (new Promise((resolve, reject) => {
+			//Ckeck if blocker doesn't already blocked
+			this.getUserBlocks(blocker).then((results) => {
+				if (results != false) {
+					//Check in results
+					for (let i = 0; i < results.length; i++) {
+						if (results[i].liked == likedid) {
+							resolve(true);
+						}
+					}
+				}
+				connection.query('INSERT INTO matcha.users_blocks (blocker, blockedid) SELECT matcha.users.id, ? FROM matcha.users WHERE matcha.users.username = ?', [
+					blockedid,
+					blocker
+				], (err) => {
+					if (err) {
+						console.log('Failed to register block:\n' + err.stack);
+						reject('Failed to register block');
+					} else {
+						this.unlike(blocker, blockedid).then((result) => {
+							if (result == true) {
+								resolve(true);
+							} else {
+								reject('Failed to unlike after blocked');
+							}
+						})
+					}
+				})
+			}).catch((err) => {
+				console.log(err);
+				reject('Failed to check blocks');
+			});
+
 			//Insert new raw
 		}));
 	},

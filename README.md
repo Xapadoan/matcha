@@ -9,7 +9,10 @@
     - poubelle
     - like
 - Recupérer les images des fakes
-- Unliker, bloquer, signaler
+- Unliker, bloquer, signaler, disliker
+- Choper des sons:
+    - claque
+    - bisous
 - Gerer les matchs
     - Prendre en compte les unlikes
     - Prendre en compte les interets

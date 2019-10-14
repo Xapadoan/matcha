@@ -4,11 +4,12 @@
 
 <body>
 	<%- include('header.ejs') %>
+	<nav id='bad_profile_nav'>
+		<a href='/dislike/<%= profile.id %>'>Ne plus aimer</a>
+		<a href='/block/<%= profile.id %>'>Bloquer</a>
+		<a href='/report/<%= profile.id %>'>Signaler</a>
+	</nav>
 	<h1><%= profile.username %></h1>
-	<p><% if (typeof locals.profile != 'undefined') { %><%= profile.firstname %><% } %></p>
-	<p><% if (typeof locals.profile != 'undefined') { %><%= profile.lastname %><% } %></p>
-	<br />
-	<h3>Fruit: </h3>
 	<% if (typeof locals.user_info != 'undefined' && locals.user_info.fruit == '#pasdecoupdunsoir') { %><img
 		id='coco_img' src='/coconut.png' width="75" height="75" title="#pasdecoupdunsoir" />
 	<% } else if (typeof locals.user_info != 'undefined' && locals.user_info.fruit == '#unsoir') { %><img
@@ -16,7 +17,10 @@
 	<% } else if (typeof locals.user_info != 'undefined' && locals.user_info.fruit == '#serieux') { %><img
 		src='/cherry.png' width="75" height="75" title="#serieux" />
 	<% } else { %><img src='/spices.png' width="75" height="75" title="#pqr" /><% } %>
-
+	<br />
+	<p><% if (typeof locals.profile != 'undefined') { %><%= profile.firstname %><% } %></p>
+	<p><% if (typeof locals.profile != 'undefined') { %><%= profile.lastname %><% } %></p>
+	<br />
 	<p>Age :<% if (typeof locals.profile != 'undefined' && locals.profile != null) { %><%= profile.age %><% } %></p>
 	<p>Genre :<% if (typeof locals.profile != 'undefined') { %><%= profile.gender %><% } %></p>
 	<p>Orientation :<% if (typeof locals.profile != 'undefined') { %><%= profile.orientation %><% } %></p>

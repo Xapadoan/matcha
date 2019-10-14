@@ -719,6 +719,7 @@ module.exports = {
 					for (let i = 0; i < results.length; i++) {
 						if (results[i].disliked == dislikedid) {
 							resolve(true);
+							console.log('END')
 							return ;
 						}
 					}

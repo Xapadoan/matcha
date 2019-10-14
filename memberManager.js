@@ -711,6 +711,7 @@ module.exports = {
 		}));
 	},
 	dislike: function dislike(disliker, dislikedid) {
+		console.log('OKOKOKOKOKOO');
 		return (new Promise((resolve, reject) => {
 			console.log('BEG')
 			//Ckeck if disliker doesn't already disliked

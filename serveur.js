@@ -388,7 +388,7 @@ app.get('/like/:id', (req, res) => {
 });
 
 app.get('/report/:id', csrfProtection, (req, res) => {
-	memberManager.getUserName((name) => {
+	memberManager.getUserName(req.params.id).then((name) => {
 		res.render('report.ejs', {
 			user: req.session.username,
 			error: error,
@@ -396,6 +396,9 @@ app.get('/report/:id', csrfProtection, (req, res) => {
 			csrfToken: req.csrfToken(),
 			name: name
 		})
+	}).catch((reason) => {
+		console.log('Failed to get name');
+		res.redirect('/')
 	})
 })
 

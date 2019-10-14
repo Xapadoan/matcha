@@ -392,7 +392,6 @@ app.get('/report/:id', (req, res) => {
 })
 
 app.get('/dislike/:id', (req, res) => {
-	console.log(req.params.id);
 	memberManager.dislike(req.session.username, req.params.id).then((results) => {
 		if (results != true) {
 			req.session.error = 'Echec du non - amour';

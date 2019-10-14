@@ -723,7 +723,6 @@ module.exports = {
 						}
 					}
 				}
-				console.log(disliker + '/' + dislikedid)
 				connection.query('INSERT INTO matcha.users_dislikes (disliker, disliked) SELECT matcha.users.id, ? FROM matcha.users WHERE matcha.users.username = ?', [
 					dislikedid,
 					disliker
@@ -749,7 +748,7 @@ module.exports = {
 	unlike: function unlike(unliker, unlikedid) {
 		return (new Promise((resolve, reject) => {
 			console.log(unliker + ' / ' + unlikedid)
-			connection.query('DELETE FROM matcha.users_likes INNER JOIN matcha.users u ON u.id = matcha.users_likes.liker WHERE u.username = ? AND matcha.users_likes.likedid = ?', [
+			connection.query('DELETE FROM matcha.users_likes l LEFT JOIN matcha.users u ON u.id = l.liker WHERE u.username = ? AND l.likedid = ?', [
 				unliker,
 				unlikedid
 			], (err) => {

@@ -413,7 +413,7 @@ app.get('/unlike/:id', (req, res) => {
 			res.redirect(301, '/');
 		} else {
 			req.session.notification = 'Vous n\'aimez plus cette personne';
-			res.redirect(301, req.header.referer)
+			res.redirect(301, '/')
 		}
 	}).catch((reason) => {
 		req.session.error = 'Echec du non - amour';

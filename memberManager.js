@@ -732,6 +732,7 @@ module.exports = {
 						console.log('Failed to register dislike:\n' + err.stack);
 						reject('Failed to register dislike');
 					} else {
+						console.log('unlike')
 						this.unlike(disliker, dislikedid).then((result) => {
 							resolve(result)
 						}).catch((reason) => {

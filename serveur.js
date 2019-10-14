@@ -397,7 +397,6 @@ app.get('/report/:id', csrfProtection, (req, res) => {
 			name: name
 		})
 	})
-	res.end('Not ready yet !');
 })
 
 app.post('/report/:id', csrfProtection, (req, res) => {

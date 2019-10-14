@@ -3,8 +3,8 @@
     <%- include('head.ejs') %>
     <body>
         <%- include('header.ejs') %>
-        <form action='#' method="POST">
-            <textarea maxlength="200"></textarea>
+        <form id='report_form' name='report_form' action='#' method="POST">
+            <textarea name='message' form='report_form' maxlength="200"></textarea>
             <input type="hidden" name="_csrf" value=<%= csrfToken %> />
             <button>Signaler</button>
         </form>

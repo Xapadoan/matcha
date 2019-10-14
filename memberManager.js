@@ -761,7 +761,7 @@ module.exports = {
 	},
 	report: function report(reported, message) {
 		return (new Promise((resolve, reject) => {
-			connection.query('INSERT INTO matcha.users_reports (reported, message) VALUES ?, ?', [
+			connection.query('INSERT INTO matcha.users_reports (reported, message) VALUES (?, ?)', [
 				reported,
 				message
 			], (err) => {

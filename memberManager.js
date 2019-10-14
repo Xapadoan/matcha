@@ -441,6 +441,21 @@ module.exports = {
 			})
 		}));
 	},
+	getUserPopScore: function getUserPopScore(userid) {
+		return (new Promise((resolve, reject) => {
+			connection.query('SELECT COUNT(DISTINCT v.visitor), COUNT(DISTINCT l.liker) FROM matcha.users_visits v INNER JOIN matcha.likes l ON l.user = v.user WHERE v.id = ?', [
+				userid
+			], (err, results) => {
+				if (err) {
+					console.log('Failed to get counts for pop score:\n' + err.stack);
+					reject(false);
+				} else {
+					console.log(results)
+					resolve(resolve[0] + results[1]);
+				}
+			})
+		}))
+	},
 	getUserFullProfile: function getUserFullProfile(userid) {
 		return (new Promise((resolve, reject) => {
 			connection.query('SELECT u.username, u.lastname, u.firstname, u.fruit, u.lat, u.lng, e.gender, e.orientation, e.age, e.bio, i.image1, i.image2, i.image3, i.image4, i.image5 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user WHERE u.id = ?', [
@@ -683,7 +698,6 @@ module.exports = {
 						console.log('Failed to register visit:\n' + err.stack);
 						reject('Failed to register visit');
 					} else {
-						console.log('DONE')
 						resolve(true);
 					}
 				})

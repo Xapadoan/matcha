@@ -450,7 +450,6 @@ module.exports = {
 					console.log('Failed to get counts for pop score:\n' + err.stack);
 					reject(false);
 				} else {
-					console.log(results[0]);
 					resolve(results[0]['visits'] + 5 * results[0]['likes']);
 				}
 			})

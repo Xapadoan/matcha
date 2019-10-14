@@ -689,6 +689,7 @@ module.exports = {
 					for (let i = 0; i < results.length; i++) {
 						if (results[i].liked == likedid) {
 							resolve(true);
+							return ;
 						}
 					}
 				}
@@ -718,6 +719,7 @@ module.exports = {
 					for (let i = 0; i < results.length; i++) {
 						if (results[i].disliked == dislikedid) {
 							resolve(true);
+							return ;
 						}
 					}
 				}
@@ -745,7 +747,7 @@ module.exports = {
 	},
 	unlike: function unlike(unliker, unlikedid) {
 		return (new Promise((resolve, reject) => {
-			connection.query('DELETE FROM matcha.users_likes l INNER JOIN matcha.users u ON u.id = l.liker WHERE u.username = ? AND l.likedid = ?', [
+			connection.query('DELETE FROM matcha.users_likes l LEFT JOIN matcha.users u ON u.id = l.liker WHERE u.username = ? AND l.likedid = ?', [
 				unliker,
 				unlikedid
 			], (err) => {
@@ -767,6 +769,7 @@ module.exports = {
 					for (let i = 0; i < results.length; i++) {
 						if (results[i].liked == likedid) {
 							resolve(true);
+							return ;
 						}
 					}
 				}

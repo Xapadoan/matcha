@@ -451,6 +451,7 @@ module.exports = {
 					reject(false);
 				} else {
 					console.log(results)
+					console.log(results[0]);
 					resolve(resolve[0] + results[1]);
 				}
 			})

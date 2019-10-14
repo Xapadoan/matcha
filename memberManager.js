@@ -449,6 +449,8 @@ module.exports = {
 				if (err) {
 					console.log('Failed to getUserFullProfile :\n' + err.stack);
 					reject('Une erreur est survenue, nous enquêtons');
+				} else if (results.length != 1) {
+					resolve(false);
 				} else {
 					resolve(results[0]);
 				}

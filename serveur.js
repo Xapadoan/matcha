@@ -315,12 +315,17 @@ app.get('/profile/:id', (req, res) => {
 	memberManager.getUserFullProfile(req.params.id).then((profile) => {
 		console.log(profile);
 		console.log('END')
-		res.render('profile.ejs', {
-			user: req.session.username,
-			notfication: notification,
-			error: error,
-			profile: profile
-		})
+		if (profile == false) {
+			req.session.error = 'Cet utilisateur ne semble pas exister'
+			res.redirect(301, '/search');
+		} else {
+			res.render('profile.ejs', {
+				user: req.session.username,
+				notfication: notification,
+				error: error,
+				profile: profile
+			})
+		}
 	}).catch((reason) => {
 		req.session.error = 'Quelque chose cloche, nous enquêtons'
 		res.redirect(301, '/search');

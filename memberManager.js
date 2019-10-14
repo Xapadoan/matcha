@@ -443,7 +443,7 @@ module.exports = {
 	},
 	getUserPopScore: function getUserPopScore(userid) {
 		return (new Promise((resolve, reject) => {
-			connection.query('SELECT COUNT(DISTINCT v.visitor), COUNT(DISTINCT l.liker) FROM matcha.users_visits v INNER JOIN matcha.users_likes l ON l.liked = v.visited WHERE v.visited = ?', [
+			connection.query('SELECT COUNT(DISTINCT v.visitor) AS visits, COUNT(DISTINCT l.liker) AS likes FROM matcha.users_visits v INNER JOIN matcha.users_likes l ON l.liked = v.visited WHERE v.visited = ?', [
 				userid
 			], (err, results) => {
 				if (err) {
@@ -451,8 +451,7 @@ module.exports = {
 					reject(false);
 				} else {
 					console.log(results[0]);
-					console.log(results[0]['COUNT(DISTINCT v.visitor)']);
-					resolve(results[0]['COUNT(DISTINCT v.visitor)'] + 5 * results[0]['COUNT(DISTINCT l.liker']);
+					resolve(results[0]['visits'] + 5 * results[0]['likes']);
 				}
 			})
 		}))

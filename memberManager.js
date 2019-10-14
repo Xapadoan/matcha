@@ -711,9 +711,7 @@ module.exports = {
 		}));
 	},
 	dislike: function dislike(disliker, dislikedid) {
-		console.log('OKOKOKOKOKOO');
 		return (new Promise((resolve, reject) => {
-			console.log('BEG')
 			//Ckeck if disliker doesn't already disliked
 			this.getUserDislikes(disliker).then((results) => {
 				if (results != false) {
@@ -721,7 +719,6 @@ module.exports = {
 					for (let i = 0; i < results.length; i++) {
 						if (results[i].disliked == dislikedid) {
 							resolve(true);
-							console.log('END');
 							return ;
 						}
 					}
@@ -734,7 +731,6 @@ module.exports = {
 						console.log('Failed to register dislike:\n' + err.stack);
 						reject('Failed to register dislike');
 					} else {
-						console.log('OKOK')
 						this.unlike(disliker, dislikedid).then((result) => {
 							resolve(result)
 						}).catch((reason) => {
@@ -771,7 +767,7 @@ module.exports = {
 				if (results != false) {
 					//Check in results
 					for (let i = 0; i < results.length; i++) {
-						if (results[i].liked == likedid) {
+						if (results[i].blocked == blockedid) {
 							resolve(true);
 							return ;
 						}

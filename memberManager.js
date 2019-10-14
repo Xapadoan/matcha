@@ -466,7 +466,7 @@ module.exports = {
 				} else if (results.length != 1) {
 					resolve(false);
 				} else {
-					console.log(result[0])
+					console.log(results[0])
 					resolve(results[0]);
 				}
 			})

@@ -314,6 +314,8 @@ app.get('/recover', csrfProtection, (req, res) => {
 app.get('/pop/:id', (req, res) => {
 	memberManager.getUserPopScore(req.params.id).then((result) => {
 		res.end(result);
+	}).catch((reason) => {
+		res.end('Error')
 	})
 })
 

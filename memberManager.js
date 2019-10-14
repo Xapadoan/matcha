@@ -466,7 +466,6 @@ module.exports = {
 				} else if (results.length != 1) {
 					resolve(false);
 				} else {
-					console.log(results[0])
 					resolve(results[0]);
 				}
 			})
@@ -749,6 +748,7 @@ module.exports = {
 	},
 	unlike: function unlike(unliker, unlikedid) {
 		return (new Promise((resolve, reject) => {
+			console.log(unliker + ' / ' + unlikedid)
 			connection.query('DELETE FROM matcha.users_likes INNER JOIN matcha.users u ON u.id = matcha.users_likes.liker WHERE u.username = ? AND matcha.users_likes.likedid = ?', [
 				unliker,
 				unlikedid

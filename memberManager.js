@@ -903,7 +903,8 @@ module.exports = {
                     if (error) {
 						console.log('Failed to delete user :\n' + error.stack);
                         reject('Failed to delete member');
-                    }
+					}
+					console.log('DONE');
                     if (results.length > 0) {
                         if (results[0].status != 'Confirmed') {
                             resolve(false);

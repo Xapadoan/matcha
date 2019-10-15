@@ -971,10 +971,6 @@ module.exports = {
 		return (new Promise((resolve, reject) => {
 			query = 'SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_interests n ON u.id = n.user'
 			query_values = [fetcher.username];
-			if (typeof options.allow_dislikes != 'undefined' && options.allow_dislikes != true) {
-				query += ' EXCEPT SELECT * FROM matcha.users_dislikes d WHERE d.disliked = u.id AND d.disliker = (SELECT id FROM matcha.users WHERE username = ?)';
-				query_values.push(fetcher.username);
-			}
 			query += ' WHERE u.username <> ?';
 			//use age
 			if (typeof options.age != 'undefined') {
@@ -1016,36 +1012,40 @@ module.exports = {
 					case ('Man') :
 						orientation = 'Men';
 						break;
-					case ('Women') :
-						orientation = 'Women'
-						break;
-					default :
-						orientation = 'Both'
-						break;
-				}
-				query += ' AND (orientation = ? OR orientation = \'Both\')';
-				query_values.push(orientation);
+						case ('Women') :
+							orientation = 'Women'
+							break;
+							default :
+							orientation = 'Both'
+							break;
+						}
+						query += ' AND (orientation = ? OR orientation = \'Both\')';
+						query_values.push(orientation);
+					}
+					//use fetcher's orientation
+					if (typeof fetcher.orientation != 'undefined') {
+						if (fetcher.orientation == 'Men') {
+							query += ' AND gender = ?';
+							query_values.push('Man');
+						} else if (fetcher.orientation == 'Women') {
+							query += ' AND gender = ?';
+							query_values.push('Woman');
+						}
+					}
+					if (typeof options.allow_dislikes != 'undefined' && options.allow_dislikes != true) {
+						query += ' EXCEPT SELECT * FROM matcha.users_dislikes d WHERE d.disliked = u.id AND d.disliker = (SELECT id FROM matcha.users WHERE username = ?)';
+						query_values.push(fetcher.username);
+					}
+					query += ' LIMIT ?, 5';
+					query_values.push(0);
+					connection.query(query, query_values, (err, results) => {
+						if (err) {
+							console.log(err.stack);
+							reject('Failed to fetch users');
+						} else {
+							resolve(results);
+						}
+					})
+				}));
 			}
-			//use fetcher's orientation
-			if (typeof fetcher.orientation != 'undefined') {
-				if (fetcher.orientation == 'Men') {
-					query += ' AND gender = ?';
-					query_values.push('Man');
-				} else if (fetcher.orientation == 'Women') {
-					query += ' AND gender = ?';
-					query_values.push('Woman');
-				}
-			}
-			query += ' LIMIT ?, 5';
-			query_values.push(0);
-			connection.query(query, query_values, (err, results) => {
-				if (err) {
-					console.log(err.stack);
-					reject('Failed to fetch users');
-				} else {
-					resolve(results);
-				}
-			})
-		}));
-	}
-};
+		};

@@ -215,6 +215,39 @@ app.post('/login', csrfProtection, (req, res) => {
 	});
 });
 
+app.get('/delete_user', csrfProtection, (req, res) => {
+    res.render('delete_user.ejs', {
+        error: error,
+        notification: notification,
+        user: req.session.username,
+        csrfToken: req.csrfToken()
+    });
+});
+
+app.post('/delete_user', csrfProtection, (req, res) => {
+    memberManager.delete_user(req.body.username, req.body.password).then((result) => {
+        if (result == false) {
+            res.redirect('/logout');
+            req.session.username = result.username;
+            req.session.lat = result.lat;
+            req.session.lng = result.lng;
+            req.session.userid = result.id;
+        } else {
+            res.render('delete_user.ejs', {
+                error: 'Le nom d\'utilisateur et le mot de passe ne correspondent pas',
+                notfication: notification,
+                csrfToken: req.csrfToken()
+            });
+        }
+    }).catch((reason) => {
+        res.render('delete_user.ejs', {
+            error: 'Une erreur est survenue, si cette erreur persiste, contactez nous.',
+            notfication: notification,
+            csrfToken: req.csrfToken()
+        });
+    });
+});
+
 app.post('/new_photo', csrfProtection, (req, res) => {
 	if (typeof req.files == 'undefined') {
 		res.write('No file');

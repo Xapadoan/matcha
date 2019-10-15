@@ -896,6 +896,43 @@ module.exports = {
 			});
 		}));
 	},
+	delete_user: function delete_user(username, password) {
+        return (new Promise((resolve, reject) => {
+            if (username && password) {
+                connection.query('DELETE u, e, i, n, l, d, b, r, v FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images ON u.id = i.user INNER JOIN matcha.users_interests n ON u.id = n.user INNER JOIN matcha.users_likes l ON (u.id = l.liked OR u.id = l.liker) INNER JOIN matcha.users_dislikes ON (u.id = d.disliker OR u.id = d.disliked) INNER JOIN matcha.users_blocks ON (u.id = b.blocker OR u.id = b.blocked) INNER JOIN matcha.users_reports ON u.id = r.reported INNER JOIN matcha.users_visits v ON (u.id = v.visitor OR u.id = v.visited) WHERE username = ?', [username], function (error, results) {
+                    if (error) {
+                        console.log(error.stack);
+                        reject('Failed to delete member');
+                    }
+                    if (results.length > 0) {
+                        if (results[0].status != 'Confirmed') {
+                            resolve(false);
+                        }
+                        bcrypt.compare(password, results[0].password, function (err, res) {
+                            if (err) {
+                                console.log(err.stack);
+                                reject('Something went wrong, we are trying to solve it');
+                            }
+                            if (res == true) {
+                                resolve({
+                                    username: results[0].username,
+                                    lat: results[0].lat,
+                                    lng: results[0].lng,
+                                    id: results[0].id
+                                });
+                            } else {
+                                resolve(false);
+                            }
+                        });
+                    } else {
+                        resolve(false);
+                    }
+                });
+            } else {
+                resolve(false);
+            }
+        }));
+    },
 	logg_user: function logg_user(username, password) {
 		return (new Promise((resolve, reject) => {
 			if (username && password) {

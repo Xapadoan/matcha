@@ -970,12 +970,12 @@ module.exports = {
 	fetchMembers: function fetchMembers(options, fetcher) {
 		return (new Promise((resolve, reject) => {
 			query = 'SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_interests n ON u.id = n.user'
+			query_values = [fetcher.username];
 			if (typeof options.allow_dislikes != 'undefined' && options.allow_dislikes != true) {
 				query += ' INNER JOIN matcha.users_dislikes d ON u.id <> d.disliked AND d.disliker <> (SELECT id FROM matcha.users WHERE username = ?)';
 				query_values.push(fetcher.username);
 			}
 			query += ' WHERE u.username <> ?';
-			query_values = [fetcher.username];
 			//use age
 			if (typeof options.age != 'undefined') {
 				query += ' AND e.age BETWEEN ? and ?';

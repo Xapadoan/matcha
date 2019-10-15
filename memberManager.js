@@ -973,7 +973,7 @@ module.exports = {
 			query_values = [fetcher.username];
 			if (typeof options.allow_dislikes != 'undefined' && options.allow_dislikes != true) {
 				console.log('GGGG')
-				query += ' RIGHT JOIN matcha.users_dislikes d ON u.id <> d.disliked';
+				query += ' INNER JOIN matcha.users_dislikes d ON u.id <> d.disliked';
 			//	query_values.push(fetcher.username);
 			}
 			query += ' WHERE u.username <> ?';

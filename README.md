@@ -44,7 +44,7 @@ PRIMARY KEY | VARCHAR(100) | VARCHAR(100) | VARCHAR(100) | VARCHAR(255) | VARCHA
 #### users_extended
 
 id  | user | gender | orientation | age | bio | interests | lat | lng
---- | ---- | ------ | ----------- | --- | --- | ---------
+--- | ---- | ------ | ----------- | --- | --- | --------- | --- | ---
 PRIMARY KEY | FOREIGN KEY (users.id) | INT | VARCHAR(50) | INT | TEXT(500) | VARCHAR(255) | VARCHAR(20) | VARCHAR(20)
 
 #### users_images

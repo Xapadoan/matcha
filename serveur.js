@@ -134,7 +134,8 @@ app.get('/match', (req, res) => {
 			let location = result;
 			memberManager.fetchMembers({
 				age: [user_profile.age - 5, user_profile.age + 5],
-				distance: 200
+				distance: 200,
+				allow_dislikes: false,
 			}, {
 				username: req.session.username,
 				orientation: user_profile.orientation,

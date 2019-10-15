@@ -1033,7 +1033,7 @@ module.exports = {
 						}
 					}
 					if (typeof options.allow_dislikes != 'undefined' && options.allow_dislikes != true) {
-						query += ' EXCEPT SELECT * FROM matcha.users_dislikes d WHERE d.disliked = matcha.users.id AND d.disliker = (SELECT id FROM matcha.users WHERE username = ?)';
+						query += ' EXCEPT SELECT * FROM matcha.users_dislikes d INNER JOIN matcha.users u ON u.id = d.disliked WHERE d.disliker = (SELECT id FROM matcha.users WHERE username = ?)';
 						query_values.push(fetcher.username);
 					}
 					query += ' LIMIT ?, 5';

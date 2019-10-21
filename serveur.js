@@ -226,23 +226,19 @@ app.get('/delete_user', csrfProtection, (req, res) => {
 
 app.post('/delete_user', csrfProtection, (req, res) => {
     memberManager.delete_user(req.body.username, req.body.password).then((result) => {
-        if (result == false) {
+        if (result == true) {
             res.redirect('/logout');
-            req.session.username = result.username;
-            req.session.lat = result.lat;
-            req.session.lng = result.lng;
-            req.session.userid = result.id;
         } else {
             res.render('delete_user.ejs', {
 				user: req.session.username,
-                error: 'Le nom d\'utilisateur et le mot de passe ne correspondent pas',
+                error: result,
                 notfication: notification,
                 csrfToken: req.csrfToken()
             });
         }
     }).catch((reason) => {
         res.render('delete_user.ejs', {
-            error: 'Une erreur est survenue, si cette erreur persiste, contactez nous.',
+            error: reason,
             notfication: notification,
             csrfToken: req.csrfToken()
         });

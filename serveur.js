@@ -135,7 +135,7 @@ app.get('/', csrfProtection, (req, res) => {
 				error: error,
 				notification: notification,
 				profiles: results,
-				csrfToken: csrfToken()
+				csrfToken: req.csrfToken()
 			})
 		}).catch((reason) => {
 			console.log('Failed to getProfilesLikedUser:\n' + reason);

@@ -471,10 +471,10 @@ module.exports = {
 	},
 	getUserFullProfile: function getUserFullProfile(userid, visitor) {
 		return (new Promise((resolve, reject) => {
-			connection.query('SELECT u.id, u.username, u.lastname, u.firstname, u.fruit, u.lat, u.lng, e.gender, e.orientation, e.age, e.bio, i.image1, i.image2, i.image3, i.image4, i.image5, (SELECT COUNT(*) FROM matcha.users_likes WHERE liked = ?) AS likes, (SELECT COUNT(*) FROM matcha.users_visits WHERE visited = ?) AS visits FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user WHERE u.id = ?', [
+			connection.query('SELECT u.id, u.username, u.lastname, u.firstname, u.fruit, u.lat, u.lng, e.gender, e.orientation, e.age, e.bio, i.image1, i.image2, i.image3, i.image4, i.image5, (SELECT COUNT(*) FROM matcha.users_likes WHERE liked = ?) AS likes, (SELECT COUNT(*) FROM matcha.users_visits WHERE visited = ?) AS visits, (SELECT COUNT(*) FROM matcha.users_likes l INNER JOIN matcha.users u ON u.username = ? WHERE l.liked = ?) AS liked FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user WHERE u.id = ?', [
+				userid,
 				userid,
 				visitor,
-				userid,
 				userid,
 				userid
 			], (err, results) => {
@@ -484,17 +484,6 @@ module.exports = {
 				} else if (results.length != 1) {
 					resolve(false);
 				} else {
-					connection.query('SELECT COUNT(*) FROM matcha.users_likes l INNER JOIN matcha.users u ON u.username = ? WHERE l.liked = ?', [
-						visitor,
-						userid
-					], (err, result) => {
-						if (err) {
-							console.log('Fuck :\n' + err.stack);
-							reject('Error');
-						} else {
-							console.log(result)
-						}
-					})
 					results[0].pop_score = results[0].visits + 5 * results[0].likes;
 					console.log(results[0]);
 					resolve(results[0]);

@@ -484,7 +484,7 @@ module.exports = {
 				} else if (results.length != 1) {
 					resolve(false);
 				} else {
-					connection.query('SELECT COUNT(*) FROM matcha.users_likes l INNER JOIN matcha.users ON u.username = ? WHERE l.liked = ?', [
+					connection.query('SELECT COUNT(*) FROM matcha.users_likes l INNER JOIN matcha.users u ON u.username = ? WHERE l.liked = ?', [
 						visitor,
 						userid
 					], (err, result) => {

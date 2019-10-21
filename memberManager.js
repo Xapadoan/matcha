@@ -920,8 +920,7 @@ module.exports = {
 								query += ' LEFT JOIN matcha.users_extended ON matcha.users.id = matcha.users_extended.user';
 								query += ' LEFT JOIN matcha.users_images ON matcha.users.id = matcha.users_images.user';
 								query += ' LEFT JOIN matcha.users_interests ON matcha.users.id = matcha.users_interests.user';
-								query += ' LEFT JOIN matcha.users_likes ON matcha.users.id = matcha.users_likes.liker';
-								query += ' LEFT JOIN matcha.users_likes ON matcha.users.id = matcha.users_likes.liked';
+								query += ' LEFT JOIN matcha.users_likes ON (matcha.users.id = matcha.users_likes.liked OR matcha.users.id = matcha.users_likes.liker)';
 								query += ' LEFT JOIN matcha.users_dislikes ON (matcha.users.id = matcha.users_dislikes.disliker OR matcha.users.id = matcha.users_dislikes.disliked)'
 								query += ' LEFT JOIN matcha.users_blocks ON (matcha.users.id = matcha.users_blocks.blocker OR matcha.users.id = matcha.users_blocks.blocked)'
 								query += ' LEFT JOIN matcha.users_visits ON (matcha.users.id = matcha.users_visits.visitor OR matcha.users.id = matcha.users_visits.visited)'

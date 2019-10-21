@@ -234,6 +234,7 @@ app.post('/delete_user', csrfProtection, (req, res) => {
             req.session.userid = result.id;
         } else {
             res.render('delete_user.ejs', {
+				user: req.session.username,
                 error: 'Le nom d\'utilisateur et le mot de passe ne correspondent pas',
                 notfication: notification,
                 csrfToken: req.csrfToken()

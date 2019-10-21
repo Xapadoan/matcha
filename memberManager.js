@@ -899,38 +899,39 @@ module.exports = {
 	delete_user: function delete_user(username, password) {
         return (new Promise((resolve, reject) => {
             if (username && password) {
-                connection.query('DELETE matcha.users, matcha.users_extended, matcha.users_images, matcha.users_interests, matcha.users_likes, matcha.users_dislikes, matcha.users_blocks, matcha.users_reports, matcha.users_visits FROM matcha.users INNER JOIN matcha.users_extended ON matcha.users.id = matcha.users_extended.user INNER JOIN matcha.users_images ON matcha.users.id = matcha.users_images.user INNER JOIN matcha.users_interests ON matcha.users.id = matcha.users_interests.user INNER JOIN matcha.users_likes ON (matcha.users.id = matcha.users_likes.liked OR matcha.users.id = matcha.users_likes.liker) INNER JOIN matcha.users_dislikes ON (matcha.users.id = matcha.users_dislikes.disliker OR matcha.users.id = matcha.users_dislikes.disliked) INNER JOIN matcha.users_blocks ON (matcha.users.id = matcha.users_blocks.blocker OR matcha.users.id = matcha.users_blocks.blocked) INNER JOIN matcha.users_reports ON matcha.users.id = matcha.users_reports.reported INNER JOIN matcha.users_visits ON (matcha.users.id = matcha.users_visits.visitor OR matcha.users.id = matcha.users_visits.visited) WHERE matcha.users.username = ?', [username], function (error, results) {
-                    if (error) {
-						console.log('Failed to delete user :\n' + error.stack);
-                        reject('Failed to delete member');
+				//Check that password and username match
+				connection.query('SELECT username, password FROM matcha.users WHERE username = ?', [
+					username,
+				], (err, result) => {
+					if (err) {
+						console.log('Failed to check username and password:\n' + err.stack);
+						reject('Quelque chose cloche, nous enquêtons');
+					} else if (result.length <= 0) {
+						resolve('Le pseudo et le mot de passe ne correspondent pas');
+					} else {
+						bcrypt.compare(password, result[0]['password'], (err, res) => {
+							if (err) {
+								console.log('Failed to compare passwords:\n' + err.stack);
+								reject('Quelque chose cloche, nous enquêtons');
+							} else if (res != true) {
+								resolve('Le pseudo et le mot de pass de correspondent pas');
+							} else {
+								connection.query('DELETE FROM matcha.users WHERE username = ?', [
+									username
+								], (err) => {
+									if (err) {
+										console.log('Failed to delete user:\n' + err.stack);
+										reject('Quelque chose cloche, nous enquêtons');
+									} else {
+										resolve(true);
+									}
+								})
+							}
+						})
 					}
-					console.log('DONE');
-                    if (results.length > 0) {
-                        if (results[0].status != 'Confirmed') {
-                            resolve(false);
-                        }
-                        bcrypt.compare(password, results[0].password, function (err, res) {
-                            if (err) {
-                                console.log(err.stack);
-                                reject('Something went wrong, we are trying to solve it');
-                            }
-                            if (res == true) {
-                                resolve({
-                                    username: results[0].username,
-                                    lat: results[0].lat,
-                                    lng: results[0].lng,
-                                    id: results[0].id
-                                });
-                            } else {
-                                resolve(false);
-                            }
-                        });
-                    } else {
-                        resolve(false);
-                    }
-                });
+				})
             } else {
-                resolve(false);
+                resolve('Le pseudo et le mot de passe ne correspondent pas');
             }
         }));
     },

@@ -611,6 +611,34 @@ module.exports = {
 			})
 		}))
 	},
+	getUserLikedProfiles: function getUserLikedProfiles(username) {
+		return (new Promise((resolve, reject) => {
+			connection.query('SELECT u.id, u.firstname, u.lastname, u.fruit, e.gender, e.age, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i INNER JOIN u.id = i.user INNER JOIN matcha.users_likes l ON l.liker = u.id WHERE u.username = ? LIMIT 5 ORDER BY u.id DESC', [
+				username
+			], (err, results) => {
+				if (err) {
+					console.log('Failed to getUserLikedProfiles:\n' + err.stack);
+					reject('Failed to getUserLikedProfiles');
+				} else {
+					resolve(results);
+				}
+			})
+		}))
+	},
+	getProfilesLikesUser: function getProfilesLikedUser(username) {
+		return (new Promise((resolve, reject) => {
+			connection.query('SELECT u.id, u.firstname, u.lastname, u.fruit, e.gender, e.age, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.likes l ON l.liker = u.id WHERE u.username = ? LIMIT 5 ORDER BY u.id DESC', [
+				username
+			], (err, results) => {
+				if (err) {
+					console.log('Failed to getProfilesLikedUser:\n' + err.stack);
+					reject('Failed to getProfilesLiekedUser');
+				} else {
+					resolve(results)
+				}
+			})
+		}))
+	},
 	addUserImage: function addUserImage(username, image_path) {
 		return (new Promise((resolve, reject) => {
 			this.getUserImages(username).then((results) => {

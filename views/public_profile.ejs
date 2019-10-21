@@ -1,95 +1,107 @@
 <!DOCTYPE html>
 <html lang="fr">
-    <%- include('head.ejs') %>
-    <style>
-            #matches {
-                margin-left: 25px;
-                margin-top: 5px;
-                overflow-x: auto;
-                overflow-y: unset;
-                height: 600px;
-                white-space: nowrap;
-            }
-        
-            .public_profile_mini p {
-                margin-left: 20px;
-                display: inline-block;
-            }
-        
-            #matches img {
-                float: right;
-            }
-        
-            .public_profile_mini {
-                display: inline-block;
-                border: 2px solid #f00;
-                background-size: cover;
-                width: 400px;
-                height: 550px;
-                color: white;
-                text-shadow: 0 0 10px black;
-                position: relative;
-            }
-        
-            .public_profile_mini .bio {
-                margin-left: 0px;
-                position: absolute;
-                width: 390px;
-                max-height: 300px;
-                bottom: 0px;
-                left: 0px;
-                white-space: normal;
-            }
+<%- include('head.ejs') %>
+<style>
+    #matches {
+        margin-left: 25px;
+        margin-top: 5px;
+        overflow-x: auto;
+        overflow-y: unset;
+        height: 600px;
+        white-space: nowrap;
+    }
 
-            #search_filters {
-                width: calc(100% - 200px);
+    .public_profile_mini p {
+        margin-left: 20px;
+        display: inline-block;
+    }
+
+    #matches img {
+        float: right;
+    }
+
+    .public_profile_mini {
+        display: inline-block;
+        border: 2px solid #f00;
+        background-size: cover;
+        width: 400px;
+        height: 550px;
+        color: white;
+        text-shadow: 0 0 10px black;
+        position: relative;
+    }
+
+    .public_profile_mini .bio {
+        margin-left: 0px;
+        position: absolute;
+        width: 390px;
+        max-height: 300px;
+        bottom: 0px;
+        left: 0px;
+        white-space: normal;
+    }
+
+    #search_filters {
+        width: calc(100% - 200px);
+    }
+</style>
+
+<body>
+    <%- include('header.ejs') %>
+    <form id='search_filters' name='search_filters' method="POST">
+        Age min : <input type='number' name='min_age' min=18 max=77
+            value='<% if (typeof locals.search != "undefined" && typeof locals.search.min_age != "undefined" && locals.search.min_age != null) { %><%= search.min_age %><% } else { %>18<% } %>' />
+        Age max : <input type="number" name='max_age' min=18 max=77
+            value='<% if (typeof locals.search != "undefined" && typeof locals.search.min_age != "undefined" && locals.search.max_age != null) { %><%= search.max_age %><% } else { %>77<% } %>' />
+        Interets : <input type='search' name='interests' placeholder='#skateboard#slackline'
+            <% if (typeof locals.search != "undefined" && typeof locals.search.interests != 'undefined' && locals.search.interests != null && locals.search.interests != '') { %>value=<%= search.interests %><% } %> />
+        Genre : <select name="gender">
+            <option value="Both"
+                <% if (typeof locals.search != "undefined" && locals.search.gender == 'Both') { %>selected<% } %>>Les
+                deux</option>
+            <option value="Woman"
+                <% if (typeof locals.search != "undefined" && locals.search.gender == 'Woman') { %>selected<% } %>>
+                Femmes</option>
+            <option value="Man"
+                <% if (typeof locals.search != "undefined" && locals.search.gender == 'Man') { %>selected<% } %>>Hommes
+            </option>
+        </select>
+        Distance maximale : <input type='number' name='distance' step='0.1'
+            value='<% if (typeof locals.search != "undefined" && typeof locals.search.distance != "undefined"  && locals.search.distance != null) { %><%= search.distance %><% } else { %>20<% } %>' />km<br />
+        Fruit :
+        <%- include('fruits_boxes.ejs') %><br />
+        <button>Affiner la recherche</button>
+        <input type="hidden" name="_csrf" value=<%= csrfToken %> />
+    </form>
+    <section id='matches'>
+        <% for (var i in locals.matchs) { %>
+        <style>
+            #user<%=matchs[i].id %> {
+                background-image: url('user_images/<%= matchs[i].image1 %>');
             }
         </style>
-    <body>
-        <%- include('header.ejs') %>
-        <form id='search_filters' name='search_filters' method="POST">
-            Age min : <input type='number' name='min_age' min=18 max=77 value='<% if (typeof locals.search != "undefined" && typeof locals.search.min_age != "undefined" && locals.search.min_age != null) { %><%= search.min_age %><% } else { %>18<% } %>' />
-            Age max : <input type="number" name='max_age' min=18 max=77 value='<% if (typeof locals.search != "undefined" && typeof locals.search.min_age != "undefined" && locals.search.max_age != null) { %><%= search.max_age %><% } else { %>77<% } %>' />
-            Interets : <input type='search' name='interests' placeholder='#skateboard#slackline' <% if (typeof locals.search != "undefined" && typeof locals.search.interests != 'undefined' && locals.search.interests != null && locals.search.interests != '') { %>value=<%= search.interests %><% } %> />
-            Genre : <select name="gender">
-				<option value="Both" <% if (typeof locals.search != "undefined" && locals.search.gender == 'Both') { %>selected<% } %> >Les deux</option>
-				<option value="Woman" <% if (typeof locals.search != "undefined" && locals.search.gender == 'Woman') { %>selected<% } %> >Femmes</option>
-				<option value="Man" <% if (typeof locals.search != "undefined" && locals.search.gender == 'Man') { %>selected<% } %> >Hommes</option>
-            </select>
-            Distance maximale : <input type='number' name='distance' step='0.1' value='<% if (typeof locals.search != "undefined" && typeof locals.search.distance != "undefined"  && locals.search.distance != null) { %><%= search.distance %><% } else { %>20<% } %>' />km<br />
-            Fruit :
-            <%- include('fruits_boxes.ejs') %><br />
-            <button>Affiner la recherche</button>
-            <input type="hidden" name="_csrf" value=<%= csrfToken %> />
-        </form>
-        <section id='matches'>
-                <% for (var i in locals.matchs) { %>
-                <style>
-                    #user<%=matchs[i].id %> {
-                        background-image: url('user_images/<%= matchs[i].image1 %>');
-                    }
-                </style>
-                <article id='user<%= matchs[i].id %>' class='public_profile_mini'>
-                    <p><%= matchs[i].firstname %> <%= matchs[i].lastname %>, <%= matchs[i].age %></p>
-                    <p>(<%= matchs[i].gender %>)</p><br />
-                    <a href='/like/<%= matchs[i].id %>'>Like</a>
-                    <% switch (matchs[i].fruit) {
+        <article id='user<%= matchs[i].id %>' class='public_profile_mini'>
+            <p><%= matchs[i].firstname %> <%= matchs[i].lastname %>, <%= matchs[i].age %></p>
+            <p>(<%= matchs[i].gender %>)</p><br />
+            <a href='/like/<%= matchs[i].id %>'>Like</a>
+            <% switch (matchs[i].fruit) {
                         case ('#pasdecoupdunsoir'): %>
-                    <img src='coconut.png' height="75" width="75" title="#pasdecoupdunsoir" />
-                    <% break;
+            <img src='coconut.png' height="75" width="75" title="#pasdecoupdunsoir" />
+            <% break;
                     case ('#unsoir'): %>
-                    <img src='peach.png' height="75" width="75" title="#unsoir" />
-                    <% break;
+            <img src='peach.png' height="75" width="75" title="#unsoir" />
+            <% break;
                     case ('#serieux'): %>
-                    <img src='cherry.png' height="75" width="75" title="#serieux" />
-                    <% break;
+            <img src='cherry.png' height="75" width="75" title="#serieux" />
+            <% break;
                     case ('#pqr'): %>
-                    <img src='spices.png' height="75" width="75" title="#pqr" />
-                    <% break;
+            <img src='spices.png' height="75" width="75" title="#pqr" />
+            <% break;
                     } %>
-                    <p class='bio'><%= matchs[i].bio %></p>
-                </article>
-                <% } %>
-            </section>
-    </body>
+            <p class='bio'><%= matchs[i].bio %></p>
+        </article>
+        <% } %>
+    </section>
+</body>
+
 </html>

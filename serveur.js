@@ -69,44 +69,57 @@ app.get('/home', csrfProtection, (req, res) => {
 		memberManager.getUserImages(req.session.username).then((images) => {
 			memberManager.getUserInfos(req.session.username).then((user_info) => {
 				memberManager.getUserExtended(req.session.username).then((user_extended) => {
-					res.render('home.ejs', {
-						user: req.session.username,
-						error: error,
-						notfication: notification,
-						user_info: user_info,
-						user_extended: user_extended,
-						images: images,
-						csrfToken: req.csrfToken()
+					memberManager.getUserLikedProfiles(req.session.username).then((profiles) => {
+						res.render('home.ejs', {
+							user: req.session.username,
+							error: error,
+							notification: notification,
+							user_info: user_info,
+							user_extended: user_extended,
+							images: images,
+							profiles: profiles,
+							csrfToken: req.csrfToken()
+						})
+					}).catch((reason) => {
+						res.render('home.ejs', {
+							user: req.session.username,
+							error: error,
+							notfication: notification,
+							user_info: user_info,
+							user_extended: user_extended,
+							images: images,
+							csrfToken: req.csrfToken()
+						});
+					}).catch((reason) => {
+						console.log('Failed to load extended profile: ' + reason);
+						res.render('home.ejs', {
+							user: req.session.username,
+							error: error,
+							notfication: notification,
+							user_info: user_info,
+							error: 'Une erreur est survenue au chargement de votre profil',
+							images: images,
+							csrfToken: req.csrfToken()
+						});
 					});
 				}).catch((reason) => {
-					console.log('Failed to load extended profile: ' + reason);
+					console.log('Failed to load user infos: ' + reason);
 					res.render('home.ejs', {
 						user: req.session.username,
-						error: error,
+						error: 'Votre profil est introuvable',
 						notfication: notification,
-						user_info: user_info,
-						error: 'Une erreur est survenue au chargement de votre profil',
 						images: images,
 						csrfToken: req.csrfToken()
 					});
 				});
 			}).catch((reason) => {
-				console.log('Failed to load user infos: ' + reason);
+				console.log(reason);
 				res.render('home.ejs', {
 					user: req.session.username,
-					error: 'Votre profil est introuvable',
+					error: 'Vos photos sont introuvables',
 					notfication: notification,
-					images: images,
 					csrfToken: req.csrfToken()
 				});
-			});
-		}).catch((reason) => {
-			console.log(reason);
-			res.render('home.ejs', {
-				user: req.session.username,
-				error: 'Vos photos sont introuvables',
-				notfication: notification,
-				csrfToken: req.csrfToken()
 			});
 		});
 	} else {
@@ -186,7 +199,7 @@ app.post('/login', csrfProtection, (req, res) => {
 				locationFinder.getLatLngFromIp().then((result) => {
 					if (result != false) {
 						req.session.lat = result.lat,
-						req.session.lng = result.lng
+							req.session.lng = result.lng
 						req.session.notification = 'Bienvenue ' + req.session.username + " !";
 						res.redirect('/home');
 					}
@@ -216,33 +229,33 @@ app.post('/login', csrfProtection, (req, res) => {
 });
 
 app.get('/delete_user', csrfProtection, (req, res) => {
-    res.render('delete_user.ejs', {
-        error: error,
-        notification: notification,
-        user: req.session.username,
-        csrfToken: req.csrfToken()
-    });
+	res.render('delete_user.ejs', {
+		error: error,
+		notification: notification,
+		user: req.session.username,
+		csrfToken: req.csrfToken()
+	});
 });
 
 app.post('/delete_user', csrfProtection, (req, res) => {
-    memberManager.delete_user(req.body.username, req.body.password).then((result) => {
-        if (result == true) {
-            res.redirect('/logout');
-        } else {
-            res.render('delete_user.ejs', {
+	memberManager.delete_user(req.body.username, req.body.password).then((result) => {
+		if (result == true) {
+			res.redirect('/logout');
+		} else {
+			res.render('delete_user.ejs', {
 				user: req.session.username,
-                error: result,
-                notfication: notification,
-                csrfToken: req.csrfToken()
-            });
-        }
-    }).catch((reason) => {
-        res.render('delete_user.ejs', {
-            error: reason,
-            notfication: notification,
-            csrfToken: req.csrfToken()
-        });
-    });
+				error: result,
+				notfication: notification,
+				csrfToken: req.csrfToken()
+			});
+		}
+	}).catch((reason) => {
+		res.render('delete_user.ejs', {
+			error: reason,
+			notfication: notification,
+			csrfToken: req.csrfToken()
+		});
+	});
 });
 
 app.post('/new_photo', csrfProtection, (req, res) => {
@@ -252,7 +265,7 @@ app.post('/new_photo', csrfProtection, (req, res) => {
 	if (req.files == null) {
 		req.session.error = 'Vous devez choisir une image à uploader'
 		res.redirect('/home');
-		return ;
+		return;
 	}
 	let image = req.files.image;
 	let type = image.mimetype;
@@ -521,7 +534,7 @@ app.post('/search', csrfProtection, (req, res) => {
 				console.log(reason);
 				req.session.error = 'Quelque chose cloche, nous enquêtons';
 				res.redirect(301, '/');
-				return ;
+				return;
 			})
 		} else {
 			memberManager.searchName(terms).then((result) => {
@@ -536,7 +549,7 @@ app.post('/search', csrfProtection, (req, res) => {
 				console.log(reason);
 				req.session.error = 'Quelque chose cloche, nous enquêtons';
 				res.redirect(301, '/');
-				return ;
+				return;
 			});
 		}
 	} else if (typeof req.body.min_age != 'undefined' && typeof req.body.max_age != 'undefined' && typeof req.body.gender != 'undefined' && typeof req.body.distance != 'undefined') {
@@ -563,7 +576,7 @@ app.post('/search', csrfProtection, (req, res) => {
 				console.log(reason);
 				req.session.error = 'Quelque chose cloche, nous enquêtons';
 				res.redirect(301, '/');
-				return ;
+				return;
 			});
 		});
 	}

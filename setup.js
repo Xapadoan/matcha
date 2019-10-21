@@ -98,7 +98,7 @@ function getInterests(bio) {
 
 //gen fakes and store'em
 (function storeFake(id, prog) {
-	if (id > 200) {
+	if (id > 100) {
 		fakes_generated = true;
 		endConnection(data_loaded, fakes_generated);
 		console.log('All profiles generated');
@@ -106,7 +106,7 @@ function getInterests(bio) {
 	}
 	if (id % 4 == 0) {
 		console.log('Profiles generation: ' + prog + '%\r');
-		prog += 2;
+		prog += 4;
 	}
 	fakeGenerator.generateFake().then((result) => {
 		//Insert in users

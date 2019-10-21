@@ -923,7 +923,8 @@ module.exports = {
 								query += ' WHERE matcha.users.username = ?';
 								connection.query(query, [
 									username
-								], (err) => {
+								], (err, res) => {
+									console.log(res.affectedRows + ' rows affected\n');
 									if (err) {
 										console.log('Failed to delete user:\n' + err.stack);
 										reject('Quelque chose cloche, nous enquêtons');

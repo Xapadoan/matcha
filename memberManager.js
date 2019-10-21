@@ -918,7 +918,7 @@ module.exports = {
 							} else {
 								let query = 'DELETE matcha.users, matcha.users_extended FROM matcha.users';
 								query += ' LEFT JOIN matcha.users_extended ON matcha.users.id = matcha.users_extended.user';
-								//query += ' LEFT JOIN matcha.users_images ON matcha.users.id = matcha.users_images.user';
+								query += ' LEFT JOIN matcha.users_images ON matcha.users.id = matcha.users_images.user';
 								//query += ' FULL OUTER JOIN matcha.users_interests ON matcha.users.id = matcha.users_interests.user';
 								//query += ' LEFT JOIN matcha.users_likes ON (matcha.users.id = matcha.users_likes.liker OR matcha.users.id = matha.users_likes.liked)'
 								//query += ' LEFT JOIN matcha.users_dislikes ON (matcha.users.id = matcha.users_dislikes.disliker OR matcha.users.id = matha.users_dislikes.disliked)'

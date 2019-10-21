@@ -6,9 +6,9 @@
 	<%- include('header.ejs') %>
 	<nav id='bad_profile_nav'>
 		<% if (locals.profile.liked) {%>
-			<a href='/like/<%= profile.id %>'>Aimer</a>
-		<% } else { %>
 			<a href='/dislike/<%= profile.id %>'>Ne plus aimer</a>
+			<% } else { %>
+				<a href='/like/<%= profile.id %>'>Aimer</a>
 		<% } %>
 		<a href='/block/<%= profile.id %>'>Bloquer</a>
 		<a href='/report/<%= profile.id %>'>Signaler</a>

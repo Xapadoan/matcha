@@ -123,21 +123,35 @@ app.get('/home', csrfProtection, (req, res) => {
 			});
 		});
 	} else {
-		res.render('index.ejs', {
-			error: error,
-			notfication: notification,
-			user: req.session.username
-		});
+		res.redirect(301, '/login');
 	}
 });
 
 app.get('/', csrfProtection, (req, res) => {
-	res.render('index.ejs', {
-		error: error,
-		notfication: notification,
-		user: req.session.username,
-		csrfToken: req.csrfToken()
-	});
+	if (typeof req.session.username != 'undefined') {
+		memberManager.getProfilesLikesUser(req.session.username).then((results) => {
+			res.render('index.ejs', {
+				user: req.session.username,
+				error: error,
+				notification: notification,
+				profiles: results
+			})
+		}).catch((reason) => {
+			console.log('Failed to getProfilesLikedUser:\n' + reason);
+			res.render('index.ejs', {
+				user: req.session.username,
+				error: 'Quelque chose cloche, nous enquetons',
+				notification: notification
+			})
+		})
+	} else {
+		res.render('index.ejs', {
+			error: error,
+			notfication: notification,
+			user: req.session.username,
+			csrfToken: req.csrfToken()
+		});
+	}
 });
 
 app.get('/match', (req, res) => {

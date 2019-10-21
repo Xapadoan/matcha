@@ -1,17 +1,85 @@
 <!DOCTYPE html>
 <html lang='fr'>
-	<%- include('head.ejs'); %>
-	<body>
-		<%- include('header.ejs'); %>
-		<h1>Matcha</h1>
-		<p>Voila l'accueil du site.</p>
-		<% if (typeof locals.user != 'undefined') { %>
-			<form method="POST" action='/search' id='search_bar' name='search_bar' >
-				<p>Rechercher un utilisateur :</p>
-				<input type="search" name='terms' />
-				<input type="hidden" name="_csrf" value=<%= csrfToken %> />
-				<button>OK</button>
-			</form>
-		<% } %>
-	</body>
+<%- include('head.ejs'); %>
+
+<body>
+	<style>
+		#matches {
+			margin-left: 25px;
+			margin-top: 5px;
+			overflow-x: auto;
+			overflow-y: unset;
+			height: 600px;
+			white-space: nowrap;
+		}
+
+		.public_profile_mini p {
+			margin-left: 20px;
+			display: inline-block;
+		}
+
+		#matches img {
+			float: right;
+		}
+
+		.public_profile_mini {
+			display: inline-block;
+			border: 2px solid #f00;
+			background-size: cover;
+			width: 400px;
+			height: 550px;
+			color: white;
+			text-shadow: 0 0 10px black;
+			position: relative;
+		}
+
+		.public_profile_mini .bio {
+			margin-left: 0px;
+			position: absolute;
+			width: 390px;
+			max-height: 300px;
+			bottom: 0px;
+			left: 0px;
+			white-space: normal;
+		}
+		</style>
+
+		<%- include('header.ejs');
+
+		%><h1>Matcha</h1><p>Voila l'accueil du site.</p>
+<% if (typeof locals.user !='undefined') {
+			%><form method="POST"action='/search'id='search_bar'name='search_bar'><p>Rechercher un utilisateur: </p> <input type="search"name='terms'/> <input type="hidden"name="_csrf"value=<%=csrfToken %> /> <button>OK</button> </form> <%
+		}
+
+		if (typeof locals.profiles !='undefined') {
+			%><section id='matches'><% for (var i in locals.profiles) {
+				%><style>#user<%=profiles[i].id %> {
+					background-image: url('user_images/<%= profiles[i].image1 %>');
+				}
+	</style>
+	<article id='user<%= profiles[i].id %>' class='public_profile_mini'>
+		<p><%= profiles[i].firstname %> <%= profiles[i].lastname %>, <%= profiles[i].age %></p>
+		<p>(<%= profiles[i].gender %>)</p><br />
+		<a href='/like/<%= profiles[i].id %>'>Like</a>
+		<% switch (profiles[i].fruit) {
+                        case ('#pasdecoupdunsoir'): %>
+		<img src='coconut.png' height="75" width="75" title="#pasdecoupdunsoir" />
+		<% break;
+                    case ('#unsoir'): %>
+		<img src='peach.png' height="75" width="75" title="#unsoir" />
+		<% break;
+                    case ('#serieux'): %>
+		<img src='cherry.png' height="75" width="75" title="#serieux" />
+		<% break;
+                    case ('#pqr'): %>
+		<img src='spices.png' height="75" width="75" title="#pqr" />
+		<% break;
+                    } %>
+		<p class='bio'><%= profiles[i].bio %></p>
+	</article>
+	<% } %>
+	</section>
+	<% } %>
+</body>
+
 </html>

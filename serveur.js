@@ -343,6 +343,7 @@ app.get('/recover', csrfProtection, (req, res) => {
 });
 
 app.get('/profile/:id', (req, res) => {
+	console.log('IJOIJO');
 	memberManager.getUserFullProfile(req.params.id).then((profile) => {
 		console.log('start')
 		if (profile == false) {

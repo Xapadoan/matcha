@@ -483,6 +483,7 @@ module.exports = {
 					resolve(false);
 				} else {
 					results[0].pop_score = results[0].visits + 5 * results[0].likes;
+					console.log(results[0]);
 					resolve(results[0]);
 				}
 			})

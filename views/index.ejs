@@ -63,7 +63,7 @@
 	</form> <%
 		}
 
-		if (typeof locals.profiles !='undefined') {
+		if (typeof locals.profiles !='undefined' && locals.profiles.length > 0) {
 			%><section id='matches'><% for (var i in locals.profiles) {
 				%><style>
 			#user<%=profiles[i].id %> {
@@ -93,7 +93,7 @@
 		<% } %>
 	</section>
 	<% } %>
-	<% if (typeof locals.matchs > 0) { %>
+	<% if (typeof locals.matchs != 'undefined' && locals.profiles.length > 0) { %>
 	<section id='matches'>
 		<% for (var i in locals.matchs) { %>
 		<style>

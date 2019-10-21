@@ -134,14 +134,16 @@ app.get('/', csrfProtection, (req, res) => {
 				user: req.session.username,
 				error: error,
 				notification: notification,
-				profiles: results
+				profiles: results,
+				csrfToken: csrfToken()
 			})
 		}).catch((reason) => {
 			console.log('Failed to getProfilesLikedUser:\n' + reason);
 			res.render('index.ejs', {
 				user: req.session.username,
 				error: 'Quelque chose cloche, nous enquetons',
-				notification: notification
+				notification: notification,
+				csrfToken: req.csrfToken()
 			})
 		})
 	} else {

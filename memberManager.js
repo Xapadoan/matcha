@@ -612,7 +612,7 @@ module.exports = {
 	},
 	getUserLikedProfiles: function getUserLikedProfiles(username) {
 		return (new Promise((resolve, reject) => {
-			connection.query('SELECT u.id, u.firstname, u.lastname, u.fruit, e.gender, e.age, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_likes l ON l.liker = u.id WHERE u.username = ? LIMIT 5 ORDER BY u.id DESC', [
+			connection.query('SELECT u.id, u.firstname, u.lastname, u.fruit, e.gender, e.age, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_likes l ON l.liker = u.id WHERE u.username = ? LIMIT 5, 0 ORDER BY u.id DESC', [
 				username
 			], (err, results) => {
 				if (err) {
@@ -627,7 +627,7 @@ module.exports = {
 	},
 	getProfilesLikesUser: function getProfilesLikedUser(username) {
 		return (new Promise((resolve, reject) => {
-			connection.query('SELECT u.id, u.firstname, u.lastname, u.fruit, e.gender, e.age, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.likes l ON l.liker = u.id WHERE u.username = ? LIMIT 5 ORDER BY u.id DESC', [
+			connection.query('SELECT u.id, u.firstname, u.lastname, u.fruit, e.gender, e.age, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.likes l ON l.liker = u.id WHERE u.username = ? LIMIT 5, 0 ORDER BY u.id DESC', [
 				username
 			], (err, results) => {
 				if (err) {

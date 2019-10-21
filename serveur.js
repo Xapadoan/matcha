@@ -343,9 +343,7 @@ app.get('/recover', csrfProtection, (req, res) => {
 });
 
 app.get('/profile/:id', (req, res) => {
-	console.log('IJOIJO');
-	memberManager.getUserFullProfile(req.params.id).then((profile) => {
-		console.log('start')
+	memberManager.getUserFullProfile(req.params.id, username).then((profile) => {
 		if (profile == false) {
 			req.session.error = 'Cet utilisateur ne semble pas exister'
 			res.redirect(301, '/search');
@@ -356,7 +354,6 @@ app.get('/profile/:id', (req, res) => {
 				error: error,
 				profile: profile
 			});
-			console.log('OK:' + req.params.id)
 			memberManager.visit(req.session.username, req.params.id).then((result) => {
 				if (result != true) {
 					console.log('Failed to account visit');

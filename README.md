@@ -22,12 +22,12 @@
     - Matcher en fonction de la geocalisation / fruit sexe = geo proche & fruit social = geo moyenne
 - Gestion des autorisations
 - Ajouter bad crsf error handler
-- faire le chat
+- Faire le chat
 - Ameliorer la page perso
 - Gerer les likes:
     - Afficher les comptes likes et likeurs
     - Envoyer notification
-- notifications en temps reel
+- Notifications en temps reel
 
 ## Setup
 

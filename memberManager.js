@@ -485,7 +485,6 @@ module.exports = {
 					resolve(false);
 				} else {
 					results[0].pop_score = results[0].visits + 5 * results[0].likes;
-					console.log(results[0]);
 					resolve(results[0]);
 				}
 			})
@@ -620,6 +619,7 @@ module.exports = {
 					console.log('Failed to getUserLikedProfiles:\n' + err.stack);
 					reject('Failed to getUserLikedProfiles');
 				} else {
+					console.log(results);
 					resolve(results);
 				}
 			})

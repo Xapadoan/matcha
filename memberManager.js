@@ -471,7 +471,9 @@ module.exports = {
 	},
 	getUserFullProfile: function getUserFullProfile(userid) {
 		return (new Promise((resolve, reject) => {
-			connection.query('SELECT u.id, u.username, u.lastname, u.firstname, u.fruit, u.lat, u.lng, e.gender, e.orientation, e.age, e.bio, i.image1, i.image2, i.image3, i.image4, i.image5 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user WHERE u.id = ?', [
+			connection.query('SELECT u.id, u.username, u.lastname, u.firstname, u.fruit, u.lat, u.lng, e.gender, e.orientation, e.age, e.bio, i.image1, i.image2, i.image3, i.image4, i.image5, (SELECT COUNT(*) FROM matcha.likes AS likes WHERE liked = ?), (SELECT COUNT(*) FROM matcha.visits AS visits WHERE visited = ?) FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user WHERE u.id = ?', [
+				userid,
+				userid,
 				userid
 			], (err, results) => {
 				if (err) {
@@ -480,6 +482,7 @@ module.exports = {
 				} else if (results.length != 1) {
 					resolve(false);
 				} else {
+					results[0].pop_score = results[0].visits + 5 * results[0].likes;
 					resolve(results[0]);
 				}
 			})

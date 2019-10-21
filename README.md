@@ -8,16 +8,14 @@
 - Choper des icones:
     - poubelle
     - like
-- Recupérer les images des fakes
-- Prendre en compte les relations pour le match
+- Prendre en compte les relations pour le matchs
+    - blocked
 - Choper des sons:
     - claque
     - bisous
 - Gerer les matchs
-    - Prendre en compte les unlikes
     - Prendre en compte les interets
     - Afficher la geolocalisation sous forme d'adresse si dans la bdd
-- Autoriser l'utilisateur a supprimer son compte
 - Autoriser l'utilisateur a supprimer ses photos
 - Gestion des interets :
     - Les matchs, on passe a travers les interets de l'utilisateur, et on cherche dans la table interet les utilisateurs qui correspondent
@@ -25,13 +23,11 @@
 - Gestion des autorisations
 - Ajouter bad crsf error handler
 - faire le chat
-- Faire une page perso
+- Ameliorer la page perso
 - Gerer les likes:
     - Afficher les comptes likes et likeurs
     - Envoyer notification
 - notifications en temps reel
-
-Pour cette version, on essaye de faire marcher la creation d'utilisateurs
 
 ## Setup
 

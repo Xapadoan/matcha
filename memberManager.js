@@ -916,7 +916,12 @@ module.exports = {
 							} else if (res != true) {
 								resolve('Le pseudo et le mot de pass de correspondent pas');
 							} else {
-								connection.query('DELETE u, e, i, n FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_interests n ON u.id = n.user WHERE username = ?', [
+								let query = 'DELETE matcha.users, matcha.users_extended, matcha.users_images, matcha.interests FROM matcha.users';
+								query += ' INNER JOIN matcha.users_extended ON matcha.users.id = matcha.users_extended.user';
+								query += ' INNER JOIN matcha.users_images ON matcha.users.id = matcha.users_images.user';
+								query += ' INNER JOIN matcha.users_interests ON matcha.users.id = matcha.interests.user';
+								query += ' WHERE matcha.users.username = ?';
+								connection.query(query, [
 									username
 								], (err) => {
 									if (err) {

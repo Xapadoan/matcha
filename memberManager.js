@@ -916,7 +916,7 @@ module.exports = {
 							} else if (res != true) {
 								resolve('Le pseudo et le mot de pass de correspondent pas');
 							} else {
-								let query = 'DELETE matcha.users FROM matcha.users, matcha.users_extended';
+								let query = 'DELETE matcha.users, matcha.users_extended FROM matcha.users';
 								query += ' JOIN matcha.users_extended ON matcha.users.id = matcha.users_extended.user';
 								//query += ' FULL OUTER JOIN matcha.users_images ON matcha.users.id = matcha.users_images.user';
 								//query += ' FULL OUTER JOIN matcha.users_interests ON matcha.users.id = matcha.users_interests.user';

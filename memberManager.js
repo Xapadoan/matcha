@@ -612,7 +612,7 @@ module.exports = {
 	},
 	getUserLikedProfiles: function getUserLikedProfiles(username) {
 		return (new Promise((resolve, reject) => {
-			connection.query('SELECT u.id FROM matcha.likes l INNER JOIN matcha.users u ON u.id = l.liked WHERE u.username = ?', [
+			connection.query('SELECT u.id FROM matcha.users_likes l INNER JOIN matcha.users u ON u.id = l.liked WHERE u.username = ?', [
 				username
 			], (err, results) => {
 				if (err) {

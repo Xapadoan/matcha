@@ -363,6 +363,7 @@ app.get('/profile/:id', (req, res) => {
 			})
 		}
 	}).catch((reason) => {
+		console.log(reason);
 		req.session.error = 'Quelque chose cloche, nous enquêtons'
 		res.redirect(301, '/search');
 	})

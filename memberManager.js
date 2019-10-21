@@ -619,7 +619,6 @@ module.exports = {
 					console.log('Failed to getUserLikedProfiles:\n' + err.stack);
 					reject('Failed to getUserLikedProfiles');
 				} else {
-					console.log(results);
 					resolve(results);
 				}
 			})
@@ -634,6 +633,7 @@ module.exports = {
 					console.log('Failed to getProfilesLikedUser:\n' + err.stack);
 					reject('Failed to getProfilesLiekedUser');
 				} else {
+					console.log(results);
 					resolve(results)
 				}
 			})

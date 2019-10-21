@@ -70,6 +70,7 @@
 				background-image: url('user_images/<%= profiles[i].image1 %>');
 			}
 		</style>
+		<h3>Vous ont liké :</h3>
 		<article id='user<%= profiles[i].id %>' class='public_profile_mini'>
 			<p><%= profiles[i].firstname %> <%= profiles[i].lastname %>, <%= profiles[i].age %></p>
 			<p>(<%= profiles[i].gender %>)</p><br />
@@ -95,6 +96,7 @@
 	<% } %>
 	<% if (typeof locals.matchs != 'undefined' && locals.profiles.length > 0) { %>
 	<section id='matches'>
+		<h3>Matchs :</h3>
 		<% for (var i in locals.matchs) { %>
 		<style>
 			#userm<%=matchs[i].id %> {

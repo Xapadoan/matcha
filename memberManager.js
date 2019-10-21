@@ -612,7 +612,7 @@ module.exports = {
 	},
 	getUserLikedProfiles: function getUserLikedProfiles(username) {
 		return (new Promise((resolve, reject) => {
-			connection.query('SELECT u.id, u.firstname, u.lastname, u.fruit, e.gender, e.age, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_likes l ON l.liker = (SELECT username FROM matcha.users WHERE username = ?) ORDER BY u.id DESC LIMIT 5, 0', [
+			connection.query('SELECT u.id, u.firstname, u.lastname, u.fruit, e.gender, e.age, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_likes l ON l.liker = (SELECT id FROM matcha.users WHERE username = ?) ORDER BY u.id DESC LIMIT 5, 0', [
 				username
 			], (err, results) => {
 				if (err) {

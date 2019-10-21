@@ -4,6 +4,15 @@
 
 <body>
 	<style>
+		#matchs {
+			margin-left: 25px;
+			margin-top: 5px;
+			overflow-x: auto;
+			overflow-y: unset;
+			height: 600px;
+			white-space: nowrap;
+		}
+
 		#profiles {
 			margin-left: 25px;
 			margin-top: 5px;
@@ -18,7 +27,7 @@
 			display: inline-block;
 		}
 
-		#profiles img {
+		#profiles img, #matchs img {
 			float: right;
 		}
 
@@ -42,42 +51,77 @@
 			left: 0px;
 			white-space: normal;
 		}
-		</style>
+	</style>
 
-		<%- include('header.ejs');
-
-		%><h1>Matcha</h1><p>Voila l'accueil du site.</p>
-<% if (typeof locals.user !='undefined') {
-			%><form method="POST"action='/search'id='search_bar'name='search_bar'><p>Rechercher un utilisateur: </p> <input type="search"name='terms'/> <input type="hidden"name="_csrf"value=<%=csrfToken %> /> <button>OK</button> </form> <%
+	<%- include('header.ejs'); %>
+	<h1>Matcha</h1>
+	<p>Voila l'accueil du site.</p>
+	<% if (typeof locals.user !='undefined') {
+			%><form method="POST" action='/search' id='search_bar' name='search_bar'>
+		<p>Rechercher un utilisateur: </p> <input type="search" name='terms' /> <input type="hidden" name="_csrf"
+			value=<%=csrfToken %> /> <button>OK</button>
+	</form> <%
 		}
 
 		if (typeof locals.profiles !='undefined') {
 			%><section id='matches'><% for (var i in locals.profiles) {
-				%><style>#user<%=profiles[i].id %> {
-					background-image: url('user_images/<%= profiles[i].image1 %>');
-				}
-	</style>
-	<article id='user<%= profiles[i].id %>' class='public_profile_mini'>
-		<p><%= profiles[i].firstname %> <%= profiles[i].lastname %>, <%= profiles[i].age %></p>
-		<p>(<%= profiles[i].gender %>)</p><br />
-		<a href='/like/<%= profiles[i].id %>'>Like</a>
-		<% switch (profiles[i].fruit) {
+				%><style>
+			#user<%=profiles[i].id %> {
+				background-image: url('user_images/<%= profiles[i].image1 %>');
+			}
+		</style>
+		<article id='user<%= profiles[i].id %>' class='public_profile_mini'>
+			<p><%= profiles[i].firstname %> <%= profiles[i].lastname %>, <%= profiles[i].age %></p>
+			<p>(<%= profiles[i].gender %>)</p><br />
+			<a href='/like/<%= profiles[i].id %>'>Like</a>
+			<% switch (profiles[i].fruit) {
                         case ('#pasdecoupdunsoir'): %>
-		<img src='coconut.png' height="75" width="75" title="#pasdecoupdunsoir" />
-		<% break;
+			<img src='coconut.png' height="75" width="75" title="#pasdecoupdunsoir" />
+			<% break;
                     case ('#unsoir'): %>
-		<img src='peach.png' height="75" width="75" title="#unsoir" />
-		<% break;
+			<img src='peach.png' height="75" width="75" title="#unsoir" />
+			<% break;
                     case ('#serieux'): %>
-		<img src='cherry.png' height="75" width="75" title="#serieux" />
-		<% break;
+			<img src='cherry.png' height="75" width="75" title="#serieux" />
+			<% break;
                     case ('#pqr'): %>
-		<img src='spices.png' height="75" width="75" title="#pqr" />
-		<% break;
+			<img src='spices.png' height="75" width="75" title="#pqr" />
+			<% break;
                     } %>
-		<p class='bio'><%= profiles[i].bio %></p>
-	</article>
+			<p class='bio'><%= profiles[i].bio %></p>
+		</article>
+		<% } %>
+	</section>
 	<% } %>
+	<% if (typeof locals.matchs > 0) { %>
+	<section id='matches'>
+		<% for (var i in locals.matchs) { %>
+		<style>
+			#userm<%=matchs[i].id %> {
+				background-image: url('user_images/<%= matchs[i].image1 %>');
+			}
+		</style>
+		<article id='userm<%= matchs[i].id %>' class='public_profile_mini'>
+			<p><%= matchs[i].firstname %> <%= matchs[i].lastname %>, <%= matchs[i].age %></p>
+			<p>(<%= matchs[i].gender %>)</p><br />
+			<a href='/like/<%= matchs[i].id %>'>Like</a>
+			<% switch (matchs[i].fruit) {
+                        case ('#pasdecoupdunsoir'): %>
+			<img src='coconut.png' height="75" width="75" title="#pasdecoupdunsoir" />
+			<% break;
+                    case ('#unsoir'): %>
+			<img src='peach.png' height="75" width="75" title="#unsoir" />
+			<% break;
+                    case ('#serieux'): %>
+			<img src='cherry.png' height="75" width="75" title="#serieux" />
+			<% break;
+                    case ('#pqr'): %>
+			<img src='spices.png' height="75" width="75" title="#pqr" />
+			<% break;
+                    } %>
+			<p class='bio'><%= matchs[i].bio %></p>
+		</article>
+		<% } %>
 	</section>
 	<% } %>
 </body>

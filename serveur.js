@@ -130,12 +130,24 @@ app.get('/home', csrfProtection, (req, res) => {
 app.get('/', csrfProtection, (req, res) => {
 	if (typeof req.session.username != 'undefined') {
 		memberManager.getProfilesLikesUser(req.session.username).then((results) => {
-			res.render('index.ejs', {
-				user: req.session.username,
-				error: error,
-				notification: notification,
-				profiles: results,
-				csrfToken: req.csrfToken()
+			memberManager.getUserMatchs(req.session.username).then((matchs) => {
+				res.render('index.ejs', {
+					user: req.session.username,
+					error: error,
+					notification: notification,
+					profiles: results,
+					matchs: matchs,
+					csrfToken: req.csrfToken()
+				})
+			}).catch((reason) => {
+				console.log('Failed to getUserMatchs: ' + reason);
+				res.render('index.ejs', {
+					user: req.session.username,
+					error: error,
+					notification: notification,
+					profiles: results,
+					csrfToken: req.csrfToken()
+				})
 			})
 		}).catch((reason) => {
 			console.log('Failed to getProfilesLikedUser:\n' + reason);

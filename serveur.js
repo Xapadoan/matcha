@@ -207,8 +207,8 @@ app.get('/match', (req, res) => {
 				});
 			})	
 		} else {
-			req.session.notification = 'Vous devez être connecté avec uncompte complet';
-			res.redirect(req.header.referer);
+			req.session.notification = 'Vous devez être connecté avec un compte complet';
+			res.redirect('/home');
 		}
 	}).catch((reason) => {
 		console.log('Failed to checkAuthorization: ' + reason);

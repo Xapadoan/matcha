@@ -553,7 +553,6 @@ module.exports = {
 			connection.query('SELECT status FROM matcha.users WHERE username = ?', [
 				username
 			], (err, result) => {
-				console.log(result);
 				if (err) {
 					console.log('Failed to checkAuthorization:\n' + err.stack);
 					reject('Failed to checkAuthorization');

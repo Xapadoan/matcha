@@ -5,11 +5,10 @@
 
 #### Trucs a faire :
 
+- Detection connection sur la page perso
 - Choper des icones:
     - poubelle
     - like
-- Prendre en compte les relations pour le matchs
-    - blocked
 - Choper des sons:
     - claque
     - bisous
@@ -20,12 +19,10 @@
 - Gestion des interets :
     - Les matchs, on passe a travers les interets de l'utilisateur, et on cherche dans la table interet les utilisateurs qui correspondent
     - Matcher en fonction de la geocalisation / fruit sexe = geo proche & fruit social = geo moyenne
-- Gestion des autorisations
 - Ajouter bad crsf error handler
 - Faire le chat
 - Ameliorer la page perso
 - Gerer les likes:
-    - Afficher les comptes likes et likeurs
     - Envoyer notification
 - Notifications en temps reel
 

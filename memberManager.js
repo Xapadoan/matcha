@@ -118,7 +118,7 @@ function checkCompleteProfile(username) {
 				resolve(missing);
 			}
 		})
-	}))
+	}));
 }
 
 function update_user_extended(userid, age, gender, orientation, bio, interests) {
@@ -382,7 +382,7 @@ module.exports = {
 						}
 					});
 				}
-				checkCompleteProfile(username).then((results) {
+				checkCompleteProfile(username).then((results) => {
 					if (typeof results == 'undefined') {
 						//Profile is complete
 						connection.query('UPDATE matcha.users SET status=Complete WHERE username = ?', [

@@ -69,9 +69,60 @@ function validateFruit(fruit) {
 	}
 }
 
+function checkCompleteProfile(username) {
+	return (new Promise((resolve, reject) => {
+		connection.query('SELECT u.id, u.username, u.firstname, u.lastname, u.fruit, u.email, e.age, e.gender, e.orientation, e.bio, i.image1 FROM matcha.users u LEFT JOIN matcha.users_extended e ON u.id = e.user LEFT JOIN matcha.users_images ON u.id = i.user WHERE u.username = ?', [
+			username
+		], (err, result) => {
+			if (err) {
+				console.log('Failed to checkCompleteProfile:\n' + err.stack);
+				reject('Failed to check complete profile');
+			} else if (result.length > 1) {
+				console.log('Failed to checkCompleteProfile:\n\tSeveral accounts with same user name');
+				reject('Several accounts with same username');
+			} else {
+				let missing;
+				if (result[0].id == null) {
+					missing.id = 1;
+				}
+				if (result[0].username == null) {
+					missing.username = 1;
+				}
+				if (result[0].firstname == null) {
+					missing.firstname = 1;
+				}
+				if (result[0].lastname == null) {
+					missing.lastname = 1;
+				}
+				if (result[0].fruit == null) {
+					missing.fruit = 1;
+				}
+				if (result[0].email == null) {
+					missing.email = 1;
+				}
+				if (result[0].age == null) {
+					missing.age = 1;
+				}
+				if (result[0].gender == null) {
+					missing.gender = 1;
+				}
+				if (result[0].orientation == null) {
+					missing.orientation = 1;
+				}
+				if (result[0].bio == null) {
+					missing.bio = 1;
+				}
+				if (result[0].image1 == null) {
+					missing.image1 = 1;
+				}
+				resolve(missing);
+			}
+		})
+	}))
+}
+
 function update_user_extended(userid, age, gender, orientation, bio, interests) {
 	return (new Promise((resolve, reject) => {
-		console.log(userid + '|' + age);
 		connection.query('UPDATE matcha.users_extended SET age = ?, gender = ?, orientation = ?, bio = ?, interests = ? WHERE user = ?', [
 			age,
 			gender,
@@ -254,6 +305,7 @@ module.exports = {
 			this.getUserInfos(username).then((results) => {
 				if (results === false) {
 					resolve("L'utilisateur n'a pas été reconnu");
+					return ;
 				} else {
 					//Replace with new if existing
 					if (typeof firstname != 'undefined' && firstname != "") {
@@ -270,6 +322,7 @@ module.exports = {
 						console.log(results.email);
 						if (validateMail(mail) !== true) {
 							resolve('L\'adresse e-mail doit être valide : ' + mail);
+							return ;
 						}
 						//Send mail to new address
 						id = uniqid();
@@ -325,11 +378,28 @@ module.exports = {
 							reject('Error : Failed to update user informations');
 						} else if (results.affectedRows != 1) {
 							resolve('L\'utilisateur n\'a pas été reconnu');
-						} else {
-							resolve(true);
+							return ;
 						}
 					});
 				}
+				checkCompleteProfile(username).then((results) {
+					if (typeof results == 'undefined') {
+						//Profile is complete
+						connection.query('UPDATE matcha.users SET status=Complete WHERE username = ?', [
+							username
+						], (err) => {
+							if (err) {
+								console.log('Failed to mark profile as complete:\n' + err.stack);
+								reject('Failed to mark profile as complete');
+							} else {
+								resolve(true);
+							}
+						})
+					}
+				}).catch((reason) => {
+					console.log('Failed to checkCompleteProfile');
+					reject('Error : Failed to markprofile as complete')
+				})
 			}).catch((reason) => {
 				console.log(reason);
 				reject('Error : Failed to get User infos')
@@ -358,7 +428,19 @@ module.exports = {
 							console.log(err.stack);
 							reject('Something went wrong, we are trying to solve it');
 						} else {
-							resolve(true);
+							checkCompleteProfile(username).then((result) => {
+								if (typeof result == 'undefined') {
+									connection.query('UPDATE matcha.users SET status=Complete WHERE username = ?', [
+										username
+									], (err) => {
+										if (err) {
+											console.log('Failed to mark profile as Complete');
+											reject('Failed to mark profile as complete')
+										}
+									})
+								}
+								resolve(true)
+							})
 						}
 					});
 				} else {
@@ -378,7 +460,22 @@ module.exports = {
 						digestInterests(result.id, result.interests);
 					}
 					update_user_extended(result.id, result.age, result.gender, result.orientation, result.bio, result.interests).then((result) => {
-						resolve(result);
+						this.checkCompleteProfile(username).then((result) => {
+							if (typeof result == 'undefined') {
+								connection.query('UPDATE matcha.users SET status=Complete WHERE username = ?', [
+									username
+								], (err) => {
+									if (err) {
+										console.log('Failed to mark profile as complete:\n' + err.stack);
+										reject('Failed to mark profile as complete')
+									}
+								}).catch((reason) => {
+									console.log('Failed to checkCompleteProfile');
+									reject('Failed to checkCompleteProfile')
+								})
+							}
+							resolve(result);
+						})
 					}).catch((reason) => {
 						reject(reason);
 					});
@@ -458,10 +555,10 @@ module.exports = {
 					console.log('checkAuthorization: More than one user found for : ' + username);
 					reject ('Several accounts with same username');
 				} else if (status.includes(result[0]['status'])) {
-					resolve (false);
+					resolve (true);
 					return ;
 				} else {
-					resolve (true);
+					resolve (false);
 					return ;
 				}
 			})

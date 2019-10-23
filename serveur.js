@@ -170,39 +170,50 @@ app.get('/', csrfProtection, (req, res) => {
 
 app.get('/match', (req, res) => {
 	//We have to check for a complete profile here
-	memberManager.getUserMatchProfile(req.session.username).then((user_profile) => {
-		locationFinder.getLatLngFromIp().then((result) => {
-			let location = result;
-			memberManager.fetchMembers({
-				age: [user_profile.age - 5, user_profile.age + 5],
-				distance: 200,
-				allow_dislikes: false,
-			}, {
-				username: req.session.username,
-				orientation: user_profile.orientation,
-				gender: user_profile.gender,
-				location: [req.session.lat, req.session.lng],
-			}).then((results) => {
-				res.render('match.ejs', {
-					user: req.session.username,
-					error: error,
-					notfication: notification,
-					matchs: results,
-					location: location,
+	memberManager.checkAuthorization(req.session.username, ['Complete']).then((result) => {
+		if (result == true) {
+			memberManager.getUserMatchProfile(req.session.username).then((user_profile) => {
+				locationFinder.getLatLngFromIp().then((result) => {
+					let location = result;
+					memberManager.fetchMembers({
+						age: [user_profile.age - 5, user_profile.age + 5],
+						distance: 200,
+						allow_dislikes: false,
+					}, {
+						username: req.session.username,
+						orientation: user_profile.orientation,
+						gender: user_profile.gender,
+						location: [req.session.lat, req.session.lng],
+					}).then((results) => {
+						res.render('match.ejs', {
+							user: req.session.username,
+							error: error,
+							notfication: notification,
+							matchs: results,
+							location: location,
+						});
+					}).catch((reason) => {
+						console.log('An error occurred while fething db: ' + reason);
+					});
+				}).catch((reason) => {
+					console.log(reason);
+					error = 'Impossible de savoir ou vous etes';
 				});
 			}).catch((reason) => {
-				console.log('An error occurred while fething db: ' + reason);
-			});
-		}).catch((reason) => {
-			console.log(reason);
-			error = 'Impossible de savoir ou vous etes';
-		});
+				res.render('match.ejs', {
+					user: req.session.username,
+					notfication: notification,
+					error: 'Une erreur est survenue. Veuillez réessayer dans quelques instants'
+				});
+			})	
+		} else {
+			req.session.notification = 'Vous devez être connecté avec uncompte complet';
+			res.redirect(req.header.referer);
+		}
 	}).catch((reason) => {
-		res.render('match.ejs', {
-			user: req.session.username,
-			notfication: notification,
-			error: 'Une erreur est survenue. Veuillez réessayer dans quelques instants'
-		});
+		console.log('Failed to checkAuthorization: ' + reason);
+		req.session.error = 'Quelque chose cloche, nous enquêtons'
+		res.redirect(301, req.header.referer);
 	})
 });
 

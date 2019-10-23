@@ -638,7 +638,6 @@ module.exports = {
 					console.log('Failed to get matches:\n' + err.stack);
 					reject('Failed to getUserMatchs');
 				} else {
-					console.log(results);
 					resolve(results)
 				}
 			})
@@ -679,7 +678,6 @@ module.exports = {
 					reject('Vous n\'avez pas été reconnu');
 				} else if (results.image1 == null) {
 					//Insert new picture'
-					console.log('Create new');
 					connection.query('INSERT INTO matcha.users_images (user, image1) VALUES (?, ?);', [
 						results.id,
 						image_path

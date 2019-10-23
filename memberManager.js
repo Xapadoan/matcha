@@ -443,6 +443,9 @@ module.exports = {
 	},
 	checkAuthorization: function(username, status) {
 		return (new Promise((resolve, reject) => {
+			if (typeof username == 'undefined' || username == null) {
+				resolve(false);
+			}
 			connection.query('SELECT status FROM matcha.users WHERE username = ?', [
 				username
 			], (err, result) => {

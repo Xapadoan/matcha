@@ -267,8 +267,7 @@ app.post('/login', csrfProtection, (req, res) => {
 	});
 });
 
-app.get('/delete_image/:id', (req, res) => {
-	console.log('Is it reached ?')
+app.get('/deleteimage/:id', (req, res) => {
 	if (req.params.id < 1 || req.params.id > 5) {
 		req.session.notification = 'Cette photo n\'existe pas';
 		res.redirect(301, '/home');

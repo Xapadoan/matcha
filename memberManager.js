@@ -445,6 +445,7 @@ module.exports = {
 		return (new Promise((resolve, reject) => {
 			if (typeof username == 'undefined' || username == null) {
 				resolve(false);
+				return ;
 			}
 			connection.query('SELECT status FROM matcha.users WHERE username = ?', [
 				username
@@ -458,8 +459,10 @@ module.exports = {
 					reject ('Several accounts with same username');
 				} else if (status.includes(result[0]['status'])) {
 					resolve (false);
+					return ;
 				} else {
 					resolve (true);
+					return ;
 				}
 			})
 		}))

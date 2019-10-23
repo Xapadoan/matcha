@@ -1110,7 +1110,7 @@ module.exports = {
 					resolve('Pas d\'image à supprimmer');
 					return ;
 				} else if (image == 1 && results.image2 == null && results.image3 == null && results.image4 == null && results.image5 == null) {
-					resolve('Can\'t delete your only image')
+					resolve('Ne supprimez pas votre seule image !')
 				} else if (image == 1) {
 					let replace;
 					if (results.image2 != null) {
@@ -1122,7 +1122,7 @@ module.exports = {
 					} else {
 						replace = [results.image5, 5];
 					}
-					query = 'UPDATE FROM matcha.images i INNER JOIN matcha.users u ON u.id = i.user SET image1=?, image' + replace[1] + '=null WHERE u.username = ?';
+					query = 'UPDATE matcha.images i INNER JOIN matcha.users u ON u.id = i.user SET image1=?, image' + replace[1] + '=null WHERE u.username = ?';
 					connection.query(query, [
 						replace[0],
 						username
@@ -1142,7 +1142,7 @@ module.exports = {
 						}
 					})
 				} else {
-					query = 'UPDATE FROM matcha.images i INNER JOIN matcha.users u ON u.id = i.user SET image' + image + '=null WHERE u.username = ?';
+					query = 'UPDATE matcha.images i INNER JOIN matcha.users u ON u.id = i.user SET image' + image + '=null WHERE u.username = ?';
 					connection.query(query, [username], (err) => {
 						if (err) {
 							console.log('Failed to remove image from database:\n' + err.stack);

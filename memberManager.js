@@ -442,7 +442,10 @@ module.exports = {
 										}
 									})
 								}
-								resolve(true)
+								resolve(true);
+							}).catch((reason) => {
+								console.log('Failed to checkCompleteProfile');
+								reject('Failed to checkCompleteProfile')
 							})
 						}
 					});
@@ -472,7 +475,7 @@ module.exports = {
 										console.log('Failed to mark profile as complete:\n' + err.stack);
 										reject('Failed to mark profile as complete')
 									}
-								}
+								});
 							}
 							resolve(result);
 						}).catch((reason) => {

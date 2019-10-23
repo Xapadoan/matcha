@@ -386,7 +386,7 @@ module.exports = {
 				checkCompleteProfile(username).then((results) => {
 					if (typeof results == 'undefined') {
 						//Profile is complete
-						connection.query('UPDATE matcha.users SET status=Complete WHERE username = ?', [
+						connection.query('UPDATE matcha.users SET status=\'Complete\' WHERE username = ?', [
 							username
 						], (err) => {
 							if (err) {
@@ -431,7 +431,7 @@ module.exports = {
 						} else {
 							checkCompleteProfile(username).then((result) => {
 								if (typeof result == 'undefined') {
-									connection.query('UPDATE matcha.users SET status=Complete WHERE username = ?', [
+									connection.query('UPDATE matcha.users SET status=\'Complete\' WHERE username = ?', [
 										username
 									], (err) => {
 										if (err) {
@@ -463,7 +463,7 @@ module.exports = {
 					update_user_extended(result.id, result.age, result.gender, result.orientation, result.bio, result.interests).then((result) => {
 						checkCompleteProfile(username).then((result) => {
 							if (typeof result == 'undefined') {
-								connection.query('UPDATE matcha.users SET status=Complete WHERE username = ?', [
+								connection.query('UPDATE matcha.users SET status=\'Complete\' WHERE username = ?', [
 									username
 								], (err) => {
 									if (err) {

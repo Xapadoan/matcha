@@ -71,7 +71,7 @@ function validateFruit(fruit) {
 
 function checkCompleteProfile(username) {
 	return (new Promise((resolve, reject) => {
-		connection.query('SELECT u.id, u.username, u.firstname, u.lastname, u.fruit, u.email, e.age, e.gender, e.orientation, e.bio, i.* FROM matcha.users u LEFT JOIN matcha.users_extended e ON u.id = e.user LEFT JOIN matcha.users_images ON u.id = i.user WHERE u.username = ?', [
+		connection.query('SELECT u.id, u.username, u.firstname, u.lastname, u.fruit, u.email, e.age, e.gender, e.orientation, e.bio, i.image1 FROM matcha.users u LEFT JOIN matcha.users_extended e ON u.id = e.user LEFT JOIN matcha.users_images i ON u.id = i.user WHERE u.username = ?', [
 			username
 		], (err, result) => {
 			if (err) {

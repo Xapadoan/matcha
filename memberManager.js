@@ -1132,7 +1132,7 @@ module.exports = {
 							console.log('Failed to remove image from database:\n' + err.stack);
 							reject('Failed to remove image from database')
 						} else {
-							fs.unlink(results['image' + image], (err) => {
+							fs.unlink('/user_images/' + results['image' + image], (err) => {
 								if (err) {
 									console.log('Failed to delete image from server:\n' + err.stack);
 									reject('Failed to delete image from server')
@@ -1149,7 +1149,7 @@ module.exports = {
 							console.log('Failed to remove image from database:\n' + err.stack);
 							reject('Failed to remove image from database')
 						} else {
-							fs.unlink(results['image' + image], (err) => {
+							fs.unlink('/user_images/' + results['image' + image], (err) => {
 								if (err) {
 									console.log('Failed to delete image from server:\n' + err.stack);
 									reject('Failed to delete image from server')

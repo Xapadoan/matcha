@@ -146,7 +146,7 @@ function digestInterests(userid, interests) {
 	let regex = RegExp("#[A-Za-z0-9]+", "g");
 	let interest;
 	//remove all user's, interests
-	connection.query("DELETE FROM matcha.users_interests WHERE user = ?",[
+	connection.query("DELETE FROM matcha.users_interests WHERE user = ?", [
 		userid
 	], (err) => {
 		if (err) {
@@ -157,16 +157,18 @@ function digestInterests(userid, interests) {
 	});
 	while ((interest = regex.exec(interests)) != null) {
 		//add interest
-		connection.query("INSERT INTO matcha.users_interests (name, user) VALUES (?, ?);",[
+		connection.query("INSERT INTO matcha.users_interests (name, user) VALUES (?, ?);", [
 			interest,
 			userid
-		], (err) => {{
-			if (err) {
-				console.log('Error : Failed to set new interest');
-				console.log(err.stack);
-				return (false);
+		], (err) => {
+			{
+				if (err) {
+					console.log('Error : Failed to set new interest');
+					console.log(err.stack);
+					return (false);
+				}
 			}
-		}});
+		});
 	}
 }
 
@@ -306,7 +308,7 @@ module.exports = {
 			this.getUserInfos(username).then((results) => {
 				if (results === false) {
 					resolve("L'utilisateur n'a pas été reconnu");
-					return ;
+					return;
 				} else {
 					//Replace with new if existing
 					if (typeof firstname != 'undefined' && firstname != "") {
@@ -323,7 +325,7 @@ module.exports = {
 						console.log(results.email);
 						if (validateMail(mail) !== true) {
 							resolve('L\'adresse e-mail doit être valide : ' + mail);
-							return ;
+							return;
 						}
 						//Send mail to new address
 						id = uniqid();
@@ -379,7 +381,7 @@ module.exports = {
 							reject('Error : Failed to update user informations');
 						} else if (results.affectedRows != 1) {
 							resolve('L\'utilisateur n\'a pas été reconnu');
-							return ;
+							return;
 						}
 					});
 				}
@@ -470,21 +472,21 @@ module.exports = {
 										console.log('Failed to mark profile as complete:\n' + err.stack);
 										reject('Failed to mark profile as complete')
 									}
-								}).catch((reason) => {
-									console.log('Failed to checkCompleteProfile');
-									reject('Failed to checkCompleteProfile')
-								})
+								}
 							}
 							resolve(result);
-						})
+						}).catch((reason) => {
+							reject(reason);
+						});
 					}).catch((reason) => {
-						reject(reason);
+						console.log(reason);
+						reject('Une erreur est survenue');
 					});
 				}
 			}).catch((reason) => {
-				console.log(reason);
-				reject('Une erreur est survenue');
-			});
+				console.log('Failed to get user extended:' + reason);
+				reject('Failed to get user extended')
+			})
 		}));
 	},
 	//Pour les matchs auto, il faut:
@@ -525,7 +527,7 @@ module.exports = {
 	},
 	searchName: function searchName(name) {
 		return (new Promise((resolve, reject) => {
-			connection.query('SELECT u.id, u.username, u.firstname, u.lastname, u.fruit, u.lat, u.lng, e.age, e.gender, e.orientation, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user WHERE username LIKE ? OR firstname LIKE ? OR lastname LIKE ?',[
+			connection.query('SELECT u.id, u.username, u.firstname, u.lastname, u.fruit, u.lat, u.lng, e.age, e.gender, e.orientation, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user WHERE username LIKE ? OR firstname LIKE ? OR lastname LIKE ?', [
 				name,
 				name,
 				name
@@ -539,11 +541,11 @@ module.exports = {
 			})
 		}));
 	},
-	checkAuthorization: function(username, status) {
+	checkAuthorization: function (username, status) {
 		return (new Promise((resolve, reject) => {
 			if (typeof username == 'undefined' || username == null) {
 				resolve(false);
-				return ;
+				return;
 			}
 			connection.query('SELECT status FROM matcha.users WHERE username = ?', [
 				username
@@ -551,16 +553,16 @@ module.exports = {
 				console.log(result);
 				if (err) {
 					console.log('Failed to checkAuthorization:\n' + err.stack);
-					reject ('Failed to checkAuthorization');
+					reject('Failed to checkAuthorization');
 				} else if (result.length > 1) {
 					console.log('checkAuthorization: More than one user found for : ' + username);
-					reject ('Several accounts with same username');
+					reject('Several accounts with same username');
 				} else if (status.includes(result[0]['status'])) {
-					resolve (true);
-					return ;
+					resolve(true);
+					return;
 				} else {
-					resolve (false);
-					return ;
+					resolve(false);
+					return;
 				}
 			})
 		}))
@@ -873,7 +875,7 @@ module.exports = {
 					for (let i = 0; i < results.length; i++) {
 						if (results[i].liked == likedid) {
 							resolve(true);
-							return ;
+							return;
 						}
 					}
 				}
@@ -903,7 +905,7 @@ module.exports = {
 					for (let i = 0; i < results.length; i++) {
 						if (results[i].disliked == dislikedid) {
 							resolve(true);
-							return ;
+							return;
 						}
 					}
 				}
@@ -968,7 +970,7 @@ module.exports = {
 					for (let i = 0; i < results.length; i++) {
 						if (results[i].blocked == blockedid) {
 							resolve(true);
-							return ;
+							return;
 						}
 					}
 				}
@@ -1009,7 +1011,7 @@ module.exports = {
 					for (let i = 0; i < results.length; i++) {
 						if (results[i].visited == visitedid) {
 							resolve(true);
-							return ;
+							return;
 						}
 					}
 				}
@@ -1067,8 +1069,8 @@ module.exports = {
 		}));
 	},
 	delete_user: function delete_user(username, password) {
-        return (new Promise((resolve, reject) => {
-            if (username && password) {
+		return (new Promise((resolve, reject) => {
+			if (username && password) {
 				//Check that password and username match
 				connection.query('SELECT username, password FROM matcha.users WHERE username = ?', [
 					username,
@@ -1110,11 +1112,11 @@ module.exports = {
 						})
 					}
 				})
-            } else {
-                resolve('Le pseudo et le mot de passe ne correspondent pas');
-            }
-        }));
-    },
+			} else {
+				resolve('Le pseudo et le mot de passe ne correspondent pas');
+			}
+		}));
+	},
 	logg_user: function logg_user(username, password) {
 		return (new Promise((resolve, reject) => {
 			if (username && password) {
@@ -1161,9 +1163,9 @@ module.exports = {
 			], (err) => {
 				if (err) {
 					console.log("Failed to update lat lng for " + username + " :\n" + err.stack);
-					reject ('Une erreur est survenue lors de la mise a jour de la geolocalisation');
+					reject('Une erreur est survenue lors de la mise a jour de la geolocalisation');
 				} else {
-					resolve ({
+					resolve({
 						lat: lat,
 						lng: lng
 					});
@@ -1228,43 +1230,43 @@ module.exports = {
 			if (typeof fetcher.gender != 'undefined') {
 				let orientation;
 				switch (fetcher.gender) {
-					case ('Man') :
+					case ('Man'):
 						orientation = 'Men';
 						break;
-						case ('Women') :
-							orientation = 'Women'
-							break;
-							default :
-							orientation = 'Both'
-							break;
-						}
-						query += ' AND (orientation = ? OR orientation = \'Both\')';
-						query_values.push(orientation);
-					}
-					//use fetcher's orientation
-					if (typeof fetcher.orientation != 'undefined') {
-						if (fetcher.orientation == 'Men') {
-							query += ' AND gender = ?';
-							query_values.push('Man');
-						} else if (fetcher.orientation == 'Women') {
-							query += ' AND gender = ?';
-							query_values.push('Woman');
-						}
-					}
-					if (typeof options.allow_dislikes != 'undefined' && options.allow_dislikes != true) {
-						query += ' EXCEPT SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_interests n ON u.id = n.user INNER JOIN matcha.users_dislikes d ON u.id = d.disliked WHERE d.disliker = (SELECT id FROM matcha.users WHERE username = ?)';
-						query_values.push(fetcher.username);
-					}
-					query += ' LIMIT ?, 5';
-					query_values.push(0);
-					connection.query(query, query_values, (err, results) => {
-						if (err) {
-							console.log(err.stack);
-							reject('Failed to fetch users');
-						} else {
-							resolve(results);
-						}
-					})
-				}));
+					case ('Women'):
+						orientation = 'Women'
+						break;
+					default:
+						orientation = 'Both'
+						break;
+				}
+				query += ' AND (orientation = ? OR orientation = \'Both\')';
+				query_values.push(orientation);
 			}
-		};
+			//use fetcher's orientation
+			if (typeof fetcher.orientation != 'undefined') {
+				if (fetcher.orientation == 'Men') {
+					query += ' AND gender = ?';
+					query_values.push('Man');
+				} else if (fetcher.orientation == 'Women') {
+					query += ' AND gender = ?';
+					query_values.push('Woman');
+				}
+			}
+			if (typeof options.allow_dislikes != 'undefined' && options.allow_dislikes != true) {
+				query += ' EXCEPT SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_interests n ON u.id = n.user INNER JOIN matcha.users_dislikes d ON u.id = d.disliked WHERE d.disliker = (SELECT id FROM matcha.users WHERE username = ?)';
+				query_values.push(fetcher.username);
+			}
+			query += ' LIMIT ?, 5';
+			query_values.push(0);
+			connection.query(query, query_values, (err, results) => {
+				if (err) {
+					console.log(err.stack);
+					reject('Failed to fetch users');
+				} else {
+					resolve(results);
+				}
+			})
+		}));
+	}
+};

@@ -796,7 +796,23 @@ module.exports = {
 							console.log(err.stack);
 							reject('Quelque chose cloche, nous enquêtons');
 						} else {
-							resolve(true);
+							checkCompleteProfile(username).then((result) => {
+								if (typeof result == 'undefined') {
+									connection.query('UPDATE matcha.users SET status=\'Complete\' WHERE username = ?', [
+										username
+									], (err) => {
+										if (err) {
+											console.log('Failed to mark profile as complete:\n' + err.stack);
+											reject('Failed to mark profile as complete');
+										} else {
+											resolve(true);
+										}
+									})
+								}
+							}).catch((reason) => {
+								console.log('Failed to checkCompleteProfile: ' + reason);
+								reject('Failed to checkCompleteProfile');
+							})
 						}
 					});
 				} else {
@@ -814,7 +830,23 @@ module.exports = {
 								console.log(err.stack);
 								reject('Something went wrong, we are trying to solve it');
 							} else {
-								resolve(true);
+								checkCompleteProfile(username).then((result) => {
+									if (typeof result == 'undefined') {
+										connection.query('UPDATE matcha.users SET status=\'Complete\' WHERE username = ?', [
+											username
+										], (err) => {
+											if (err) {
+												console.log('Failed to mark profile as complete:\n' + err.stack);
+												reject('Failed to mark profile as complete');
+											} else {
+												resolve(true);
+											}
+										})
+									}
+								}).catch((reason) => {
+									console.log('Failed to checkCompleteProfile: ' + reason);
+									reject('Failed to checkCompleteProfile');
+								})
 							}
 						});
 					}
@@ -1260,6 +1292,8 @@ module.exports = {
 				query += ' EXCEPT SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_interests n ON u.id = n.user INNER JOIN matcha.users_dislikes d ON u.id = d.disliked WHERE d.disliker = (SELECT id FROM matcha.users WHERE username = ?)';
 				query_values.push(fetcher.username);
 			}
+			query += ' EXCEPT SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_interests n ON u.id = n.user INNER JOIN matcha.users_blocks b ON u.id = b.blocked WHERE b.blocker = (SELECT id FROM matcha.users WHERE username = ?)';
+			query_values.push(fetcher.username);
 			query += ' LIMIT ?, 5';
 			query_values.push(0);
 			connection.query(query, query_values, (err, results) => {

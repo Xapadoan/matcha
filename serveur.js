@@ -274,6 +274,7 @@ app.get('/delete_image/:id', (req, res) => {
 	}
 	memberManager.checkAuthorization(req.session.username, ['Confirmed', 'Complete']).then((result) => {
 		if (result == true) {
+			console.log('OK');
 			memberManager.delete_image(req.session.username, req.params.id).then((result) => {
 				if (result != true) {
 					req.session.error = result;

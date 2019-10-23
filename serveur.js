@@ -268,14 +268,12 @@ app.post('/login', csrfProtection, (req, res) => {
 });
 
 app.get('/delete_image/:id', (req, res) => {
-	console.log('OK')
 	if (req.params.id < 1 || req.params.id > 5) {
 		req.session.notification = 'Cette photo n\'existe pas';
 		res.redirect(301, '/home');
 	}
 	memberManager.checkAuthorization(req.session.username, ['Confirmed', 'Complete']).then((result) => {
 		if (result == true) {
-			console.log('OK');
 			memberManager.delete_image(req.session.username, req.params.id).then((result) => {
 				if (result != true) {
 					req.session.error = result;

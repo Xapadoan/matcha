@@ -5,6 +5,7 @@ let uniqid = require('uniqid');
 let data = require('./database.json');
 let server = require('./server_settings.json');
 let servermail = require('./mail_data.json');
+let fs = require('fs');
 
 let transporter = mailer.createTransport({
 	service: servermail.service,
@@ -1100,6 +1101,68 @@ module.exports = {
 					resolve(true);
 				}
 			});
+		}));
+	},
+	delete_image: function delete_image(username, image) {
+		return (new Promise((resolve, reject) => {
+			this.getUserImages(username).then((results) => {
+				if (results.image1 == null) {
+					resolve('Pas d\'image à supprimmer');
+					return ;
+				} else if (image == 1 && results.image2 == null && results.image3 == null && results.image4 == null && results.image5 == null) {
+					resolve('Can\'t delete your only image')
+				} else if (image == 1) {
+					let replace;
+					if (results.image2 != null) {
+						replace = [results.image2, 2];
+					} else if (results.image3 != null) {
+						replace = [results.image3, 3];
+					} else if (results.image4 != null) {
+						replace = [results.image4, 4];
+					} else {
+						replace = [results.image5, 5];
+					}
+					query = 'UPDATE FROM matcha.images i INNER JOIN matcha.users u ON u.id = i.user SET image1=?, image' + replace[1] + '=null WHERE u.username = ?';
+					connection.query(query, [
+						replace[0],
+						username
+					], (err) => {
+						if (err) {
+							console.log('Failed to remove image from database:\n' + err.stack);
+							reject('Failed to remove image from database')
+						} else {
+							fs.unlink(results['image' + image], (err) => {
+								if (err) {
+									console.log('Failed to delete image from server:\n' + err.stack);
+									reject('Failed to delete image from server')
+								} else {
+									resolve(true);
+								}
+							})
+						}
+					})
+				} else {
+					query = 'UPDATE FROM matcha.images i INNER JOIN matcha.users u ON u.id = i.user SET image' + image + '=null WHERE u.username = ?';
+					connection.query(query, [username], (err) => {
+						if (err) {
+							console.log('Failed to remove image from database:\n' + err.stack);
+							reject('Failed to remove image from database')
+						} else {
+							fs.unlink(results['image' + image], (err) => {
+								if (err) {
+									console.log('Failed to delete image from server:\n' + err.stack);
+									reject('Failed to delete image from server')
+								} else {
+									resolve(true);
+								}
+							})
+						}
+					})
+				}
+			}).catch((reason) => {
+				console.log('Failed to getUserImages:' + reason);
+				reject('Failed to getUserImages');
+			})
 		}));
 	},
 	delete_user: function delete_user(username, password) {

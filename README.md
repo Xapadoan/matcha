@@ -12,6 +12,8 @@
 - Choper des sons:
     - claque
     - bisous
+- Recherche:
+    - Ajouter options de tri
 - Gerer les matchs
     - Prendre en compte les interets
     - Afficher la geolocalisation sous forme d'adresse si dans la bdd
@@ -24,7 +26,9 @@
 - Ameliorer la page perso
 - Gerer les likes:
     - Envoyer notification
-- Notifications en temps reel
+- Notifications en temps reel:
+    - Utiliser socket.io
+- Du front, on a bientot fini
 
 ## Setup
 

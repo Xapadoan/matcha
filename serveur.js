@@ -268,6 +268,7 @@ app.post('/login', csrfProtection, (req, res) => {
 });
 
 app.get('/deleteimage/:id', (req, res) => {
+	console.log('requested image deletion');
 	if (req.params.id < 1 || req.params.id > 5) {
 		req.session.notification = 'Cette photo n\'existe pas';
 		res.redirect(301, '/home');

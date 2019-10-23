@@ -273,30 +273,7 @@ app.get('/delete_image/:id', (req, res) => {
 		req.session.notification = 'Cette photo n\'existe pas';
 		res.redirect(301, '/home');
 	}
-	memberManager.checkAuthorization(req.session.username, ['Confirmed', 'Complete']).then((result) => {
-		if (result == true) {
-			memberManager.delete_image(req.session.username, req.params.id).then((result) => {
-				console.log('Done ?')
-				if (result != true) {
-					req.session.error = result;
-					res.redirect('/home');
-				} else {
-					req.session.notification = 'Photo supprimée';
-					res.redirect(301, '/home');
-				}
-			}).catch((reason) => {
-				req.session.error = 'Quelque chose cloche, nous enquêtons';
-				console.log('Failed to delete image: ' + reason);
-				res.redirect(301, '/home');
-			})
-		} else {
-			req.session.notification = 'Vous devez être connecté avec un compte valide';
-			res.redirect(301, '/home');
-		}
-	}).catch((reason) => {
-		console.log('Failed to checkAuthorization: ' + reason);
-		res.redirect(301, '/home');
-	})
+
 })
 
 app.get('/delete_user', csrfProtection, (req, res) => {

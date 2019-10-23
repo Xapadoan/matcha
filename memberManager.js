@@ -452,7 +452,7 @@ module.exports = {
 				} else if (result.length > 1) {
 					console.log('checkAuthorization: More than one user found for : ' + username);
 					reject ('Several accounts with same username');
-				} else if (results[0]['status'] != status) {
+				} else if (status.includes(result[0]['status'])) {
 					resolve (false);
 				} else {
 					resolve (true);

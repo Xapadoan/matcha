@@ -1106,6 +1106,7 @@ module.exports = {
 	delete_image: function delete_image(username, image) {
 		return (new Promise((resolve, reject) => {
 			this.getUserImages(username).then((results) => {
+				console.log('ok');
 				if (results.image1 == null) {
 					resolve('Pas d\'image à supprimmer');
 					return ;
@@ -1153,7 +1154,6 @@ module.exports = {
 									console.log('Failed to delete image from server:\n' + err.stack);
 									reject('Failed to delete image from server')
 								} else {
-									console.log('OK');
 									resolve(true);
 								}
 							})

@@ -1153,6 +1153,7 @@ module.exports = {
 									console.log('Failed to delete image from server:\n' + err.stack);
 									reject('Failed to delete image from server')
 								} else {
+									console.log('OK');
 									resolve(true);
 								}
 							})

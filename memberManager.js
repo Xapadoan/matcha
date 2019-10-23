@@ -1129,7 +1129,7 @@ module.exports = {
 						reject('Failed to connect member');
 					}
 					if (results.length > 0) {
-						if (results[0].status != 'Confirmed') {
+						if (results[0].status != 'Confirmed' && results[0].status != 'Complete') {
 							resolve(false);
 						}
 						bcrypt.compare(password, results[0].password, function (err, res) {

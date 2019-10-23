@@ -461,7 +461,7 @@ module.exports = {
 						digestInterests(result.id, result.interests);
 					}
 					update_user_extended(result.id, result.age, result.gender, result.orientation, result.bio, result.interests).then((result) => {
-						this.checkCompleteProfile(username).then((result) => {
+						checkCompleteProfile(username).then((result) => {
 							if (typeof result == 'undefined') {
 								connection.query('UPDATE matcha.users SET status=Complete WHERE username = ?', [
 									username

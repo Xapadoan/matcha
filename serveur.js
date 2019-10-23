@@ -65,7 +65,6 @@ function getIntersetsTab(interests) {
 }
 
 app.get('/home', csrfProtection, (req, res) => {
-	console.log(req.header.referer);
 	if (req.session.username) {
 		memberManager.getUserImages(req.session.username).then((images) => {
 			memberManager.getUserInfos(req.session.username).then((user_info) => {
@@ -268,7 +267,7 @@ app.post('/login', csrfProtection, (req, res) => {
 	});
 });
 
-app.get('/deleteimage/:id', (req, res) => {
+app.get('/delete_image/:id', (req, res) => {
 	console.log('requested image deletion');
 	if (req.params.id < 1 || req.params.id > 5) {
 		req.session.notification = 'Cette photo n\'existe pas';

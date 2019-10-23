@@ -115,7 +115,7 @@ function checkCompleteProfile(username) {
 				if (result[0].image1 == null) {
 					missing.image1 = 1;
 				}
-				console.log(missing)
+				console.log('|' + missing + '|')
 				resolve(missing);
 			}
 		})

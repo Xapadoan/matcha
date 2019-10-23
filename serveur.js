@@ -257,84 +257,114 @@ app.post('/login', csrfProtection, (req, res) => {
 });
 
 app.get('/delete_user', csrfProtection, (req, res) => {
-	res.render('delete_user.ejs', {
-		error: error,
-		notification: notification,
-		user: req.session.username,
-		csrfToken: req.csrfToken()
-	});
+	//We need authorization
+	memberManager.checkAuthorization(req.session.username, ['Confirmed', 'Complete']).then((result) => {
+		if (result == true) {
+			res.render('delete_user.ejs', {
+				error: error,
+				notification: notification,
+				user: req.session.username,
+				csrfToken: req.csrfToken()
+			});
+		} else {
+			req.session.notfication = 'Vous devez être connecté avec un compte valide';
+			res.redirect(301, '/login');
+		}
+	}).catch((reason) => {
+		req.session.error = 'Nous n\'avonspas pu vérifier vos authorizations';
+		res.redirect('/delete_user');
+	})
 });
 
 app.post('/delete_user', csrfProtection, (req, res) => {
-	memberManager.delete_user(req.body.username, req.body.password).then((result) => {
+	//We need authorization
+	memberManager.checkAuthorization(req.session.username, ['Confirmed', 'Complete']).then((result) => {
 		if (result == true) {
-			res.redirect('/logout');
-		} else {
-			res.render('delete_user.ejs', {
-				user: req.session.username,
-				error: result,
-				notfication: notification,
-				csrfToken: req.csrfToken()
+			memberManager.delete_user(req.body.username, req.body.password).then((result) => {
+				if (result == true) {
+					res.redirect('/logout');
+				} else {
+					res.render('delete_user.ejs', {
+						user: req.session.username,
+						error: result,
+						notfication: notification,
+						csrfToken: req.csrfToken()
+					});
+				}
+			}).catch((reason) => {
+				res.render('delete_user.ejs', {
+					error: reason,
+					notfication: notification,
+					csrfToken: req.csrfToken()
+				});
 			});
+		} else {
+			req.session.notification = 'Vous devez être connecté avec un compte valide'
+			res.redirect(301, '/delete_user');
 		}
 	}).catch((reason) => {
-		res.render('delete_user.ejs', {
-			error: reason,
-			notfication: notification,
-			csrfToken: req.csrfToken()
-		});
+		req.session.error = 'Nous n\'avonspas pu vérifier vos authorizations';
+		res.redirect('/delete_user');
 	});
 });
 
 app.post('/new_photo', csrfProtection, (req, res) => {
-	if (typeof req.files == 'undefined') {
-		res.write('No file');
-	}
-	if (req.files == null) {
-		req.session.error = 'Vous devez choisir une image à uploader'
-		res.redirect('/home');
-		return;
-	}
-	let image = req.files.image;
-	let type = image.mimetype;
-	if (type == 'image/png') {
-		if (imageChecker.checkPNG(image.data) !== true) {
-			console.log('FakeImage');
-			req.session.error = 'Cette image n\'est ppas valide';
-			res.redirect(301, '/home');
-			return;
-		}
-	} else if (type == 'image/jpeg' || type == 'image/jpg') {
-		if (imageChecker.checkJPG(image.data) !== true) {
-			req.session.error = 'Cette image n\'est pas valide';
-			res.redirect(301, '/home');
-			return;
-		}
-	}
-	if (type != 'image/png' && type != 'image/jpg' && type != 'image/jpeg') {
-		req.session.error = 'Ce format n\'est pas supporté';
-		res.redirect(301, '/home');
-		return;
-	} else if (image.size == 0) {
-		req.session.error = 'L\'image semble vide';
-		res.redirect(301, '/home');
-		return;
-	} else {
-		image.mv(__dirname + '/resources/user_images/' + image.name, (err) => {
-			if (err) {
-				console.log(err.stack);
-				req.session.error = 'Une erreur exceptionnelle est survenue, si elle persiste, veuillez nous contacter';
-				res.redirect(301, '/home');
+	//We need authorization
+	memberManager.checkAuthorization(req.session.username, ['Confirmed', 'Complete']).then((result) => {
+		if (result == true) {
+			if (typeof req.files == 'undefined') {
+				res.write('No file');
 			}
-			memberManager.addUserImage(req.session.username, image.name).then((result) => {
-				req.session.notfication = 'L\'image à été uploadée avec succes';
-				res.redirect(301, '/');
-			}).catch((reason) => {
-				req.session.error = reason;
-				res.redirect(301, '/');
-			});
-		});
-	}
+			if (req.files == null) {
+				req.session.error = 'Vous devez choisir une image à uploader'
+				res.redirect('/home');
+				return;
+			}
+			let image = req.files.image;
+			let type = image.mimetype;
+			if (type == 'image/png') {
+				if (imageChecker.checkPNG(image.data) !== true) {
+					console.log('FakeImage');
+					req.session.error = 'Cette image n\'est ppas valide';
+					res.redirect(301, '/home');
+					return;
+				}
+			} else if (type == 'image/jpeg' || type == 'image/jpg') {
+				if (imageChecker.checkJPG(image.data) !== true) {
+					req.session.error = 'Cette image n\'est pas valide';
+					res.redirect(301, '/home');
+					return;
+				}
+			}
+			if (type != 'image/png' && type != 'image/jpg' && type != 'image/jpeg') {
+				req.session.error = 'Ce format n\'est pas supporté';
+				res.redirect(301, '/home');
+				return;
+			} else if (image.size == 0) {
+				req.session.error = 'L\'image semble vide';
+				res.redirect(301, '/home');
+				return;
+			} else {
+				image.mv(__dirname + '/resources/user_images/' + image.name, (err) => {
+					if (err) {
+						console.log(err.stack);
+						req.session.error = 'Une erreur exceptionnelle est survenue, si elle persiste, veuillez nous contacter';
+						res.redirect(301, '/home');
+					}
+					memberManager.addUserImage(req.session.username, image.name).then((result) => {
+						req.session.notfication = 'L\'image à été uploadée avec succes';
+						res.redirect(301, '/');
+					}).catch((reason) => {
+						req.session.error = reason;
+						res.redirect(301, '/');
+					});
+				});
+			}
+		} else {
+			req.session.notification = 'Vous devez être connecté avec un compte valide';
+			res.redirect('/home');
+		}
+	})
 });
 
 app.post('/reset_password', csrfProtection, (req, res) => {
@@ -447,92 +477,158 @@ app.get('/logout', (req, res) => {
 });
 
 app.get('/like/:id', (req, res) => {
-	memberManager.like(req.session.username, req.params.id).then((results) => {
-		if (results != true) {
-			res.redirect(301, req.header.referer)
+	//We need authorization
+	memberManager.checkAuthorization(req.session.username, ['Confirmed', 'Complete']).then((result) => {
+		if (result == true) {
+			memberManager.like(req.session.username, req.params.id).then((results) => {
+				if (results != true) {
+					res.redirect(301, req.header.referer)
+				} else {
+					req.session.notification = 'Vous aimez cette personne'
+					res.redirect(301, '/profile/' + req.params.id);
+				}
+			}).catch((err) => {
+				req.session.error = 'Echec lors du like';
+				res.redirect(301, req.headers.referer);
+			});
 		} else {
-			req.session.notification = 'Vous aimez cette personne'
-			res.redirect(301, '/profile/' + req.params.id);
+			req.session.notification = 'Vous devez être connecté avec un compte valide';
+			res.redirect(301, req.header.referer);
 		}
-	}).catch((err) => {
-		req.session.error = 'Echec lors du like';
-		res.redirect(301, req.headers.referer);
-	});
+	}).catch((reason) => {
+		req.session.error = 'Nous n\'avonspas pu vérifier vos authorizations';
+		res.redirect(req.header.referer);
+	})
 });
 
 app.get('/report/:id', csrfProtection, (req, res) => {
-	memberManager.getUserName(req.params.id).then((name) => {
-		res.render('report.ejs', {
-			user: req.session.username,
-			error: error,
-			notification: notification,
-			csrfToken: req.csrfToken(),
-			name: name
-		})
+	//We need authorization
+	memberManager.checkAuthorization(username, ['Confirmed', 'Complete']).then((result) => {
+		if (result == true) {
+			memberManager.getUserName(req.params.id).then((name) => {
+				res.render('report.ejs', {
+					user: req.session.username,
+					error: error,
+					notification: notification,
+					csrfToken: req.csrfToken(),
+					name: name
+				})
+			}).catch((reason) => {
+				console.log('Failed to get name');
+				res.redirect('/')
+			})
+		} else {
+			req.session.notification = 'Vous devez être connecté avec un compte valide'
+			res.redirect(301, req.header.referer)
+		}
 	}).catch((reason) => {
-		console.log('Failed to get name');
-		res.redirect('/')
+		req.session.error = 'Nous n\'avonspas pu vérifier vos authorizations';
+		res.redirect(req.header.referer);
 	})
 })
 
 app.post('/report/:id', csrfProtection, (req, res) => {
-	memberManager.report(req.params.id, req.body.message).then((result) => {
-		if (result != true) {
-			req.session.error = 'Impossible de signaler l\'utilisateur';
-			res.redirect(301, '/');
+	//We need authorization
+	memberManager.checkAuthorization(req.session.username, ['Confirmed', 'Complete']).then((result) => {
+		if (result == true) {
+			memberManager.report(req.params.id, req.body.message).then((result) => {
+				if (result != true) {
+					req.session.error = 'Impossible de signaler l\'utilisateur';
+					res.redirect(301, '/');
+				} else {
+					req.session.notification = 'L\'utilisateur à bien été signalé';
+					res.redirect(301, '/');
+				}
+			}).catch((reason) => {
+				console.log('Failed to report user : ' + reason);
+				req.session.error = 'Impossible de signaler l\'utilisateur';
+				res.redirect('/');
+			})
 		} else {
-			req.session.notification = 'L\'utilisateur à bien été signalé';
-			res.redirect(301, '/');
+			req.session.notification = 'Vous devez être connecté avec un compte valide';
+			res.redirect(req.headers.referer);
 		}
 	}).catch((reason) => {
-		console.log('Failed to report user : ' + reason);
-		req.session.error = 'Impossible de signaler l\'utilisateur';
-		res.redirect('/');
+		req.session.error = 'Nous n\'avonspas pu vérifier vos authorizations';
+		res.redirect(req.header.referer);
 	})
 })
 
 app.get('/dislike/:id', (req, res) => {
-	memberManager.dislike(req.session.username, req.params.id).then((results) => {
-		if (results != true) {
-			req.session.error = 'Echec du non - amour';
-			res.redirect(301, '/');
+	//We need authorization
+	memberManager.checkAuthorization(req.session.username, ['Confirmed', 'Complete']).then((result) => {
+		if (result == true) {
+			memberManager.dislike(req.session.username, req.params.id).then((results) => {
+				if (results != true) {
+					req.session.error = 'Echec du non - amour';
+					res.redirect(301, '/');
+				} else {
+					req.session.notification = 'Vous n\'aimez pas cette personne';
+					res.redirect(301, '/')
+				}
+			}).catch((reason) => {
+				req.session.error = 'Echec du non - amour';
+				res.redirect(301, '/');
+			})
 		} else {
-			req.session.notification = 'Vous n\'aimez pas cette personne';
-			res.redirect(301, '/')
+			req.session.notification = 'Vous devez être connecté avec un compte valide';
+			res.redirect(301, req.header.referer);
 		}
 	}).catch((reason) => {
-		req.session.error = 'Echec du non - amour';
-		res.redirect(301, '/');
+		req.session.error = 'Nous n\'avonspas pu vérifier vos authorizations';
+		res.redirect(req.session.referer);
 	})
 })
 
 app.get('/unlike/:id', (req, res) => {
-	memberManager.unlike(req.session.username, req.params.id).then((results) => {
-		if (results != true) {
-			req.session.error = 'Echec du non - amour';
-			res.redirect(301, '/');
+	//We need authorization
+	memberManager.checkAuthorization(req.session.username, ['Confirmed', 'Complete']).then((result) => {
+		if (result == true) {
+			memberManager.unlike(req.session.username, req.params.id).then((results) => {
+				if (results != true) {
+					req.session.error = 'Echec du non - amour';
+					res.redirect(301, '/');
+				} else {
+					req.session.notification = 'Vous n\'aimez plus cette personne';
+					res.redirect(301, '/')
+				}
+			}).catch((reason) => {
+				req.session.error = 'Echec du non - amour';
+				res.redirect(301, '/')
+			})
 		} else {
-			req.session.notification = 'Vous n\'aimez plus cette personne';
-			res.redirect(301, '/')
+			req.session.notification = 'Vous devez être connecté avec un compte valide';
+			res.redirect(req.header.referer);
 		}
 	}).catch((reason) => {
-		req.session.error = 'Echec du non - amour';
-		res.redirect(301, '/')
+		req.session.error = 'Nous n\'avonspas pu vérifier vos authorizations';
+		res.redirect(req.header.referer);
 	})
 })
 
 app.get('/block/:id', (req, res) => {
-	memberManager.block(req.session.username, req.params.id).then((results) => {
-		if (results != true) {
-			req.session.error = 'Echec du bloquage de l\'utilisateur';
-			res.redirect(301, req.header.referer)
+	//We need authorization
+	memberManager.checkAuthorization(req.session.username, ['Confirmed', 'Complete']).then((result) => {
+		if (result == true) {
+			memberManager.block(req.session.username, req.params.id).then((results) => {
+				if (results != true) {
+					req.session.error = 'Echec du bloquage de l\'utilisateur';
+					res.redirect(301, req.header.referer)
+				} else {
+					req.session.notification = 'Utilisateur bloqué';
+					res.redirect(301, '/')
+				}
+			}).catch((reason) => {
+				req.session.error = 'Echec du blocage de l\'utilisateur';
+				res.redirect(301, '/');
+			})
 		} else {
-			req.session.notification = 'Utilisateur bloqué';
-			res.redirect(301, '/')
+			req.session.notification = 'Vous devez être connecté avec un compte valide';
+			res.redirect(301, req.session.referer);
 		}
 	}).catch((reason) => {
-		req.session.error = 'Echec du blocage de l\'utilisateur';
-		res.redirect(301, '/');
+		req.session.error = 'Nous n\'avonspas pu vérifier vos authorizations';
+		res.redirect(req.header.referer);
 	})
 });
 
@@ -611,65 +707,95 @@ app.post('/search', csrfProtection, (req, res) => {
 });
 
 app.post('/update_location', csrfProtection, (req, res) => {
-	if (typeof req.body.lat != 'undefined' && req.body.lng != 'undefined') {
-		memberManager.updateLatLng(lat, lng, req.session.username);
-	} else if (typeof req.body.city != 'undefined' && req.body.street != 'undefined' && typeof req.body.country != 'undefined') {
-		console.log('Form recieved');
-		locationFinder.getLatLngFromLocation(req.body.street + ' ' + req.body.city, req.body.country).then((location) => {
-			console.log(location.lat + ', ' + location.lng);
-			memberManager.updateLatLng(req.session.username, location.lat, location.lng).then((result) => {
-				req.session.lat = result.lat;
-				req.session.lng = result.lng;
-				res.end();
-			}).catch((reason) => {
-				req.session.error = 'Quelque chose cloche, nous enquêtons';
-				console.log(reason);
-				res.end();
-			});
-			return;
-		}).catch((reason) => {
-			req.session.error = 'Quelque chose cloche, nous enquêtons';
-			console.log(reason);
-			res.end();
-			return;
-		})
-	}
+	//We need authorization
+	memberManager.checkAuthorization(req.session.notification, ['Confirmed', 'Complete']).then((result) => {
+		if (result == true) {
+			if (typeof req.body.lat != 'undefined' && req.body.lng != 'undefined') {
+				memberManager.updateLatLng(lat, lng, req.session.username);
+			} else if (typeof req.body.city != 'undefined' && req.body.street != 'undefined' && typeof req.body.country != 'undefined') {
+				console.log('Form recieved');
+				locationFinder.getLatLngFromLocation(req.body.street + ' ' + req.body.city, req.body.country).then((location) => {
+					console.log(location.lat + ', ' + location.lng);
+					memberManager.updateLatLng(req.session.username, location.lat, location.lng).then((result) => {
+						req.session.lat = result.lat;
+						req.session.lng = result.lng;
+						res.end();
+					}).catch((reason) => {
+						req.session.error = 'Quelque chose cloche, nous enquêtons';
+						console.log(reason);
+						res.end();
+					});
+					return;
+				}).catch((reason) => {
+					req.session.error = 'Quelque chose cloche, nous enquêtons';
+					console.log(reason);
+					res.end();
+					return;
+				})
+			}
+		} else {
+			req.session.notification = 'Vous devez être connecté avec un compte valide'
+			res.redirect(301, req.header.referer);
+		}
+	})
 });
 
 app.post('/complete', csrfProtection, (req, res) => {
-	memberManager.create_user_extended(req.session.username, req.body.age, req.body.gender, req.body.orientation, req.body.bio).then((result) => {
-		if (result === true) {
-			req.session.notification = 'Votre profil à été mis à jour avec succès';
-			res.redirect(301, '/home');
+	//We need authorization
+	memberManager.checkAuthorization(req.session.username, ['Confirmed', 'Complete']).then((result) => {
+		if (result == true) {
+			memberManager.create_user_extended(req.session.username, req.body.age, req.body.gender, req.body.orientation, req.body.bio).then((result) => {
+				if (result === true) {
+					req.session.notification = 'Votre profil à été mis à jour avec succès';
+					res.redirect(301, '/home');
+				} else {
+					req.session.error = 'Quelque chose cloche, nous enquêtons'
+					res.redirect(301, '/home')
+				}
+			}).catch((err) => {
+				console.log('Error while creating new extended profile : ' + err.stack);
+				req.session.error = 'Quelque chose cloche, nous enquêtons';
+				res.redirect(301, '/home')
+			});
 		} else {
-			req.session.error = 'Quelque chose cloche, nous enquêtons'
-			res.redirect(301, '/home')
+			req.session.notification = 'Vous devez étre connecté avec un compte valide';
+			res.redirect(301, req.header.referer);
 		}
-	}).catch((err) => {
-		console.log('Error while creating new extended profile : ' + err.stack);
-		req.session.error = 'Quelque chose cloche, nous enquêtons';
-		res.redirect(301, '/home')
-	});
+	}).catch((reason) => {
+		req.session.error = 'Nous n\'avonspas pu vérifier vos authorizations';
+		res.redirect(req.header.referer);
+	})
 });
 
 app.post('/update', csrfProtection, (req, res) => {
-	memberManager.updateUser(req.session.username, req.body.Firstname, req.body.Lastname, req.body.Mail, req.body.Password, req.body.Fruit).then((results) => {
-		if (results !== true) {
-			res.render('home.ejs', {
-				user: req.session.username,
-				error: results,
-				notfication: notification,
-				csrfToken: req.csrfToken()
+	//We need authorization
+	memberManager.checkAuthorization(req.session.username, ['Confirmed', 'Complete']).then((result) => {
+		if (result == true) {
+			memberManager.updateUser(req.session.username, req.body.Firstname, req.body.Lastname, req.body.Mail, req.body.Password, req.body.Fruit).then((results) => {
+				if (results !== true) {
+					res.render('home.ejs', {
+						user: req.session.username,
+						error: results,
+						notfication: notification,
+						csrfToken: req.csrfToken()
+					});
+				} else {
+					req.session.notification = 'Votre profil à été mis à jour avec succès';
+					res.redirect(301, '/home');
+				}
+			}).catch((reason) => {
+				console.log(reason);
+				req.session.error = 'Quelque chose cloche, nous enquêtons';
+				res.redirect(301, '/home');
 			});
 		} else {
-			req.session.notification = 'Votre profil à été mis à jour avec succès';
-			res.redirect(301, '/home');
+			req.session.notification = 'Vous devez étre connecté avec un compte valide';
+			res.redirect(301, req.header.referer);
 		}
 	}).catch((reason) => {
-		console.log(reason);
-		req.session.error = 'Quelque chose cloche, nous enquêtons';
-		res.redirect(301, '/home');
-	});
+		req.session.error = 'Nous n\'avonspas pu vérifier vos authorizations';
+		res.redirect(req.header.referer);
+	})
 })
 
 app.get('/signup', csrfProtection, (req, res) => {

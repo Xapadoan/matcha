@@ -441,6 +441,25 @@ module.exports = {
 			})
 		}));
 	},
+	checkAuthorization: function(username, status) {
+		return (new Promise((resolve, reject) => {
+			connection.query('SELECT status FROM matcha.users WHERE username = ?', [
+				username
+			], (err, result) => {
+				if (err) {
+					console.log('Failed to checkAuthorization:\n' + err.stack);
+					reject ('Failed to checkAuthorization');
+				} else if (result.length > 1) {
+					console.log('checkAuthorization: More than one user found for : ' + username);
+					reject ('Several accounts with same username');
+				} else if (results[0]['status'] != status) {
+					resolve (false);
+				} else {
+					resolve (true);
+				}
+			})
+		}))
+	},
 	getUserPopScore: function getUserPopScore(userid) {
 		return (new Promise((resolve, reject) => {
 			connection.query('SELECT COUNT(DISTINCT v.visitor) AS visits, COUNT(DISTINCT l.liker) AS likes FROM matcha.users_visits v INNER JOIN matcha.users_likes l ON l.liked = v.visited WHERE v.visited = ?', [

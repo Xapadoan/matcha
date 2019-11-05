@@ -269,6 +269,7 @@ app.post('/login', csrfProtection, (req, res) => {
 
 app.get('/delete_image/:id', (req, res) => {
 	//Check parameter
+	console.log(req.params.id)
 	if (req.params.id > 5 || req.params.id < 1) {
 		req.session.error = 'Cette image n\'existe pas';
 		res.redirect('/home');

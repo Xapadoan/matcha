@@ -1109,6 +1109,9 @@ module.exports = {
 				if (results.image1 == null) {
 					resolve('Pas d\'image à supprimmer');
 					return ;
+				} else if (results['image' + image] == null) {
+					resolve('Cette image n\'existe pas');
+					return ;
 				} else if (image == 1 && results.image2 == null && results.image3 == null && results.image4 == null && results.image5 == null) {
 					resolve('Ne supprimez pas votre seule image !')
 				} else if (image == 1) {

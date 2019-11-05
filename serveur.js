@@ -269,13 +269,19 @@ app.post('/login', csrfProtection, (req, res) => {
 
 app.get('/delete_image/:id', (req, res) => {
 	//Check parameter
-	console.log(req.params.id)
 	if (req.params.id > 5 || req.params.id < 1) {
 		req.session.error = 'Cette image n\'existe pas';
 		res.redirect('/home');
 		return ;
 	}
-	res.end('Got : ' + req.params.id)
+	memberManager.checkAuthorization(req.session.username, ['Confirmed', 'Complete']).then((result) => {
+		if (result == true) {
+			res.end('Got : ' + req.params.id)
+		} else {
+			req.session.notfication = 'Vous devez être connecté avec un compte valide';
+			res.redirect(301, '/login');
+		}
+	})
 })
 
 app.get('/delete_user', csrfProtection, (req, res) => {

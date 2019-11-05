@@ -276,7 +276,18 @@ app.get('/delete_image/:id', (req, res) => {
 	}
 	memberManager.checkAuthorization(req.session.username, ['Confirmed', 'Complete']).then((result) => {
 		if (result == true) {
-			res.end('Got : ' + req.params.id)
+			memberManager.delete_image(req.session.username, req.params.id).then((result) => {
+				if (result == true) {
+					req.session.notification = 'Votre image à bien été supprimée';
+					res.redirect(301, '/home');
+				} else {
+					req.session.error = result;
+					res.redirect(301, '/home');
+				}
+			}).catch((reason) => {
+				req.session.error = 'Quelque chose cloche, nous enquêtons';
+				res.redirect(301, '/home')
+			})
 		} else {
 			req.session.notfication = 'Vous devez être connecté avec un compte valide';
 			res.redirect(301, '/login');

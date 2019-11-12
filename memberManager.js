@@ -547,22 +547,17 @@ module.exports = {
 	},
 	checkMatch(username, destid) {
 		return (new Promise((resolve, reject) => {
-			connection.query('SELECT username FROM matcha.users u INNER JOIN matcha.users_likes l ON u.id = l.liked WHERE u.username = ? AND l.liker = ? OR l.liked = ? AND l.liker = (SELECT username FROM matcha.users WHERE id = ?)', [
+			connection.query('SELECT u.id FROM matcha.users u INNER JOIN matcha.users_likes l ON u.id = l.liker WHERE u.id IN (SELECT l.liked FROM matcha.users_likes l INNER JOIN matcha.users u ON u.id = l.liker WHERE u.username = ?) AND u.id = ?', [
 				username,
-				destid,
-				destid,
-				username
+				destid
 			], (err, results) => {
 				if (err) {
-					console.log('Failed to checkMatch :\n' + err.stack);
-					req.session.error = 'Quelque chose cloche, nous enquêtons';
-					reject('Failed to check matches');
+					console.log('Failed to get matches:\n' + err.stack);
+					reject('Failed to getUserMatchs');
 				} else {
-					console.log(results);
-					resolve(true);
+					resolve(results)
 				}
 			})
-		}))
 	},
 	checkAuthorization: function (username, status) {
 		return (new Promise((resolve, reject) => {

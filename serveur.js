@@ -301,6 +301,7 @@ app.get('/delete_image/:id', (req, res) => {
 })
 
 app.get('/chat/:id', (req, res) => {
+	console.log('OK');
 	memberManager.checkAuthorization(req.session.username, ['Complete']).then((result) => {
 		if (result == true) {
 			//Authorisation OK

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<%- include('head.ejs') %>
+	<body>
+		<%- include('header.ejs') %>
+		<input type='text' id='message' placeholder="Ecrivez votre message..." />
+		<button id='send_button'>Envoyer</button>
+		<section id='messages'>
+		</section>
+		<script src="/socket.io/socket.io.js"></script>
+		<script>
+			var socket = io();
+			var button = document.getElementById('send_button');
+			button.onclick = function () {
+				text = document.getElementById('message').value;
+				var mess = document.createElement('p').innerHTML = '<span class="author">' + req.session.username + '</span> : ' + text;
+				document.getElementById('messages').appendChild(mess);
+				socket.emit('message', '<span class="author">' + req.session.username + '</span> : ' + text)
+			}
+		</script>
+	</body>
+</html>

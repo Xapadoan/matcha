@@ -9,7 +9,7 @@
 		</section>
 		<script src="/socket.io/socket.io.js"></script>
 		<script>
-			var socket = io();
+			var socket = io.connect('http://10.12.223.254/chat/<%= id %>');
 			var button = document.getElementById('send_button');
 			button.onclick = function () {
 				text = document.getElementById('message').value;
@@ -17,6 +17,10 @@
 				document.getElementById('messages').appendChild(mess);
 				socket.emit('message', '<span class="author">' + req.session.username + '</span> : ' + text)
 			}
+			socket.on('message', function(message) {
+				var mess = document.createElement('p').innerHTML = message;
+				document.getElementById('messages').appendChild(mess);
+			})
 		</script>
 	</body>
 </html>

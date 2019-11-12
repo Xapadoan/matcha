@@ -8,7 +8,8 @@ var imageChecker = require("./imageChecker.js");
 var locationFinder = require("./locationFinder.js");
 
 var app = express();
-var io = require("socket.io")(app)
+var server = require('http').Server(app)
+var io = require("socket.io")(server)
 
 //requiered to retrieve x-www-form-encoded in req.body
 app.use(express.urlencoded({ extended: true }));
@@ -307,13 +308,11 @@ app.get('/chat/:id', (req, res) => {
 			//Authorisation OK
 			memberManager.checkMatch(req.session.username, req.params.id).then((result) => {
 				if (result == true) {
-					io.on('message', (message) => {
-						console.log(message);
-					})
 					res.render('chat.ejs', {
 						user: req.session.username,
 						error: error,
-						notification: notification
+						notification: notification,
+						id: req.params.id
 					})
 				} else {
 					req.session.error = 'Vous ne pouvez pas discuter avec cette personne';

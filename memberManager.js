@@ -547,7 +547,7 @@ module.exports = {
 	},
 	checkMatch(username, destid) {
 		return (new Promise((resolve, reject) => {
-			connection.query('SELECT u.id FROM matcha.users u INNER JOIN matcha.users_likes l ON u.id = l.liker WHERE u.id IN (SELECT l.liked FROM matcha.users_likes l INNER JOIN matcha.users u ON u.id = l.liker WHERE u.username = ?) AND u.id = ?', [
+			connection.query('SELECT u.id FROM matcha.users u INNER JOIN matcha.users_likes l ON u.id = l.liker WHERE u.id IN (SELECT l.liked FROM matcha.users_likes l INNER JOIN matcha.users u ON u.id = l.liker WHERE u.username = ?) AND l.liker = ?', [
 				username,
 				destid
 			], (err, results) => {

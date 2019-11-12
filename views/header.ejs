@@ -105,10 +105,10 @@
 	<nav>
 		<% if (typeof locals.user == 'undefined') { %>
 		<a href="/signup" title="Créer un compte">Créer un compte</a>
-		<a href="/login" title="Se connecter"><img src='login' title="Se connecter" /></a>
+		<a href="/login" title="Se connecter"><img src='login.png' title="Se connecter" /></a>
 		<% } else { %>
 		<a href="/home" title="Espace Personnel"><%= user %></a>
-		<a href="/logout" title="Déconnexion"><img src='logout' title="Se déconnecter" /></a>
+		<a href="/logout" title="Déconnexion"><img src='logout.png' title="Se déconnecter" /></a>
 		<% } %>
 	</nav>
 </header>

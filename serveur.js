@@ -301,28 +301,48 @@ app.get('/delete_image/:id', (req, res) => {
 })
 
 app.get('/chat/:id', (req, res) => {
-	console.log('OK');
+	console.log('OK1');
 	memberManager.checkAuthorization(req.session.username, ['Complete']).then((result) => {
+		console.log('OK2');
 		if (result == true) {
+			console.log('OK3');
 			//Authorisation OK
 			memberManager.checkMatch(req.session.username, req.params.id).then((result) => {
+				console.log('OK4');
 				if (result == true) {
+					console.log('OK5');
 					res.end('OK');
+					console.log('OK');
 				} else {
+					console.log('OK');
 					req.session.error = 'Vous ne pouvez pas discuter avec cette personne';
+					console.log('OK');
 					res.redirect(301, '/');
+					console.log('OK10');
 				}
+				console.log('OK');
 			}).catch((reason) => {
+				console.log('OK');
 				console.log('Failed to check match :\n' + reason);
+				console.log('OK');
 				req.session.error = 'Failed to check match';
+				console.log('OK');
 				res.redirect(301, '/');
+				console.log('OK');
 			})
+			console.log('OK');
 		}
+		console.log('OK');
 	}).catch((reason) => {
+		console.log('OK');
 		console.log('Failed to check Authorisation :\n' + reason);
+		console.log('OK');
 		req.session.error = 'Quelque chose cloche, nous enquêtons';
+		console.log('OK');
 		res.redirect(301, '/home');
+		console.log('OK');
 	})
+	console.log('OK');
 })
 
 app.get('/delete_user', csrfProtection, (req, res) => {

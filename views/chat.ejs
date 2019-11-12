@@ -7,7 +7,7 @@
 		<button id='send_button'>Envoyer</button>
 		<section id='messages'>
 		</section>
-		<script src="/socket.io/socket.io.js"></script>
+		<script type='application/javascript' language='javascript' src="/socket.io/socket.io.js"></script>
 		<script>
 			var socket = io.connect('http://10.12.223.254/chat/<%= id %>');
 			var button = document.getElementById('send_button');

@@ -545,6 +545,25 @@ module.exports = {
 			})
 		}));
 	},
+	checkmatch(username, destid) {
+		return (new Promise((resolve, reject) => {
+			connection.query('SELECT username FROM matcha.users u INNER JOIN matcha.users_likes l ON u.id = l.liked WHERE u.username = ? AND l.liker = ? OR l.liked = ? AND l.liker = (SELECT username FROM matcha.users WHERE id = ?)', [
+				username,
+				destid,
+				destid,
+				username
+			], (err, results) => {
+				if (err) {
+					console.log('Failed to checkMatch :\n' + err.stack);
+					req.session.error = 'Quelque chose cloche, nous enquêtons';
+					reject('Failed to check matches');
+				} else {
+					console.log(results);
+					resolve(true);
+				}
+			})
+		}))
+	},
 	checkAuthorization: function (username, status) {
 		return (new Promise((resolve, reject) => {
 			if (typeof username == 'undefined' || username == null) {

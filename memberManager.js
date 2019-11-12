@@ -558,6 +558,7 @@ module.exports = {
 					resolve(results)
 				}
 			})
+		}));
 	},
 	checkAuthorization: function (username, status) {
 		return (new Promise((resolve, reject) => {

@@ -13,6 +13,7 @@ var io = require("socket.io")(server)
 
 io.sockets.on('connection', function(socket) {
 	socket.on('message', function (message) {
+		console.log(message);
 		socket.emit('message', message);
 	})
 })

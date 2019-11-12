@@ -17,6 +17,7 @@
 				mess.innerHTML = '<span class="author">' + req.session.username + '</span> : ' + text;
 				document.getElementById('messages').appendChild(mess);
 				socket.emit('message', '<span class="author">' + req.session.username + '</span> : ' + text)
+				document.getElementById('message').value = "";
 			}
 			socket.on('message', function(message) {
 				var mess = document.createElement('p').innerHTML = message;

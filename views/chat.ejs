@@ -18,6 +18,7 @@
 				document.getElementById('messages').appendChild(mess);
 				socket.emit('message', '<span class="author">' + req.session.username + '</span> : ' + text)
 				document.getElementById('message').value = "";
+				console.log('Sent !');
 			}
 			socket.on('message', function(message) {
 				var mess = document.createElement('p').innerHTML = message;

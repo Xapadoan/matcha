@@ -11,6 +11,12 @@ var app = express();
 var server = require('http').Server(app)
 var io = require("socket.io")(server)
 
+io.sockets.on('connection', function(socket) {
+	socket.on('message', function (message) {
+		socket.emit('message', message);
+	})
+})
+
 //requiered to retrieve x-www-form-encoded in req.body
 app.use(express.urlencoded({ extended: true }));
 //requiered to use csrf protection

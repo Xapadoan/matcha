@@ -554,8 +554,10 @@ module.exports = {
 				if (err) {
 					console.log('Failed to get matches:\n' + err.stack);
 					reject('Failed to getUserMatchs');
+				} else if (results.length < 1) {
+					resolve(false);
 				} else {
-					resolve(results)
+					resolve(true);
 				}
 			})
 		}));

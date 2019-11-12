@@ -83,7 +83,7 @@
         <article id='user<%= matchs[i].id %>' class='public_profile_mini'>
             <p><%= matchs[i].firstname %> <%= matchs[i].lastname %>, <%= matchs[i].age %></p>
             <p>(<%= matchs[i].gender %>)</p><br />
-            <a href='/like/<%= matchs[i].id %>'>Like</a>
+            <a href='/like/<%= matchs[i].id %>'><img src='/like.png' title="Like" /></a>
             <% switch (matchs[i].fruit) {
                         case ('#pasdecoupdunsoir'): %>
             <img src='coconut.png' height="75" width="75" title="#pasdecoupdunsoir" />

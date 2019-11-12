@@ -545,7 +545,7 @@ module.exports = {
 			})
 		}));
 	},
-	checkmatch(username, destid) {
+	checkMatch(username, destid) {
 		return (new Promise((resolve, reject) => {
 			connection.query('SELECT username FROM matcha.users u INNER JOIN matcha.users_likes l ON u.id = l.liked WHERE u.username = ? AND l.liker = ? OR l.liked = ? AND l.liker = (SELECT username FROM matcha.users WHERE id = ?)', [
 				username,

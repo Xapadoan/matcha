@@ -168,7 +168,7 @@
 			<article id='user<%= profiles[i].id %>' class='public_profile_mini'>
 				<p><%= profiles[i].firstname %> <%= profiles[i].lastname %>, <%= profiles[i].age %></p>
 				<p>(<%= profiles[i].gender %>)</p><br />
-				<a href='/like/<%= profiles[i].id %>'>Like</a>
+				<a href='/like/<%= profiles[i].id %>'><img src='/like.png' title="Like" /></a>
 				<% switch (profiles[i].fruit) {
                         case ('#pasdecoupdunsoir'): %>
 				<img src='coconut.png' height="75" width="75" title="#pasdecoupdunsoir" />

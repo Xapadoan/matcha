@@ -9,7 +9,7 @@
 		</section>
 		<script src="/socket.io/socket.io.js"></script>
 		<script>
-			var socket = io.connect('http://localhost:80');
+			var socket = io.connect();
 			socket.emit('new_log', 'Someone is here')
 		</script>
 	</body>

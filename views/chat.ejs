@@ -4,12 +4,12 @@
 	<body>
 		<%- include('header.ejs') %>
 		<input type='text' id='message' placeholder="Ecrivez votre message..." />
-		<button id='send_button' onclick="sendMessage();">Envoyer</button>
+		<button id='send_button' onclick="sendMessage()">Envoyer</button>
 		<section id='messages'>
 		</section>
-		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
 		<script>
-			var socket = io.connect('http://localhost/chat');
+			var socket = io.connect();
 
 			function sendMessage() {
 				var message = document.getElementById('message');
@@ -19,12 +19,6 @@
 				});
 				message.value = "";
 			}
-
-			socket.on('message', (message) => {
-				let mess = document.createElement('P');
-				mess.innerHTML = '<span>' + message.author + '</span> : ' + message;
-				document.getElementById('messages').appendChild(mess);
-			})
 		</script>
 	</body>
 </html>

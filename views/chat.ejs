@@ -7,23 +7,10 @@
 		<button id='send_button'>Envoyer</button>
 		<section id='messages'>
 		</section>
-		<script type='text/javascript' src="/socket.io/socket.io.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
 		<script>
-			var socket = io.connect('http://10.12.223.254/chat/<%= id %>');
-			var button = document.getElementById('send_button');
-			button.onclick = function () {
-				text = document.getElementById('message').value;
-				var mess = document.createElement('p');
-				mess.innerHTML = '<span class="author">' + req.session.username + '</span> : ' + text;
-				document.getElementById('messages').appendChild(mess);
-				socket.emit('message', '<span class="author">' + req.session.username + '</span> : ' + text)
-				document.getElementById('message').value = "";
-				console.log('Sent !');
-			}
-			socket.on('message', function(message) {
-				var mess = document.createElement('p').innerHTML = message;
-				document.getElementById('messages').appendChild(mess);
-			})
+			var socket = io.connect('http://localhost');
+			socket.emit('new_log', 'Someone is here')
 		</script>
 	</body>
 </html>

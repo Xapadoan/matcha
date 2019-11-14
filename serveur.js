@@ -12,6 +12,7 @@ var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 
 io.on('connection', (socket) => {
+	console.log('Someone accessed session')
 	socket.on('new_log', (data) => {
 		console.log('Someone accessed to chat :\n' + data);
 	})

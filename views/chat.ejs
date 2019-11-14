@@ -7,7 +7,6 @@
 		<button id='send_button' onclick="sendMessage();">Envoyer</button>
 		<section id='messages'>
 		</section>
-		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
 		<script>
 			var socket = io.connect();
@@ -24,7 +23,7 @@
 			socket.on('message', (message) => {
 				let mess = document.createElement('P');
 				mess.innerHTML = '<span>' + message.author + '</span> : ' + message;
-				#(messages).appendChild(mess);
+				document.getElementById('messages').appendChild(mess);
 			})
 		</script>
 	</body>

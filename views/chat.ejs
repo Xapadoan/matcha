@@ -4,18 +4,28 @@
 	<body>
 		<%- include('header.ejs') %>
 		<input type='text' id='message' placeholder="Ecrivez votre message..." />
-		<button id='send_button'>Envoyer</button>
+		<button id='send_button' onclick="sendMessage();">Envoyer</button>
 		<section id='messages'>
 		</section>
-		<script>
-			console.log('OKOKOKO');
-		</script>
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
 		<script>
-			console.log('UIUIUIU')
 			var socket = io.connect();
-			socket.emit('new_log', 'Someone is here')
+
+			function sendMessage() {
+				var message = document.getElementById('message');
+				socket.emit('message', {
+					message: message.value,
+					author: 'mabite'
+				});
+				message.value = "";
+			}
+
+			socket.on('message', (message) => {
+				let mess = document.createElement('P');
+				mess.innerHTML = '<span>' + message.author + '</span> : ' + message;
+				#(messages).appendChild(mess);
+			})
 		</script>
 	</body>
 </html>

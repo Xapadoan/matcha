@@ -7,7 +7,7 @@
 		<button id='send_button'>Envoyer</button>
 		<section id='messages'>
 		</section>
-		<script type="text/javascript" src="name.js"></script>
+		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
 		<script>
 			var socket = io.connect('http://localhost');
 			socket.emit('new_log', 'Someone is here')

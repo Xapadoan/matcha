@@ -179,6 +179,22 @@ app.get('/', csrfProtection, (req, res) => {
 	}
 });
 
+app.get('/chat', (req, res) => {
+	memberManager.checkAuthorization(req.session.username, ['Complete']).then((result) => {
+		if (result == true) {
+			res.render('chat.ejs', {
+				user: req.session.username,
+				error: error,
+				notification: notification
+			});
+		}
+	}).catch((reason) => {
+		console.log('Failed to checkAuthorization: ' + reason);
+		req.session.error = 'Quelque chose cloche, nous enquêtons';
+		res.redirect(301, '/')
+	})
+})
+
 app.get('/match', (req, res) => {
 	//We have to check for a complete profile here
 	memberManager.checkAuthorization(req.session.username, ['Complete']).then((result) => {

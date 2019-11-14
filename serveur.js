@@ -25,7 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 //requiered to use csrf protection
 var csrfProtection = csrf();
 //requiered to serve static files (stylesheets, images, ...)
-//app.use(express.static('resources'));
+app.use(express.static('resources'));
 //requiered for session usage
 app.use(session({
 	secret: 'secret',

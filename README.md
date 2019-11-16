@@ -22,7 +22,10 @@
     - Les matchs, on passe a travers les interets de l'utilisateur, et on cherche dans la table interet les utilisateurs qui correspondent
     - Matcher en fonction de la geocalisation / fruit sexe = geo proche & fruit social = geo moyenne
 - Ajouter bad crsf error handler
-- Faire le chat
+- Ameliorer le chat:
+    - front
+    - sons ?
+    - Envoi d'images ?
 - Ameliorer la page perso
 - Gerer les likes:
     - Envoyer notification

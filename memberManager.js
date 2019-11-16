@@ -82,7 +82,7 @@ function checkCompleteProfile(username) {
 				console.log('Failed to checkCompleteProfile:\n\tSeveral accounts with same user name');
 				reject('Several accounts with same username');
 			} else {
-				let missing;
+				let missing = {};
 				if (result[0].id == null) {
 					missing.id = 1;
 				}
@@ -116,7 +116,6 @@ function checkCompleteProfile(username) {
 				if (result[0].image1 == null) {
 					missing.image1 = 1;
 				}
-				console.log('|' + missing + '|')
 				resolve(missing);
 			}
 		})
@@ -432,18 +431,22 @@ module.exports = {
 							console.log(err.stack);
 							reject('Something went wrong, we are trying to solve it');
 						} else {
+							console.log('access 1')
 							checkCompleteProfile(username).then((result) => {
-								if (typeof result == 'undefined') {
+								if (typeof result == 'undefined' || Object.keys(result).length == 0) {
 									connection.query('UPDATE matcha.users SET status=\'Complete\' WHERE username = ?', [
 										username
 									], (err) => {
 										if (err) {
 											console.log('Failed to mark profile as Complete');
 											reject('Failed to mark profile as complete')
+										} else {
+											resolve(true);
 										}
 									})
+								} else {
+									resolve(true);
 								}
-								resolve(true);
 							}).catch((reason) => {
 								console.log('Failed to checkCompleteProfile');
 								reject('Failed to checkCompleteProfile')
@@ -468,18 +471,22 @@ module.exports = {
 					}
 					update_user_extended(result.id, result.age, result.gender, result.orientation, result.bio, result.interests).then((result) => {
 						checkCompleteProfile(username).then((result) => {
-							if (typeof result == 'undefined') {
+							if (typeof result == 'undefined' || Object.keys(result).length == 0) {
 								connection.query('UPDATE matcha.users SET status=\'Complete\' WHERE username = ?', [
 									username
 								], (err) => {
 									if (err) {
 										console.log('Failed to mark profile as complete:\n' + err.stack);
 										reject('Failed to mark profile as complete')
+									} else {
+										resolve(true);
 									}
 								});
+							} else {
+								resolve(true);
 							}
-							resolve(result);
 						}).catch((reason) => {
+							console.log('Failed to checkCompleteProfile:\n' + reason)
 							reject(reason);
 						});
 					}).catch((reason) => {
@@ -551,6 +558,7 @@ module.exports = {
 				username,
 				destid
 			], (err, results) => {
+				console.log(username + ' | ' + destid);
 				if (err) {
 					console.log('Failed to get matches:\n' + err.stack);
 					reject('Failed to getUserMatchs');
@@ -848,7 +856,7 @@ module.exports = {
 								reject('Something went wrong, we are trying to solve it');
 							} else {
 								checkCompleteProfile(username).then((result) => {
-									if (typeof result == 'undefined') {
+									if (typeof result == 'undefined' || Object.keys(result).length == 0) {
 										connection.query('UPDATE matcha.users SET status=\'Complete\' WHERE username = ?', [
 											username
 										], (err) => {
@@ -859,6 +867,8 @@ module.exports = {
 												resolve(true);
 											}
 										})
+									} else {
+										resolve(true);
 									}
 								}).catch((reason) => {
 									console.log('Failed to checkCompleteProfile: ' + reason);

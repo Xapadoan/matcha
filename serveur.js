@@ -12,13 +12,16 @@ var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 
 io.on('connection', (socket) => {
-	console.log('Someone accessed session')
-	socket.on('new_log', (data) => {
-		console.log('Someone accessed to chat :\n' + data);
-	})
 	socket.on('message', (message) => {
-		console.log(message);
-	})
+		io.sockets.in(socket.room).emit('message', message);
+	});
+
+	socket.on('create', (user) => {
+		socket.join(user.room);
+		socket.room = user.room;
+		socket.username = user.username;
+		io.sockets.in(user.room).emit('login', user.username + ' entered the room')
+	});
 })
 
 //requiered to retrieve x-www-form-encoded in req.body
@@ -27,6 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 var csrfProtection = csrf();
 //requiered to serve static files (stylesheets, images, ...)
 app.use(express.static('resources'));
+
 //requiered for session usage
 app.use(session({
 	secret: 'secret',
@@ -180,20 +184,45 @@ app.get('/', csrfProtection, (req, res) => {
 	}
 });
 
-app.get('/chat', (req, res) => {
+app.get('/chat/:id', (req, res) => {
+	console.log('followed')
 	memberManager.checkAuthorization(req.session.username, ['Complete']).then((result) => {
 		if (result == true) {
-			res.render('chat.ejs', {
-				user: req.session.username,
-				error: error,
-				notification: notification
-			});
+			memberManager.checkMatch(req.session.username, req.params.id).then((result) => {
+				if (result == true) {
+					if (req.params.id < req.session.userid) {
+						var room = req.params.id + '-' + req.session.userid;
+					} else {
+						var room = req.session.userid + '-' + req.params.id;
+					}
+					res.render('chat.ejs', {
+						user: req.session.username,
+						error: error,
+						notification: notification,
+						room: room
+					});
+				} else {
+					req.session.error = 'Vous n\'etes pas authorise a parler avec cette personne';
+					res.redirect(301, '/');
+					return ;
+				}
+			}).catch((reason) => {
+						console.log('Failed to checkMatchs:\n' + reason);
+						req.session.error = 'Quelque chose cloche, nous enquetons'
+						res.redirect(301, '/');
+						return ;
+					})
+		} else {
+			req.session.notification = 'Vous devez etre connecte avec un compte valide';
+			res.redirect(301, '/');
+			return ;
 		}
-	}).catch((reason) => {
-		console.log('Failed to checkAuthorization: ' + reason);
-		req.session.error = 'Quelque chose cloche, nous enquêtons';
-		res.redirect(301, '/')
-	})
+	}, (reason) => {
+		console.log('Failed to checkAuthorization:\n' + reason)
+		req.session.error = 'Quelque chose cloche, nous enquetons';
+		res.redirect(301, req.referer);
+		return ;
+	});
 })
 
 app.get('/match', (req, res) => {
@@ -422,20 +451,29 @@ app.post('/new_photo', csrfProtection, (req, res) => {
 						console.log(err.stack);
 						req.session.error = 'Une erreur exceptionnelle est survenue, si elle persiste, veuillez nous contacter';
 						res.redirect(301, '/home');
+						return ;
 					}
 					memberManager.addUserImage(req.session.username, image.name).then((result) => {
 						req.session.notfication = 'L\'image à été uploadée avec succes';
-						res.redirect(301, '/');
+						res.redirect(301, '/home');
+						return ;
 					}).catch((reason) => {
 						req.session.error = reason;
 						res.redirect(301, '/');
+						return ;
 					});
 				});
 			}
 		} else {
 			req.session.notification = 'Vous devez être connecté avec un compte valide';
 			res.redirect('/home');
+			return ;
 		}
+	}).catch((reason) => {
+		console.log('Failed to checkAuthorization :\n' + reason);
+		req.session.error = 'Quelque chose cloche, nous enquetons'
+		res.redirect(301, '/');
+		return ;
 	})
 });
 
@@ -820,22 +858,28 @@ app.post('/complete', csrfProtection, (req, res) => {
 				if (result === true) {
 					req.session.notification = 'Votre profil à été mis à jour avec succès';
 					res.redirect(301, '/home');
+					return ;
 				} else {
+					console.log(result)
 					req.session.error = 'Quelque chose cloche, nous enquêtons'
 					res.redirect(301, '/home')
+					return ;
 				}
 			}).catch((err) => {
 				console.log('Error while creating new extended profile : ' + err.stack);
 				req.session.error = 'Quelque chose cloche, nous enquêtons';
-				res.redirect(301, '/home')
+				res.redirect(301, '/home');
+				return ;
 			});
 		} else {
 			req.session.notification = 'Vous devez étre connecté avec un compte valide';
 			res.redirect(301, req.header.referer);
+			return ;
 		}
 	}).catch((reason) => {
 		req.session.error = 'Nous n\'avonspas pu vérifier vos authorizations';
 		res.redirect(req.header.referer);
+		retunr ;
 	})
 });
 
@@ -925,4 +969,4 @@ app.post('/signup', csrfProtection, (req, res) => {
 	});
 });
 
-app.listen(settings['port']);
+server.listen(settings['port']);

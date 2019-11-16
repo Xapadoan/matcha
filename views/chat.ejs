@@ -1,28 +1,44 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html>
 	<%- include('head.ejs') %>
+ 
 	<body>
 		<%- include('header.ejs') %>
-		<input type='text' id='message' placeholder="Ecrivez votre message..." />
-		<button id='send_button' onclick="sendMessage()">Envoyer</button>
-		<section id='messages'>
+		<input id='message' type='text' maxlength="255" width="50" />
+		<button id='poke' onclick="sendMessage();">Post</button>
+
+		<section id='chat_room'>
 		</section>
+
 		<script src="/socket.io/socket.io.js"></script>
 		<script>
-			var socket = io.connect('http://10.12.223.254:80');
-			console.log('check 1', socket.connected);
-socket.on('connect', function() {
-  console.log('check 2', socket.connected);
-});
+		var socket = io.connect();
 
-			function sendMessage() {
-				var message = document.getElementById('message');
-				socket.emit('message', {
-					message: message.value,
-					author: 'mabite'
-				});
-				message.value = "";
-			}
+		socket.emit('create', {
+			room: '<%= room %>',
+			username: '<%= user %>'
+		});
+
+		socket.on('login', (data) => {
+			let entry = document.createElement('p');
+			entry.innerHTML = data;
+			document.getElementById('chat_room').appendChild(entry);
+		})
+
+		socket.on('message', function(message) {
+			let entry = document.createElement('p');
+			entry.innerHTML = '<span>' + message.author + '</span> : ' + message.body;
+			document.getElementById('chat_room').appendChild(entry);
+		});
+
+		function sendMessage() {
+			let message = document.getElementById('message');
+			socket.emit('message', {
+				author: '<%= user %>',
+				body: message.value
+			});
+			message.value = '';
+		}
 		</script>
 	</body>
 </html>

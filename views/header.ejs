@@ -21,6 +21,7 @@
 		color: rgb(240, 204, 3);
 		text-decoration: none;
 		font-weight: bold;
+		margin: 2, 2;
 	}
 
 	input[type=text], input[type=email], input[type=password], input[type=file], select, button, textarea {
@@ -54,6 +55,7 @@
 	}
 
 	header {
+		display: inline-block;
 		background-color: #d33;
 		height: 50px;
 		border-bottom: solid #800 2px;
@@ -82,6 +84,22 @@
 		z-index: 39;
 	}
 
+	#notification_box {
+		background-image: url('/bell.png');
+		width: 48px;
+		height: 48px;
+		display: inline-block;
+		background-size: cover;
+	}
+
+	#message_box {
+		background-image: url('/bubble.png');
+		width: 48px;
+		height: 48px;
+		display: inline-block;
+		background-size: cover;
+	}
+
 	#user_error {
 		background-color: #d33;
 		position: absolute;
@@ -96,19 +114,38 @@
 		z-index: 40;
 	}
 </style>
+<script src='/socket.io/socket.io.js'></script>
+<script>
+	var socket = io.connect();
+	<% if (typeof locals.user != 'undefined') { %>
+	socket.emit('login', '<%= user %>')
+	<% } %>
+
+	socket.on('new_notification', (notif) => {
+		document.getElementById('notification_box').style.border = "red solid 2px";
+	});
+
+	socket.on('new_message', (message) => {
+		document.getElementById('message_box').style.border = "red solid 2px";
+	});
+</script>
 <header>
 	<nav class="adaptative_nav_bar">
-		<a href="/" title="Accueil">Accueil</a>
+		<a href="/" title="Accueil"><img src='/home.png' width="48" height="48" /></a>
 		<a href="/match" title="Match">Match</a>
-		<a href="/search" title="Rechercher">Chercher</a>
+		<a href="/search" title="Rechercher"><img src='/google.png' width="48" height="48" /></a>
 	</nav>
+
+	<div id='notification_box'></div>
+	<div id='message_box'></div>
+	
 	<nav>
 		<% if (typeof locals.user == 'undefined') { %>
 		<a href="/signup" title="Créer un compte">Créer un compte</a>
-		<a href="/login" title="Se connecter"><img src='login.png' title="Se connecter" /></a>
+		<a href="/login" title="Se connecter"><img src='/login.png' width="48" height="48" /></a>
 		<% } else { %>
 		<a href="/home" title="Espace Personnel"><%= user %></a>
-		<a href="/logout" title="Déconnexion"><img src='logout.png' title="Se déconnecter" /></a>
+		<a href="/logout" title="Déconnexion"><img src='/logout.png' width="48" height="48" /></a>
 		<% } %>
 	</nav>
 </header>

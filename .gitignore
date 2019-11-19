@@ -1,5 +1,6 @@
 node_modules
 resources
+!resources/socket_scripts.js
 mail_data.json
 database.json
 server_settings.json

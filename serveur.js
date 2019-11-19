@@ -14,14 +14,30 @@ var io = require('socket.io').listen(server);
 io.on('connection', (socket) => {
 	socket.on('message', (message) => {
 		io.sockets.in(socket.room).emit('message', message);
+		console.log('server :' + socket.room + '|');
 	});
 
+	socket.on('new_message', (message) => {
+		io.sockets.in(message.dest).emit('new_message', message);
+	})
+
+	//User joined chat room
 	socket.on('create', (user) => {
 		socket.join(user.room);
 		socket.room = user.room;
-		socket.username = user.username;
-		io.sockets.in(user.room).emit('login', user.username + ' entered the room')
+		io.sockets.in(user.room).emit('join', user.username + ' entered the room')
 	});
+
+	//User login on matcha
+	socket.on('login', (userid) => {
+		socket.join(userid);
+		socket.username = userid;
+		socket.notif_room = userid
+	})
+
+	socket.on('new_notification', (notif) => {
+		io.sockets.in(notif.dest).emit('new_notification', notif);
+	})
 })
 
 //requiered to retrieve x-www-form-encoded in req.body
@@ -185,22 +201,28 @@ app.get('/', csrfProtection, (req, res) => {
 });
 
 app.get('/chat/:id', (req, res) => {
-	console.log('followed')
 	memberManager.checkAuthorization(req.session.username, ['Complete']).then((result) => {
 		if (result == true) {
 			memberManager.checkMatch(req.session.username, req.params.id).then((result) => {
 				if (result == true) {
-					if (req.params.id < req.session.userid) {
-						var room = req.params.id + '-' + req.session.userid;
-					} else {
-						var room = req.session.userid + '-' + req.params.id;
-					}
-					res.render('chat.ejs', {
-						user: req.session.username,
-						error: error,
-						notification: notification,
-						room: room
-					});
+					memberManager.getUserName(req.params.id).then((result) => {
+						if (req.params.id < req.session.userid) {
+							var room = req.params.id + '-' + req.session.userid;
+						} else {
+							var room = req.session.userid + '-' + req.params.id;
+						}
+						res.render('chat.ejs', {
+							user: req.session.username,
+							error: error,
+							notification: notification,
+							room: room,
+							dest: result
+						});
+					}).catch((reason) => {
+						console.log('Failed to getUsername:\n\t' + reason);
+						req.session.error = 'Quelque chose cloche, nous enquetons';
+						res.redirect(301, '/');
+					})
 				} else {
 					req.session.error = 'Vous n\'etes pas authorise a parler avec cette personne';
 					res.redirect(301, '/');

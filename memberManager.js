@@ -558,7 +558,6 @@ module.exports = {
 				username,
 				destid
 			], (err, results) => {
-				console.log(username + ' | ' + destid);
 				if (err) {
 					console.log('Failed to get matches:\n' + err.stack);
 					reject('Failed to getUserMatchs');

@@ -7,57 +7,28 @@
 
 - Detection connection sur la page perso
 - Choper des icones:
-    - poubelle
-    - like
-- Choper des sons:
-    - claque
-    - bisous
+    - signup
+    - espace perso
+    - match
 - Recherche:
     - Ajouter options de tri
 - Gerer les matchs
     - Prendre en compte les interets
     - Afficher la geolocalisation sous forme d'adresse si dans la bdd
-- Autoriser l'utilisateur a supprimer ses photos
-- Gestion des interets :
-    - Les matchs, on passe a travers les interets de l'utilisateur, et on cherche dans la table interet les utilisateurs qui correspondent
-    - Matcher en fonction de la geocalisation / fruit sexe = geo proche & fruit social = geo moyenne
 - Ajouter bad crsf error handler
 - Ameliorer le chat:
     - front
     - sons ?
     - Envoi d'images ?
+    - Stocker les 100 derniers messages
 - Ameliorer la page perso
-- Gerer les likes:
-    - Envoyer notification
+- Nouveaux messages / notification:
+    - AJAX pour visualiser + lien pour aller voir vraiment
 - Notifications en temps reel:
-    - Utiliser socket.io
+    - Trouver un moyen de l'envoyer au bon gars
+    - Checker que les notifications ont ete vues (onclick #('notification_box'))
+    - Afficher si nouvelles notifications au login
 - Du front, on a bientot fini
-
-## Setup
-
-#### users
-
-id  | username | lastname | firstname | email | status | fruit | password
---- | -------- | -------- | --------- | ----- | ------ | ----- | --------
-PRIMARY KEY | VARCHAR(100) | VARCHAR(100) | VARCHAR(100) | VARCHAR(255) | VARCHAR(100) | VARCHAR(20) | VARCHAR(255)
-
-#### users_extended
-
-id  | user | gender | orientation | age | bio | interests | lat | lng
---- | ---- | ------ | ----------- | --- | --- | --------- | --- | ---
-PRIMARY KEY | FOREIGN KEY (users.id) | INT | VARCHAR(50) | INT | TEXT(500) | VARCHAR(255) | VARCHAR(20) | VARCHAR(20)
-
-#### users_images
-
-id  | user | image1 | image2 | image3 | image4 | image5
---- | ---- | ------ | ------ | ------ | ------ | ------
-PRIMARY KEY | FOREIGN KEY (users.id) | VARCHAR(100) | VARCHAR(100) | VARCHAR(100) | VARCHAR(100) | VARCHAR(100)
-
-#### users_interests
-
-id  | name | user
---- | ---- | -----
-PRIMARY KEY | VARCHAR(50) | INT
 
 ## Required packages
 
@@ -71,6 +42,7 @@ Le dossier node_modules n'est pas à jour sur cette branche, verifiez que touts 
 - bcrypt
 - nodemailer
 - uniqid
+- socket.io
 
 ## Ejs files
 

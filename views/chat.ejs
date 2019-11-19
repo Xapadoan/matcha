@@ -10,16 +10,13 @@
 		<section id='chat_room'>
 		</section>
 
-		<script src="/socket.io/socket.io.js"></script>
 		<script>
-		var socket = io.connect();
-
 		socket.emit('create', {
 			room: '<%= room %>',
 			username: '<%= user %>'
 		});
 
-		socket.on('login', (data) => {
+		socket.on('join', (data) => {
 			let entry = document.createElement('p');
 			entry.innerHTML = data;
 			document.getElementById('chat_room').appendChild(entry);
@@ -37,6 +34,11 @@
 				author: '<%= user %>',
 				body: message.value
 			});
+			socket.emit('new_message', {
+				dest: '<%= dest %>',
+				title: 'New Message',
+				body: 'new message from :' + socket.username
+			})
 			message.value = '';
 		}
 		</script>

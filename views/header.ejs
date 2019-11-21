@@ -131,7 +131,7 @@
 
 	let mess_req = new XMLHttpRequest();
 	mess_req.open('GET', '/get_messages');
-	mess_req.setRequestHeader('Content-type', 'text/javascript')
+	mess_req.responseType = 'json';
 	mess_req.onload = function () {
 		if (mess_req.status != 200) {
 			console.log('AJAX Error : Status ' + mess_req.status);

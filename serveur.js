@@ -17,6 +17,18 @@ io.on('connection', (socket) => {
 		console.log('server :' + socket.room + '|');
 	});
 
+	socket.on('is_logged', (room) => {
+		io.in(room).clients((err, clients) => {
+			if (err) {
+				console.log('Failed to check if is logged');
+			} else if (clients.length > 0) {
+				socket.emit('is_logged', true);
+			} else {
+				socket.emit('is_logged', false);
+			}
+		})
+	})
+
 	socket.on('new_message', (message) => {
 		io.sockets.in(message.dest).emit('new_message', message);
 		notificationManager.newMessage(message).then((result) => {

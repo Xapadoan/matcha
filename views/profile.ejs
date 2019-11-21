@@ -5,13 +5,15 @@
 <body>
 	<%- include('header.ejs') %>
 	<script>
-		io.sockets.in('<%= profile.username %>').clients((err, clients) => {
-			if (err) {
-				console.log('Socket Error :\n' + err.stack)
-			} else if (clients.length > 0) {
-				document.getElementById('pseudo').style.color = 'red';
+		socket.emit('is_logged', '<%= profile.username %>');
+
+		socket.on('is_logged', (result) => {
+			if (result == true) {
+				document.getElementById('pseudo_title').style.color = 'green';
+			} else {
+				document.getElementById('pseudo_title').style.color = 'red';
 			}
-		});
+		})
 	</script>
 	<nav id='bad_profile_nav'>
 		<% if (locals.profile.liked) {%>
@@ -22,7 +24,7 @@
 		<a href='/block/<%= profile.id %>'>Bloquer</a>
 		<a href='/report/<%= profile.id %>'>Signaler</a>
 	</nav>
-	<h1><%= profile.username %> (<%= profile.pop_score %>)</h1>
+	<h1 id='pseudo_title'><%= profile.username %> (<%= profile.pop_score %>)</h1>
 	<% if (typeof locals.user_info != 'undefined' && locals.user_info.fruit == '#pasdecoupdunsoir') { %><img
 		id='coco_img' src='/coconut.png' width="75" height="75" title="#pasdecoupdunsoir" />
 	<% } else if (typeof locals.user_info != 'undefined' && locals.user_info.fruit == '#unsoir') { %><img

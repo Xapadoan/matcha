@@ -149,11 +149,6 @@
 	mess_req.onerror = function () {
 		console.log('AJAX Error : Failed to get messages');
 	}
-
-	document.getElementById('message_box').addEventListener('click', function (event) {
-		mess_req.send();
-		console.log('Click')
-	})
 </script>
 <header>
 	<nav class="adaptative_nav_bar">
@@ -164,6 +159,13 @@
 
 	<div id='notification_box'></div>
 	<div id='message_box'></div>
+
+	<script>
+	document.getElementById('message_box').addEventListener('click', function (event) {
+		mess_req.send();
+		console.log('Click')
+	})
+	</script>
 	
 	<nav>
 		<% if (typeof locals.user == 'undefined') { %>

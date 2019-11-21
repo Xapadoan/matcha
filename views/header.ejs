@@ -150,8 +150,9 @@
 		console.log('AJAX Error : Failed to get messages');
 	}
 
-	document.getElementById('message_box').addEventListener('click', () => {
+	document.getElementById('message_box').addEventListener('click', function (event) {
 		mess_req.send();
+		console.log('Click')
 	})
 </script>
 <header>

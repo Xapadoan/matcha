@@ -150,7 +150,9 @@
 		console.log('AJAX Error : Failed to get messages');
 	}
 
-	mess_req.send();
+	document.getElementById('message_box').addEventListener('click', () => {
+		mess_req.send();
+	})
 </script>
 <header>
 	<nav class="adaptative_nav_bar">
@@ -159,7 +161,7 @@
 		<a href="/search" title="Rechercher"><img src='/google.png' width="48" height="48" /></a>
 	</nav>
 
-	<div id='notification_box' onclick="mess_req.send();"></div>
+	<div id='notification_box'></div>
 	<div id='message_box'></div>
 	
 	<nav>

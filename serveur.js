@@ -31,6 +31,7 @@ io.on('connection', (socket) => {
 
 	socket.on('new_message', (message) => {
 		io.sockets.in(message.dest).emit('new_message', message);
+		console.log('sdfsdf');
 		memberManager.newMessage(message).then((result) => {
 			if (result != true) {
 				console.log('Failed to store message')

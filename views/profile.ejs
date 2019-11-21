@@ -4,6 +4,15 @@
 
 <body>
 	<%- include('header.ejs') %>
+	<script>
+		io.in('<%= profile.username %>').clients((err, clients) => {
+			if (err) {
+				console.log('Socket Error :\n' + err.stack)
+			} else if (clients.length > 0) {
+				document.getElementById('pseudo').style.color = 'red';
+			}
+		});
+	</script>
 	<nav id='bad_profile_nav'>
 		<% if (locals.profile.liked) {%>
 			<a href='/dislike/<%= profile.id %>'>Ne plus aimer</a>

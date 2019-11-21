@@ -179,7 +179,7 @@ app.get('/home', csrfProtection, (req, res) => {
 	}
 });
 
-app.get('get_messages', (req, res) => {
+app.get('/get_messages', (req, res) => {
 	memberManager.getMessages(req.session.username).then((results) => {
 		res.end(results);
 	}).catch((reason) => {

@@ -128,6 +128,29 @@
 	socket.on('new_message', (message) => {
 		document.getElementById('message_box').style.border = "red solid 2px";
 	});
+
+	let mess_req = new XMLHttpRequest();
+	mess_req.open('GET', '/get_messages');
+
+	mess_req.onload = function () {
+		if (mess_req.status != 200) {
+			console.log('AJAX Error : Status ' + mess_req.status);
+		} else {
+			//Print message
+			console.log('OK');
+			console.log(mess_req.response);
+		}
+	}
+
+	mess_req.onprogress = function () {
+		//Print loading
+	}
+
+	mess_req.onerror = function () {
+		console.log('AJAX Error : Failed to get messages');
+	}
+
+	mess_req.send();
 </script>
 <header>
 	<nav class="adaptative_nav_bar">
@@ -136,7 +159,7 @@
 		<a href="/search" title="Rechercher"><img src='/google.png' width="48" height="48" /></a>
 	</nav>
 
-	<div id='notification_box'></div>
+	<div id='notification_box' onclick="mess_req.send();"></div>
 	<div id='message_box'></div>
 	
 	<nav>

@@ -1110,6 +1110,18 @@ module.exports = {
 			})
 		}));
 	},
+	getMessages: function getMessages(username) {
+		connection.query('SELECT DISTINCT author, time, body FROM matcha.users_messages WHERE dest = ? ORDER BY time DESC LIMIT 0 10', [
+			username
+		], (err, results) => {
+			if (err) {
+				console.log('Failed to getMessages:\n' + err.stack);
+				reject('Failed to getMessages');
+			} else {
+				resolve(results);
+			}
+		})
+	},
 	newNotification: function newNotification(notif) {
 		return (new Promise((resolve, reject) => {
 			connection.query('INSERT INTO matcha.users_notifications (user, body, time) VALUES (?, ?, CURRENT_TIMESTAMP)', [
@@ -1123,7 +1135,7 @@ module.exports = {
 					resolve(true);
 				}
 			})
-		}))
+		}));
 	},
 	sendpasswordRecoveryMail: function sendpasswordRecoveryMail(username, mail) {
 		return (new Promise((resolve, reject) => {

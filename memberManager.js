@@ -1095,6 +1095,7 @@ module.exports = {
 	},
 	newMessage: function newMessage(message) {
 		return (new Promise((resolve, reject) => {
+			console.log(message.body);
 			connection.query('INSERT INTO matcha.users_messages (dest, author, body, time) VALUES (?, ?, ?, CURRENT_TIMESTAMP)', [
 				message.dest,
 				message.author,

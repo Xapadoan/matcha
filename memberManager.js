@@ -1093,6 +1093,37 @@ module.exports = {
 			});
 		}));
 	},
+	newMessage: function newMessage(message) {
+		return (new Promise((resolve, reject) => {
+			connection.query('INSERT INTO matcha.users_messages (dest, author, body, time) VALUES (?, ?, ?, CURRENT_TIMESTAMP)', [
+				message.dest,
+				message.author,
+				message.body
+			], (err) => {
+				if (err) {
+					console.log('SQL Error : \n' + err.stack);
+					reject('SQL Error');
+				} else {
+					resolve(true);
+				}
+			})
+		}));
+	},
+	newNotification: function newNotification(notif) {
+		return (new Promise((resolve, reject) => {
+			connection.query('INSERT INTO matcha.users_notifications (user, body, time) VALUES (?, ?, CURRENT_TIMESTAMP)', [
+				notif.dest,
+				notif.body
+			], (err) => {
+				if (err) {
+					console.log('SQL Error : \n' + err.stack);
+					reject('SQL Error');
+				} else {
+					resolve(true);
+				}
+			})
+		}))
+	},
 	sendpasswordRecoveryMail: function sendpasswordRecoveryMail(username, mail) {
 		return (new Promise((resolve, reject) => {
 			if (validateMail(mail) !== true) {

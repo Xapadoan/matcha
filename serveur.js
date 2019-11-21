@@ -19,6 +19,13 @@ io.on('connection', (socket) => {
 
 	socket.on('new_message', (message) => {
 		io.sockets.in(message.dest).emit('new_message', message);
+		notificationManager.newMessage(message).then((result) => {
+			if (result != true) {
+				console.log('Failed to store message')
+			}
+		}).catch((reason) => {
+			console.log('Failed to store new Message:\n\t' + reason);
+		})
 	})
 
 	//User joined chat room

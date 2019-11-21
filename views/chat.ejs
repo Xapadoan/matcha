@@ -32,10 +32,12 @@
 			let message = document.getElementById('message');
 			socket.emit('message', {
 				author: '<%= user %>',
+				dest: '<%= dest %>',
 				body: message.value
 			});
 			socket.emit('new_message', {
 				dest: '<%= dest %>',
+				author: '<%= user %>',
 				title: 'New Message',
 				body: 'new message from :' + socket.username
 			})

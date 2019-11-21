@@ -5,7 +5,7 @@
 <body>
 	<%- include('header.ejs') %>
 	<script>
-		io.in('<%= profile.username %>').clients((err, clients) => {
+		io.sockets.in('<%= profile.username %>').clients((err, clients) => {
 			if (err) {
 				console.log('Socket Error :\n' + err.stack)
 			} else if (clients.length > 0) {

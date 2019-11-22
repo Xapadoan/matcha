@@ -508,6 +508,25 @@ module.exports = {
 	//	genre
 	//	age
 	//	interests
+	isLikedBy: function isLikedBy(liked, liker) {
+		return (new Promise((resolve, reject) => {
+			connection.query('SELECT COUNT(*) AS count FROM matcha.users_likes WHERE liker = ? AND liked = ?', [
+				liker,
+				liked
+			], (err, result) => {
+				if (err) {
+					console.log('SQL Error : \n' + err.stack);
+					reject('SQL Error');
+				} else {
+					if (result[0]['count'] == 1) {
+						resolve(true);
+					} else {
+						resolve(false);
+					}
+				}
+			})
+		}))
+	},
 	getUserMatchProfile: function getUserMatchProfile(username) {
 		return (new Promise((resolve, reject) => {
 			connection.query('SELECT u.username, u.fruit, u.lat, u.lng, e.orientation, e.gender, e.age, e.interests FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user WHERE u.username = ?', [
@@ -821,7 +840,7 @@ module.exports = {
 							reject('Quelque chose cloche, nous enquêtons');
 						} else {
 							checkCompleteProfile(username).then((result) => {
-								if (typeof result == 'undefined') {
+								if (typeof result == 'undefined' || Object.keys(result).length == 0) {
 									connection.query('UPDATE matcha.users SET status=\'Complete\' WHERE username = ?', [
 										username
 									], (err) => {
@@ -832,6 +851,8 @@ module.exports = {
 											resolve(true);
 										}
 									})
+								} else {
+									resolve(true);
 								}
 							}).catch((reason) => {
 								console.log('Failed to checkCompleteProfile: ' + reason);
@@ -927,6 +948,82 @@ module.exports = {
 			});
 		}));
 	},
+	getNotifications: function getNotifications(username) {
+		return (new Promise((resolve, reject) => {
+			console.log('getNotifs');
+			connection.query('SELECT user, body FROM matcha.users_notifications WHERE user = ? AND seen = \'0\' ORDER BY time DESC LIMIT 10', [
+				username
+			], (err, results) => {
+				if (err) {
+					console.log('SQL Error:\n' + err.stack);
+					reject('SQL Error');
+				} else {
+					connection.query('UPDATE matcha.users_notifications SET seen = \'1\' WHERE user = ?', [
+						username
+					], (err) => {
+						if (err) {
+							console.log('SQL Error:\n' + err.stack)
+						}
+					})
+					resolve(results);
+				}
+			})
+		}))
+	},
+	getMessages: function getMessages(username) {
+		return (new Promise((resolve, reject) => {
+			connection.query('SELECT author, body, time FROM matcha.users_messages WHERE dest = ? AND seen = \'0\' ORDER BY time DESC LIMIT 10', [
+				username
+			], (err, results) => {
+				if (err) {
+					console.log('Failed to getMessages:\n' + err.stack);
+					reject('Failed to get Messages');
+				} else {
+					connection.query('UPDATE matcha.users_messages SET seen = \'1\' WHERE dest = ?', [
+						username
+					], (err) => {
+						if (err) {
+							console.log('SQL Error:\n' + err.stack);
+						}
+					})
+					resolve(results);
+				}
+			})
+		}))
+	},
+	newNotification: function newNotification(notif) {
+		return (new Promise((resolve, reject) => {
+			console.log('new_notf')
+			connection.query('INSERT INTO matcha.users_notifications (user, title, body) VALUES (?, ?, ?);', [
+				notif.dest,
+				notif.title,
+				notif.body
+			], (err) => {
+				if (err) {
+					console.log('SQL Error:\n' + err.stack);
+					reject('SQL Error');
+				} else {
+					resolve(true);
+				}
+			})
+		}))
+	},
+	newMessage: function newMessage(message) {
+		return (new Promise((resolve, reject) => {
+			connection.query('INSERT INTO matcha.users_messages (dest, author, body) VALUES (?, ?, ?)', [
+				message.dest,
+				message.author,
+				message.body
+			], (err) => {
+				if (err) {
+					console.log('SQL Error:\n' + err.stack)
+					reject('SQL Error');
+				} else {
+					resolve(true);
+				}
+			})
+		}))
+	},
 	like: function like(liker, likedid) {
 		return (new Promise((resolve, reject) => {
 			//Ckeck if liker doesn't already liked
@@ -935,7 +1032,7 @@ module.exports = {
 					//Check in results
 					for (let i = 0; i < results.length; i++) {
 						if (results[i].liked == likedid) {
-							resolve(true);
+							resolve('already liked');
 							return;
 						}
 					}
@@ -1071,7 +1168,7 @@ module.exports = {
 					//Check in results
 					for (let i = 0; i < results.length; i++) {
 						if (results[i].visited == visitedid) {
-							resolve(true);
+							resolve('already visited');
 							return;
 						}
 					}
@@ -1091,52 +1188,6 @@ module.exports = {
 				console.log(err);
 				reject('Failed to check visits');
 			});
-		}));
-	},
-	newMessage: function newMessage(message) {
-		return (new Promise((resolve, reject) => {
-			console.log(message.body);
-			connection.query('INSERT INTO matcha.users_messages (dest, author, body, time) VALUES (?, ?, ?, CURRENT_TIMESTAMP)', [
-				message.dest,
-				message.author,
-				message.body
-			], (err) => {
-				if (err) {
-					console.log('SQL Error : \n' + err.stack);
-					reject('SQL Error');
-				} else {
-					resolve(true);
-				}
-			})
-		}));
-	},
-	getMessages: function getMessages(username) {
-		return (new Promise((resolve, reject) => {
-			connection.query('SELECT DISTINCT author, time, body FROM matcha.users_messages WHERE dest = ? ORDER BY time DESC LIMIT 0, 10', [
-				username
-			], (err, results) => {
-				if (err) {
-					console.log('Failed to getMessages:\n' + err.stack);
-					reject('Failed to getMessages');
-				} else {
-					resolve(results);
-				}
-			});
-		}));
-	},
-	newNotification: function newNotification(notif) {
-		return (new Promise((resolve, reject) => {
-			connection.query('INSERT INTO matcha.users_notifications (user, body, time) VALUES (?, ?, CURRENT_TIMESTAMP)', [
-				notif.dest,
-				notif.body
-			], (err) => {
-				if (err) {
-					console.log('SQL Error : \n' + err.stack);
-					reject('SQL Error');
-				} else {
-					resolve(true);
-				}
-			})
 		}));
 	},
 	sendpasswordRecoveryMail: function sendpasswordRecoveryMail(username, mail) {

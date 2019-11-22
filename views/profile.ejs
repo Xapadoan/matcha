@@ -1,23 +1,11 @@
 <!DOCTYPE html>
 <html lang="fr">
 <%- include('head.ejs'); %>
-
 <body>
 	<%- include('header.ejs') %>
-	<script>
-		socket.emit('is_logged', '<%= profile.username %>');
-
-		socket.on('is_logged', (result) => {
-			if (result == true) {
-				document.getElementById('pseudo_title').style.color = 'green';
-			} else {
-				document.getElementById('pseudo_title').style.color = 'red';
-			}
-		})
-	</script>
 	<nav id='bad_profile_nav'>
 		<% if (locals.profile.liked) {%>
-			<a href='/dislike/<%= profile.id %>'>Ne plus aimer</a>
+			<a href='/unlike/<%= profile.id %>'>Ne plus aimer</a>
 			<% } else { %>
 				<a href='/like/<%= profile.id %>'>Aimer</a>
 		<% } %>
@@ -64,6 +52,18 @@
 			<% } %>
 		</section>
 		<% } %>
+		<script>
+ 		socket.emit('is_logged', '<%= profile.username %>');
+ 
+ 		socket.on('is_logged', (result) => {
+ 			if (result == true) {
+ 				document.getElementById('pseudo_title').style.color = 'green';
+ 			} else {
+ 				document.getElementById('pseudo_title').style.color = 'red';
+ 			}
+ 		})
+ 	</script>
+
 </body>
 
 </html>

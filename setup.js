@@ -39,8 +39,8 @@ connection.query('CREATE TABLE IF NOT EXISTS users_blocks (id INT(9) UNSIGNED AU
 connection.query('CREATE TABLE IF NOT EXISTS users_visits (id INT(9) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL, visitor INT(9) UNSIGNED NOT NULL, visited INT(9) UNSIGNED NOT NULL)');
 connection.query('CREATE TABLE IF NOT EXISTS users_reports (id INT(9) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL, reported INT(9) UNSIGNED NOT NULL, message VARCHAR(200))');
 connection.query('CREATE TABLE IF NOT EXISTS users_interests (id INT(9) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL, name VARCHAR(50) NOT NULL, user INT NOT NULL)');
-connection.query('CREATE TABLE IF NOT EXISTS users_messages (id INT(9) AUTO_INCREMENT PRIMARY KEY NOT NULL, author VARCHAR (100), dest VARCHAR (100), time DATETIME, body VARCHAR(200))');
-connection.query('CREATE TABLE IF NOT EXISTS users_notification (id INT(9) AUTO_INCREMENT PRIMARY KEY NOT NULL, user INT(9) UNSIGNED, title VARCHAR(50), body VARCHAR(100))');
+connection.query('CREATE TABLE IF NOT EXISTS users_messages (id INT(9) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL, author VARCHAR(100), dest VARCHAR(100), time DATETIME DEFAULT CURRENT_TIMESTAMP, body VARCHAR (200), seen INT(1) UNSIGNED DEFAULT 0)')
+connection.query('CREATE TABLE IF NOT EXISTS users_notifications (id INT(9) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL, user VARCHAR(100), time DATETIME DEFAULT CURRENT_TIMESTAMP, title VARCHAR(50), body VARCHAR(200), seen INT(1) UNSIGNED NOT NULL DEFAULT 0)')
 connection.query('CREATE TABLE IF NOT EXISTS ip2location_db5(ip_from INT(10) UNSIGNED, ip_to INT(10) UNSIGNED, country_code CHAR(2), country_name VARCHAR(64), region_name VARCHAR(128), city_name VARCHAR(128), latitude DOUBLE, longitude DOUBLE, INDEX idx_ip_from (`ip_from`), INDEX idx_ip_to (`ip_to`), INDEX idx_ip_from_to (`ip_from`, `ip_to`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;', (err) => {
 	if (err) {
 		console.log('Failed to create ip2location table: ' + err.stack);

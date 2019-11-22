@@ -14,30 +14,13 @@ var io = require('socket.io').listen(server);
 io.on('connection', (socket) => {
 	socket.on('message', (message) => {
 		io.sockets.in(socket.room).emit('message', message);
-		console.log('server :' + socket.room + '|');
 	});
 
-	socket.on('is_logged', (room) => {
-		io.in(room).clients((err, clients) => {
-			if (err) {
-				console.log('Failed to check if is logged');
-			} else if (clients.length > 0) {
-				socket.emit('is_logged', true);
-			} else {
-				socket.emit('is_logged', false);
-			}
-		})
-	})
-
 	socket.on('new_message', (message) => {
-		io.sockets.in(message.dest).emit('new_message', message);
-		console.log('sdfsdf');
 		memberManager.newMessage(message).then((result) => {
-			if (result != true) {
-				console.log('Failed to store message')
-			}
+			io.sockets.in(message.dest).emit('new_message', message);
 		}).catch((reason) => {
-			console.log('Failed to store new Message:\n\t' + reason);
+			console.log('Failed to store new message:\n\t' + reason);
 		})
 	})
 
@@ -53,10 +36,6 @@ io.on('connection', (socket) => {
 		socket.join(userid);
 		socket.username = userid;
 		socket.notif_room = userid
-	})
-
-	socket.on('new_notification', (notif) => {
-		io.sockets.in(notif.dest).emit('new_notification', notif);
 	})
 })
 
@@ -179,14 +158,6 @@ app.get('/home', csrfProtection, (req, res) => {
 	}
 });
 
-app.get('/get_messages', (req, res) => {
-	memberManager.getMessages(req.session.username).then((results) => {
-		res.end(JSON.stringify(results)); //Des idees de genie !
-	}).catch((reason) => {
-		res.end(reason);
-	})
-})
-
 app.get('/', csrfProtection, (req, res) => {
 	if (typeof req.session.username != 'undefined') {
 		memberManager.getProfilesLikesUser(req.session.username).then((results) => {
@@ -274,6 +245,23 @@ app.get('/chat/:id', (req, res) => {
 		return ;
 	});
 })
+
+app.get('/get_messages', (req, res) => {
+ 	memberManager.getMessages(req.session.username).then((results) => {
+ 		res.end(JSON.stringify(results)); //Des idees de genie !
+ 	}).catch((reason) => {
+ 		res.end(reason);
+ 	})
+})
+
+app.get('/get_notifications', (req, res) => {
+	memberManager.getNotifications(req.session.username).then((results) => {
+		res.end(JSON.stringify(results)); //Des idees de genie !
+	}).catch((reason) => {
+		res.end(reason);
+	})
+})
+
 
 app.get('/match', (req, res) => {
 	//We have to check for a complete profile here
@@ -579,18 +567,30 @@ app.get('/profile/:id', (req, res) => {
 			req.session.error = 'Cet utilisateur ne semble pas exister'
 			res.redirect(301, '/search');
 		} else {
-			res.render('profile.ejs', {
-				user: req.session.username,
-				notfication: notification,
-				error: error,
-				profile: profile
-			});
 			memberManager.visit(req.session.username, req.params.id).then((result) => {
-				if (result != true) {
-					console.log('Failed to account visit');
+				if (result == true) {
+					memberManager.getUserName(req.params.id).then((name) => {
+						io.sockets.emit('new_notification', {
+							dest: name,
+							type: 'visit',
+							body: req.session.username + ' a vu votre profil'
+						});
+					}).catch((reason) => {
+						console.log('Failed to getUserName:\n\t' + reason);
+						req.session.error = 'Quelque chose cloche, nous enquetons';
+						res.redirect(301, '/');
+					})
 				}
+				res.render('profile.ejs', {
+					user: req.session.username,
+					notfication: notification,
+					error: error,
+					profile: profile
+				});
 			}).catch((reason) => {
 				console.log('Failed to perform visit :\n' + reason);
+				req.session.error = 'Quelque chose cloche, nous enquetons';
+				res.redirect(301, '/');
 			})
 		}
 	}).catch((reason) => {
@@ -638,16 +638,67 @@ app.get('/logout', (req, res) => {
 
 app.get('/like/:id', (req, res) => {
 	//We need authorization
+	console.log(req.params.id)
 	memberManager.checkAuthorization(req.session.username, ['Confirmed', 'Complete']).then((result) => {
 		if (result == true) {
 			memberManager.like(req.session.username, req.params.id).then((results) => {
-				if (results != true) {
-					res.redirect(301, req.header.referer)
+				if (results == true) {
+					memberManager.getUserName(req.params.id).then((name) => {
+						memberManager.checkMatch(name, req.session.userid).then((result) => {
+							if (result == true) {
+								console.log('new match: ' + req.session.username + ' | ' + name)
+								memberManager.newNotification({
+									dest: name,
+									title: 'Noubeau Match !',
+									body: req.session.username + ' vous matche'
+								}).then((result) => {
+									console.log('Notif stored in db: ' + req.session.username + ' vous matche')
+								}).catch((reason) => {
+									console.log('Failed to store newNotification:\n\t' + reason);
+								});
+								req.session.notification = 'Nouveau Match !';
+								io.sockets.emit('new_notification', {
+									dest: name,
+									type: 'Nouveau Match !',
+									body: req.session.username + ' vous matche !'
+								});
+							} else {
+								console.log('new like');
+								memberManager.newNotification({
+									dest: name,
+									title: 'Nouveau Match !',
+									body: req.session.username + ' vous aime'
+								}).then((result) => {
+									console.log('Notif stored in db: ' + req.session.username + ' vous aime')
+								}).catch((reason) => {
+									console.log('Failed to store newNotification:\n\t' + reason);
+								})
+								req.session.notification = 'Vous aimez cette personne'
+								io.sockets.emit('new_notification', {
+									dest: name,
+									type: 'like',
+									body: req.session.username + ' likes you !'
+								})
+							}
+							res.redirect(301, '/profile/' + req.params.id);
+						}).catch((reason) => {
+							console.log('Failed to checkMatch:\n\t' + reason);
+							req.session.error = 'Quelque chose cloche, nous enquetons';
+							res.redirect(301, '/');
+						})
+					}).catch((reason) => {
+						console.log('Failed to getUserName:\n\t' + reason)
+						req.session.error = 'Quelque chose cloche, nous enquetons'
+						res.redirect(301, '/');
+					})
+				} else if (results == 'already liked') {
+					req.session.notification = 'Vous aimez deja cette personne'
+					res.redirect(301, '/profile/' + req.params.id)
 				} else {
-					req.session.notification = 'Vous aimez cette personne'
-					res.redirect(301, '/profile/' + req.params.id);
+					res.redirect(301, req.header.referer);
 				}
 			}).catch((err) => {
+				console.log('Failed to like:\n\t' + err)
 				req.session.error = 'Echec lors du like';
 				res.redirect(301, req.headers.referer);
 			});
@@ -749,8 +800,30 @@ app.get('/unlike/:id', (req, res) => {
 					req.session.error = 'Echec du non - amour';
 					res.redirect(301, '/');
 				} else {
-					req.session.notification = 'Vous n\'aimez plus cette personne';
-					res.redirect(301, '/')
+					console.log('unlike OK')
+					memberManager.getUserName(req.params.id).then((name) => {
+						memberManager.isLikedBy(req.session.userid, req.params.id).then((result) => {
+							if (result == true) {
+								console.log('Breaking match')
+								memberManager.newNotification({
+									dest: name,
+									title: 'Plus de Match',
+									body: req.session.username + ' ne vous aime plus'
+								})
+								io.sockets.emit('new_notification', {
+									dest: name,
+									type: 'non_match',
+									body: req.session.username + ' ne vous aime plus'
+								})
+							}
+							req.session.notification = 'Vous n\'aimez plus cette personne';
+							res.redirect(301, '/')
+						}).catch((reason) => {
+							console.log('Failed to know ifLikedBy:\n\t' + reason);
+							req.session.error = 'Quelque chose cloche, nous enquetons';
+							res.redirect(301, '/');
+						})
+					})
 				}
 			}).catch((reason) => {
 				req.session.error = 'Echec du non - amour';

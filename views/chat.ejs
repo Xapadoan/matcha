@@ -4,8 +4,10 @@
  
 	<body>
 		<%- include('header.ejs') %>
-		<input id='message' type='text' maxlength="255" width="50" />
-		<button id='poke' onclick="sendMessage();">Post</button>
+		<form id='message_form'>
+			<input id='message' type='text' maxlength="255" width="50" />
+			<button id='poke'>Post</button>
+		</form>
 
 		<section id='chat_room'>
 		</section>
@@ -28,7 +30,8 @@
 			document.getElementById('chat_room').appendChild(entry);
 		});
 
-		function sendMessage() {
+		document.getElementById('message_form').addEventListener('submit', function (event) {
+			event.preventDefault();
 			let message = document.getElementById('message');
 			socket.emit('message', {
 				author: '<%= user %>',
@@ -36,13 +39,13 @@
 				body: message.value
 			});
 			socket.emit('new_message', {
-				dest: '<%= dest %>',
 				author: '<%= user %>',
+				dest: '<%= dest %>',
 				title: 'New Message',
-				body: message.value
+				body: 'new message from :' + socket.username
 			})
 			message.value = '';
-		}
+		});
 		</script>
 	</body>
 </html>

@@ -85,6 +85,7 @@
 	}
 
 	#notification_box {
+		position: relative;
 		background-image: url('/bell.png');
 		width: 48px;
 		height: 48px;
@@ -93,6 +94,7 @@
 	}
 
 	#message_box {
+		position: relative;
 		background-image: url('/bubble.png');
 		width: 48px;
 		height: 48px;
@@ -112,6 +114,19 @@
 		border: solid #800 3px;
 		border-radius: 5px;
 		z-index: 40;
+	}
+
+	#tiny_notifications, #tiny_messages {
+		position: absolute;
+		top: 50px;
+		background-color: seashell;
+		width: 20%;
+		min-width: 300px;
+		display: none;
+		border: solid salmon 2px;
+		border-top: 0px;
+		border-radius: 0px 0px 15px 15px;
+		z-index: -1;
 	}
 </style>
 <script src='/socket.io/socket.io.js'></script>
@@ -140,8 +155,8 @@
 		<a href="/search" title="Rechercher"><img src='/google.png' width="48" height="48" /></a>
 	</nav>
 
-	<div id='notification_box'></div>
-	<div id='message_box'></div>
+	<div id='notification_box'><aside id='tiny_notifications'></aside></div>
+	<div id='message_box'><aside id = 'tiny_messages'></aside></div>
 
 	<script>
 		let mess_req = new XMLHttpRequest();
@@ -156,6 +171,17 @@
 				console.log('AJAX Error: status (' + mess_req.status + ')');
 			} else {
 				//Print message
+				for (let i = 0; i < mess_req.response.length; i++) {
+					let mess_p = document.createElement('p')
+					let mess_span = document.createElement('span')
+					let box = document.getElementById('tiny_messages');
+					mess_span.innerHTML = mess_req.response[i].author;
+					mess_p.appendChild(mess_span);
+					mess_p.innerHTML += ' : ' + mess_req.response[i].body;
+					mess_p.innerHTML += '<a href="/chat/' + mess_req.response[i].id + '">See</a>'
+					box.appendChild(mess_p);
+					box.style.display = "block";
+				}
 				console.log(mess_req.response);
 			}
 		}
@@ -164,6 +190,16 @@
 				console.log('AJAX Error: status (' + notif_req.status + ')');
 			} else {
 				//Print notifs
+				for (let i = 0; i < notif_req.response.length; i++) {
+					let notif_p = document.createElement('p');
+					let notif_span = document.createElement('span');
+					let box = document.getElementById('tiny_notifications');
+					notif_span.innerHTML = notif_req.response[i].title;
+					notif_p.appendChild(notif_span);
+					notif_p.innerHTML += '<br />' + notif_req.response[i].body;
+					box.appendChild(notif_p);
+					box.style.display = 'block';
+				}
 				console.log(notif_req.response)
 			}
 		}

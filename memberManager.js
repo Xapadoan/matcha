@@ -951,7 +951,7 @@ module.exports = {
 	getNotifications: function getNotifications(username) {
 		return (new Promise((resolve, reject) => {
 			console.log('getNotifs');
-			connection.query('SELECT user, body FROM matcha.users_notifications WHERE user = ? AND seen = \'0\' ORDER BY time DESC LIMIT 10', [
+			connection.query('SELECT user, title, body FROM matcha.users_notifications WHERE user = ? AND seen = \'0\' ORDER BY time DESC LIMIT 10', [
 				username
 			], (err, results) => {
 				if (err) {
@@ -972,7 +972,7 @@ module.exports = {
 	},
 	getMessages: function getMessages(username) {
 		return (new Promise((resolve, reject) => {
-			connection.query('SELECT author, body, time FROM matcha.users_messages WHERE dest = ? AND seen = \'0\' ORDER BY time DESC LIMIT 10', [
+			connection.query('SELECT u.id, m.author, m.body, m.time FROM matcha.users_messages m INNER JOIN matcha.users u ON m.author = u.username WHERE m.dest = ? AND m.seen = \'0\' ORDER BY m.time DESC LIMIT 10', [
 				username
 			], (err, results) => {
 				if (err) {

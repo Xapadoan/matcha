@@ -55,8 +55,8 @@
 		<script>
  		socket.emit('is_logged', '<%= profile.username %>');
  
- 		socket.on('is_logged', (result) => {
- 			if (result == true) {
+ 		socket.on('logged', (result) => {
+ 			if (result.logged == true && result.user == '<%= profile.username %>') {
  				document.getElementById('pseudo_title').style.color = 'green';
  			} else {
  				document.getElementById('pseudo_title').style.color = 'red';

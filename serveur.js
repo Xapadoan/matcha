@@ -35,8 +35,22 @@ io.on('connection', (socket) => {
 	socket.on('login', (userid) => {
 		socket.join(userid);
 		socket.username = userid;
-		socket.notif_room = userid
+		socket.notif_room = userid;
+		io.sockets.emit('logged', {
+			logged: true,
+			user: userid
+		})
 	})
+
+	socket.on('is_logged', (user) => {
+		let clients = Object.keys(io.sockets.sockets);
+		if (clients.includes(user)) {
+			socket.emit('logged', {
+				logged: true,
+				user: user
+			})
+		}
+	});
 })
 
 //requiered to retrieve x-www-form-encoded in req.body
@@ -101,7 +115,6 @@ app.get('/home', csrfProtection, (req, res) => {
 			memberManager.getUserInfos(req.session.username).then((user_info) => {
 				memberManager.getUserExtended(req.session.username).then((user_extended) => {
 					memberManager.getUserLikedProfiles(req.session.username).then((profiles) => {
-						console.log('Logge : ' + req.session.just_logged)
 						res.render('home.ejs', {
 							user: req.session.username,
 							error: error,
@@ -112,7 +125,8 @@ app.get('/home', csrfProtection, (req, res) => {
 							profiles: profiles,
 							just_logged: req.session.just_logged,
 							csrfToken: req.csrfToken()
-						})
+						});
+						req.session.just_logged = false;
 					}).catch((reason) => {
 						res.render('home.ejs', {
 							user: req.session.username,
@@ -124,6 +138,7 @@ app.get('/home', csrfProtection, (req, res) => {
 							just_logged: req.session.just_logged,
 							csrfToken: req.csrfToken()
 						});
+						req.session.just_logged = false;
 					}).catch((reason) => {
 						console.log('Failed to load extended profile: ' + reason);
 						res.render('home.ejs', {
@@ -136,6 +151,7 @@ app.get('/home', csrfProtection, (req, res) => {
 							just_logged: req.session.just_logged,
 							csrfToken: req.csrfToken()
 						});
+						req.session.just_logged = false;
 					});
 				}).catch((reason) => {
 					console.log('Failed to load user infos: ' + reason);
@@ -147,6 +163,7 @@ app.get('/home', csrfProtection, (req, res) => {
 						just_logged: req.session.just_logged,
 						csrfToken: req.csrfToken()
 					});
+					req.session.just_logged = false;
 				});
 			}).catch((reason) => {
 				console.log(reason);
@@ -157,6 +174,7 @@ app.get('/home', csrfProtection, (req, res) => {
 					just_logged: req.session.just_logged,
 					csrfToken: req.csrfToken()
 				});
+				req.session.just_logged = false;
 			});
 		});
 	} else {
@@ -168,6 +186,7 @@ app.get('/', csrfProtection, (req, res) => {
 	if (typeof req.session.username != 'undefined') {
 		memberManager.getProfilesLikesUser(req.session.username).then((results) => {
 			memberManager.getUserMatchs(req.session.username).then((matchs) => {
+				console.log(matchs);
 				res.render('index.ejs', {
 					user: req.session.username,
 					error: error,
@@ -253,9 +272,7 @@ app.get('/chat/:id', (req, res) => {
 })
 
 app.get('/count_messages', (req, res) => {
-	console.log('count essages')
 	memberManager.countMessages(req.session.username).then((result) => {
-		console.log(JSON.stringify(result));
 		res.end(JSON.stringify(result));
 	}).catch((reason) => {
 		res.end(reason);
@@ -263,9 +280,7 @@ app.get('/count_messages', (req, res) => {
 })
 
 app.get('/count_notifications', (req, res) => {
-	console.log('count_notifs')
 	memberManager.countNotifications(req.session.username).then((result) => {
-		console.log(result)
 		res.end(JSON.stringify(result));
 	}).catch((reason) => {
 		res.end(reason);
@@ -393,7 +408,6 @@ app.post('/login', csrfProtection, (req, res) => {
 
 app.get('/delete_image/:id', (req, res) => {
 	//Check parameter
-	console.log('Delete image : ' + req.params.id)
 	if (req.params.id > 5 || req.params.id < 1) {
 		req.session.error = 'Cette image n\'existe pas';
 		res.redirect('/home');
@@ -667,7 +681,6 @@ app.get('/logout', (req, res) => {
 
 app.get('/like/:id', (req, res) => {
 	//We need authorization
-	console.log(req.params.id)
 	memberManager.checkAuthorization(req.session.username, ['Confirmed', 'Complete']).then((result) => {
 		if (result == true) {
 			memberManager.like(req.session.username, req.params.id).then((results) => {
@@ -675,13 +688,12 @@ app.get('/like/:id', (req, res) => {
 					memberManager.getUserName(req.params.id).then((name) => {
 						memberManager.checkMatch(name, req.session.userid).then((result) => {
 							if (result == true) {
-								console.log('new match: ' + req.session.username + ' | ' + name)
 								memberManager.newNotification({
 									dest: name,
 									title: 'Noubeau Match !',
 									body: req.session.username + ' vous matche'
 								}).then((result) => {
-									console.log('Notif stored in db: ' + req.session.username + ' vous matche')
+									//console.log('Notif stored in db: ' + req.session.username + ' vous matche')
 								}).catch((reason) => {
 									console.log('Failed to store newNotification:\n\t' + reason);
 								});
@@ -692,13 +704,12 @@ app.get('/like/:id', (req, res) => {
 									body: req.session.username + ' vous matche !'
 								});
 							} else {
-								console.log('new like');
 								memberManager.newNotification({
 									dest: name,
 									title: 'Nouveau Match !',
 									body: req.session.username + ' vous aime'
 								}).then((result) => {
-									console.log('Notif stored in db: ' + req.session.username + ' vous aime')
+									//console.log('Notif stored in db: ' + req.session.username + ' vous aime')
 								}).catch((reason) => {
 									console.log('Failed to store newNotification:\n\t' + reason);
 								})
@@ -829,11 +840,9 @@ app.get('/unlike/:id', (req, res) => {
 					req.session.error = 'Echec du non - amour';
 					res.redirect(301, '/');
 				} else {
-					console.log('unlike OK')
 					memberManager.getUserName(req.params.id).then((name) => {
 						memberManager.isLikedBy(req.session.userid, req.params.id).then((result) => {
 							if (result == true) {
-								console.log('Breaking match')
 								memberManager.newNotification({
 									dest: name,
 									title: 'Plus de Match',
@@ -975,9 +984,7 @@ app.post('/update_location', csrfProtection, (req, res) => {
 			if (typeof req.body.lat != 'undefined' && req.body.lng != 'undefined') {
 				memberManager.updateLatLng(lat, lng, req.session.username);
 			} else if (typeof req.body.city != 'undefined' && req.body.street != 'undefined' && typeof req.body.country != 'undefined') {
-				console.log('Form recieved');
 				locationFinder.getLatLngFromLocation(req.body.street + ' ' + req.body.city, req.body.country).then((location) => {
-					console.log(location.lat + ', ' + location.lng);
 					memberManager.updateLatLng(req.session.username, location.lat, location.lng).then((result) => {
 						req.session.lat = result.lat;
 						req.session.lng = result.lng;

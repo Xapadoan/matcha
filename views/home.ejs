@@ -168,9 +168,13 @@
 				}
 			</style>
 			<article id='user<%= profiles[i].id %>' class='public_profile_mini'>
-				<p><%= profiles[i].firstname %> <%= profiles[i].lastname %>, <%= profiles[i].age %></p>
+				<p>
+					<a href='/profile/<%= profiles[i].id %>' title='Voir le profil'>
+						<%= profiles[i].firstname %> <%= profiles[i].lastname %>
+					</a>, <%= profiles[i].age %>
+				</p>
 				<p>(<%= profiles[i].gender %>)</p><br />
-				<a href='/like/<%= profiles[i].id %>'><img src='/like.png' title="Like" /></a>
+				<a href='/like/<%= profiles[i].id %>' title="Aimer" ><img src='/like.png' title="Like" /></a>
 				<% switch (profiles[i].fruit) {
                         case ('#pasdecoupdunsoir'): %>
 				<img src='coconut.png' height="75" width="75" title="#pasdecoupdunsoir" />
@@ -196,7 +200,6 @@
 	<% }
 	if (locals.just_logged == true) { %>
 		<script>
-			console.log('SCRIPT');
 			let mess_req2 = new XMLHttpRequest();
 			let notif_req2 = new XMLHttpRequest();
 
@@ -206,7 +209,6 @@
 			notif_req2.responseType = 'json';
 
 			mess_req2.onload = function() {
-				console.log('mess_req2')
 				if (mess_req2.status != 200) {
 					console.log('AJAX Error: status (' + mess_req2.status + ')');
 				} else if (mess_req2.response.count > 0) {
@@ -214,7 +216,6 @@
 				}
 			}
             notif_req2.onload = function() {
-				console.log('notif_req2')
 				if (notif_req2.status != 200) {
 					console.log('AJAX Error: status (' + notif_req2.status + ')');
 				} else if (notif_req2.response.count > 0) {

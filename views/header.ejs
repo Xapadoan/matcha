@@ -151,7 +151,7 @@
 <header>
 	<nav class="adaptative_nav_bar">
 		<a href="/" title="Accueil"><img src='/home.png' width="48" height="48" /></a>
-		<a href="/match" title="Match">Match</a>
+		<a href="/match" title="Match"><img src='/match.png' width="48" height="48" /></a>
 		<a href="/search" title="Rechercher"><img src='/google.png' width="48" height="48" /></a>
 	</nav>
 
@@ -159,6 +159,8 @@
 	<div id='message_box'><aside id = 'tiny_messages'></aside></div>
 
 	<script>
+		let m_box = document.getElementById('message_box');
+		let n_box = document.getElementById('notification_box');
 		let mess_req = new XMLHttpRequest();
 		let notif_req = new XMLHttpRequest();
 		mess_req.open('GET', '/get_messages');
@@ -218,20 +220,42 @@
 			console.log('AJAX Error');
 		}
 
-		document.getElementById('message_box').addEventListener('click', (e) => {
+		m_box.addEventListener('click', sendMessReq);
+		n_box.addEventListener('click', sendNotifReq);
+
+		function sendMessReq () {
+			m_box.style.border = "none";
+			m_box.removeEventListener('click', sendMessReq);
+			m_box.addEventListener('click', hideMessages);
 			mess_req.send();
-		})
-		document.getElementById('notification_box').addEventListener('click', (e) => {
+		}
+		function sendNotifReq () {
+			n_box.style.border = "none";
+			n_box.removeEventListener('click', sendNotifReq);
+			n_box.addEventListener('click', hideNotifications);
 			notif_req.send();
-		})
+		}
+
+		function hideMessages() {
+			document.getElementById('tiny_messages').style.display = "none";
+			m_box.removeEventListener('click', hideMessages);
+			m_box.addEventListener('click', sendMessReq);
+			mess_req.open('GET', '/get_messages');
+		}
+		function hideNotifications() {
+			document.getElementById('tiny_notifications').style.display = "none";
+			n_box.removeEventListener('click', hideNotifications);
+			n_box.addEventListener('click', sendNotifReq);
+			notif_req.open('GET', '/get_notifications');
+		}
 	</script>
 	
 	<nav>
 		<% if (typeof locals.user == 'undefined') { %>
-		<a href="/signup" title="Créer un compte">Créer un compte</a>
+		<a href="/signup" title="Créer un compte"><img src='/signup.png' width="48" height="48" /></a>
 		<a href="/login" title="Se connecter"><img src='/login.png' width="48" height="48" /></a>
 		<% } else { %>
-		<a href="/home" title="Espace Personnel"><%= user %></a>
+		<a href="/home" title="Espace Personnel"><img src='/personal_space.png' width="48" height="48" /></a>
 		<a href="/logout" title="Déconnexion"><img src='/logout.png' width="48" height="48" /></a>
 		<% } %>
 	</nav>

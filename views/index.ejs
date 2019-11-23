@@ -72,9 +72,13 @@
 		</style>
 		<h3>Vous ont liké :</h3>
 		<article id='user<%= profiles[i].id %>' class='public_profile_mini'>
-			<p><%= profiles[i].firstname %> <%= profiles[i].lastname %>, <%= profiles[i].age %></p>
+			<p>
+				<a href='/profile/<%= profiles[i].id %>' title='Voir le profil'>
+					<%= profiles[i].firstname %> <%= profiles[i].lastname %>
+				</a>, <%= profiles[i].age %>
+			</p>
 			<p>(<%= profiles[i].gender %>)</p><br />
-			<a href='/like/<%= profiles[i].id %>' title='like' ><img src="/like.png" /></a>
+			<a href='/like/<%= profiles[i].id %>' title='Aimer' ><img src="/like.png" /></a>
 			<% switch (profiles[i].fruit) {
                         case ('#pasdecoupdunsoir'): %>
 			<img src='coconut.png' height="75" width="75" title="#pasdecoupdunsoir" />
@@ -94,7 +98,7 @@
 		<% } %>
 	</section>
 	<% } %>
-	<% if (typeof locals.matchs != 'undefined' && locals.profiles.length > 0) { %>
+	<% if (typeof locals.matchs != 'undefined' && locals.matchs.length > 0) { %>
 	<section id='matches'>
 		<h3>Matchs :</h3>
 		<% for (var i in locals.matchs) { %>
@@ -104,9 +108,13 @@
 			}
 		</style>
 		<article id='userm<%= matchs[i].id %>' class='public_profile_mini'>
-			<p><%= matchs[i].firstname %> <%= matchs[i].lastname %>, <%= matchs[i].age %></p>
+			<p>
+				<a href='/profile/<%= matchs[i].id %>' title='Voir le profil'>
+					<%= matchs[i].firstname %> <%= matchs[i].lastname %>
+				</a>, <%= matchs[i].age %>
+			</p>
 			<p>(<%= matchs[i].gender %>)</p><br />
-			<a href='/chat/<%= matchs[i].id %>' title="chat" ><img src="/bubble.png" /></a>
+			<a href='/chat/<%= matchs[i].id %>' title="Chat" ><img src="/bubble.png" /></a>
 			<% switch (matchs[i].fruit) {
                         case ('#pasdecoupdunsoir'): %>
 			<img src='coconut.png' height="75" width="75" title="#pasdecoupdunsoir" />

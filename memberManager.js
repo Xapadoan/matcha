@@ -948,6 +948,34 @@ module.exports = {
 			});
 		}));
 	},
+	countNotifications: function countNotifications(username) {
+		return (new Promise((resolve, reject) => {
+			connection.query('SELECT COUNT(*) AS count FROM matcha.users_notifications WHERE user = ? AND seen = \'0\'', [
+				username
+			], (err, result) => {
+				if (err) {
+					console.log('SQL Error:\n' + err.stack);
+					reject('SQL Error');
+				} else {
+					resolve(result[0]);
+				}
+			})
+		}))
+	},
+	countMessages: function countMessages(username) {
+		return (new Promise((resolve, reject) => {
+			connection.query('SELECT COUNT(*) AS count FROM matcha.users_messages WHERE dest = ? AND seen = \'0\'', [
+				username
+			], (err, result) => {
+				if (err) {
+					console.log('SQL Error:\n' + err.stack);
+					reject('SQL Error');
+				} else {
+					resolve(result[0]);
+				}
+			})
+		}))
+	},
 	getNotifications: function getNotifications(username) {
 		return (new Promise((resolve, reject) => {
 			console.log('getNotifs');

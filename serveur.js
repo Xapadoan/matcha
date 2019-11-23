@@ -101,6 +101,7 @@ app.get('/home', csrfProtection, (req, res) => {
 			memberManager.getUserInfos(req.session.username).then((user_info) => {
 				memberManager.getUserExtended(req.session.username).then((user_extended) => {
 					memberManager.getUserLikedProfiles(req.session.username).then((profiles) => {
+						console.log('Logge : ' + req.session.just_logged)
 						res.render('home.ejs', {
 							user: req.session.username,
 							error: error,
@@ -109,6 +110,7 @@ app.get('/home', csrfProtection, (req, res) => {
 							user_extended: user_extended,
 							images: images,
 							profiles: profiles,
+							just_logged: req.session.just_logged,
 							csrfToken: req.csrfToken()
 						})
 					}).catch((reason) => {
@@ -119,6 +121,7 @@ app.get('/home', csrfProtection, (req, res) => {
 							user_info: user_info,
 							user_extended: user_extended,
 							images: images,
+							just_logged: req.session.just_logged,
 							csrfToken: req.csrfToken()
 						});
 					}).catch((reason) => {
@@ -130,6 +133,7 @@ app.get('/home', csrfProtection, (req, res) => {
 							user_info: user_info,
 							error: 'Une erreur est survenue au chargement de votre profil',
 							images: images,
+							just_logged: req.session.just_logged,
 							csrfToken: req.csrfToken()
 						});
 					});
@@ -140,6 +144,7 @@ app.get('/home', csrfProtection, (req, res) => {
 						error: 'Votre profil est introuvable',
 						notfication: notification,
 						images: images,
+						just_logged: req.session.just_logged,
 						csrfToken: req.csrfToken()
 					});
 				});
@@ -149,6 +154,7 @@ app.get('/home', csrfProtection, (req, res) => {
 					user: req.session.username,
 					error: 'Vos photos sont introuvables',
 					notfication: notification,
+					just_logged: req.session.just_logged,
 					csrfToken: req.csrfToken()
 				});
 			});
@@ -246,6 +252,26 @@ app.get('/chat/:id', (req, res) => {
 	});
 })
 
+app.get('/count_messages', (req, res) => {
+	console.log('count essages')
+	memberManager.countMessages(req.session.username).then((result) => {
+		console.log(JSON.stringify(result));
+		res.end(JSON.stringify(result));
+	}).catch((reason) => {
+		res.end(reason);
+	})
+})
+
+app.get('/count_notifications', (req, res) => {
+	console.log('count_notifs')
+	memberManager.countNotifications(req.session.username).then((result) => {
+		console.log(result)
+		res.end(JSON.stringify(result));
+	}).catch((reason) => {
+		res.end(reason);
+	})
+})
+
 app.get('/get_messages', (req, res) => {
  	memberManager.getMessages(req.session.username).then((results) => {
  		res.end(JSON.stringify(results)); //Des idees de genie !
@@ -335,15 +361,18 @@ app.post('/login', csrfProtection, (req, res) => {
 						req.session.lat = result.lat,
 						req.session.lng = result.lng
 						req.session.notification = 'Bienvenue ' + req.session.username + " !";
+						req.session.just_logged = true;
 						res.redirect('/home');
 					}
 				}).catch((reason) => {
 					console.log(reason);
 					req.session.notification = 'Bienvenue ' + req.session.username + " !";
+					req.session.just_logged = true;
 					res.redirect('/home');
 				})
 			} else {
 				req.session.notification = 'Bienvenue ' + req.session.username + " !";
+				req.session.just_logged = true;
 				res.redirect('/home');
 			}
 		} else {

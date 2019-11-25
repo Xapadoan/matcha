@@ -313,6 +313,21 @@ app.get('/get_notifications', (req, res) => {
 	})
 })
 
+app.get('/get_address/:lat/:lng', (req, res) => {
+	locationFinder.getLocationFromLatLng(req.params.lat, req.params.lng).then((results) => {
+		if (results != false || results != 'Not found') {
+			res.end(JSON.stringify(results));
+		} else {
+			res.end(JSON.stringify({
+				found: 0
+			}))
+		}
+	}).catch((reason) => {
+		res.end(JSON.stringify({
+			found: 0
+		}));
+	})
+})
 
 app.get('/match', (req, res) => {
 	//We have to check for a complete profile here
@@ -526,7 +541,7 @@ app.post('/new_photo', csrfProtection, (req, res) => {
 				}
 			}
 			if (type != 'image/png' && type != 'image/jpg' && type != 'image/jpeg') {
-				req.session.error = 'Ce format n\'est pas supporté';
+				req.session.error = 'L\'image doit etre au format PNG ou JPEG';
 				res.redirect(301, '/home');
 				return;
 			} else if (image.size == 0) {
@@ -790,7 +805,7 @@ app.post('/report/:id', csrfProtection, (req, res) => {
 	//We need authorization
 	memberManager.checkAuthorization(req.session.username, ['Confirmed', 'Complete']).then((result) => {
 		if (result == true) {
-			memberManager.report(req.params.id, req.body.message).then((result) => {
+			memberManager.report(req.params.id, req.body.message.slice(0, 200)).then((result) => {
 				if (result != true) {
 					req.session.error = 'Impossible de signaler l\'utilisateur';
 					res.redirect(301, '/');
@@ -989,16 +1004,20 @@ app.post('/search', csrfProtection, (req, res) => {
 
 app.post('/update_location', csrfProtection, (req, res) => {
 	//We need authorization
-	memberManager.checkAuthorization(req.session.notification, ['Confirmed', 'Complete']).then((result) => {
+	memberManager.checkAuthorization(req.session.username, ['Confirmed', 'Complete']).then((result) => {
 		if (result == true) {
 			if (typeof req.body.lat != 'undefined' && req.body.lng != 'undefined') {
 				memberManager.updateLatLng(lat, lng, req.session.username);
 			} else if (typeof req.body.city != 'undefined' && req.body.street != 'undefined' && typeof req.body.country != 'undefined') {
 				locationFinder.getLatLngFromLocation(req.body.street + ' ' + req.body.city, req.body.country).then((location) => {
+					if (location == 'Not found') {
+						req.session.notfication = 'Nous n\'avons pas trouve cet endroit';
+						res.redirect('/home');
+					}
 					memberManager.updateLatLng(req.session.username, location.lat, location.lng).then((result) => {
 						req.session.lat = result.lat;
 						req.session.lng = result.lng;
-						req.session.notification = 'otre geolocalisation a ete mise a jour'
+						req.session.notification = 'Votre geolocalisation a ete mise a jour'
 						res.redirect('/home');
 					}).catch((reason) => {
 						req.session.error = 'Quelque chose cloche, nous enquêtons';
@@ -1018,6 +1037,11 @@ app.post('/update_location', csrfProtection, (req, res) => {
 			res.redirect(301, '/login');
 			return ;
 		}
+	}).catch((reason) => {
+		console.log('Failed to checkAuthorizations:\n\t' + reason);
+		req.session.error = 'Quelque chose cloche, nous enquetons';
+		res.redirect('/home');
+		return ;
 	})
 });
 
@@ -1025,7 +1049,7 @@ app.post('/complete', csrfProtection, (req, res) => {
 	//We need authorization
 	memberManager.checkAuthorization(req.session.username, ['Confirmed', 'Complete']).then((result) => {
 		if (result == true) {
-			memberManager.create_user_extended(req.session.username, req.body.age, req.body.gender, req.body.orientation, req.body.bio).then((result) => {
+			memberManager.create_user_extended(req.session.username, req.body.age, req.body.gender, req.body.orientation, req.body.bio.slice(0, 500)).then((result) => {
 				if (result === true) {
 					req.session.notification = 'Votre profil à été mis à jour avec succès';
 					res.redirect(301, '/home');
@@ -1037,7 +1061,7 @@ app.post('/complete', csrfProtection, (req, res) => {
 					return ;
 				}
 			}).catch((err) => {
-				console.log('Error while creating new extended profile : ' + err.stack);
+				console.log('Error while creating new extended profile : ' + err);
 				req.session.error = 'Quelque chose cloche, nous enquêtons';
 				res.redirect(301, '/home');
 				return ;
@@ -1058,7 +1082,7 @@ app.post('/update', csrfProtection, (req, res) => {
 	//We need authorization
 	memberManager.checkAuthorization(req.session.username, ['Confirmed', 'Complete']).then((result) => {
 		if (result == true) {
-			memberManager.updateUser(req.session.username, req.body.Firstname, req.body.Lastname, req.body.Mail, req.body.Password, req.body.Fruit).then((results) => {
+			memberManager.updateUser(req.session.username, req.body.Firstname.slice(0, 100), req.body.Lastname.slice(0, 100), req.body.Mail.slice(0, 255), req.body.Password, req.body.Fruit).then((results) => {
 				if (results !== true) {
 					res.render('home.ejs', {
 						user: req.session.username,
@@ -1112,7 +1136,7 @@ app.get('/signup', csrfProtection, (req, res) => {
 });
 
 app.post('/signup', csrfProtection, (req, res) => {
-	memberManager.createUser(req.body.Username, req.body.Lastname, req.body.Firstname, req.body.Mail, req.body.Password, req.body.Fruit).then((result) => {
+	memberManager.createUser(req.body.Username.slice(0, 100), req.body.Lastname.slice(0, 100), req.body.Firstname.slice(0, 100), req.body.Mail.slice(0, 255), req.body.Password, req.body.Fruit).then((result) => {
 		if (result !== true) {
 			res.render('signup.ejs', {
 				user: req.session.username,

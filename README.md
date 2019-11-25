@@ -5,29 +5,15 @@
 
 #### Trucs a faire :
 
-- Detection connection sur la page perso
-- Choper des icones:
-    - signup
-    - espace perso
-    - match
 - Recherche:
     - Ajouter options de tri
 - Gerer les matchs
     - Prendre en compte les interets
-    - Afficher la geolocalisation sous forme d'adresse si dans la bdd
 - Ajouter bad crsf error handler
 - Ameliorer le chat:
     - front
     - sons ?
     - Envoi d'images ?
-    - Stocker les 100 derniers messages
-- Ameliorer la page perso
-- Nouveaux messages / notification:
-    - AJAX pour visualiser + lien pour aller voir vraiment
-- Notifications en temps reel:
-    - Trouver un moyen de l'envoyer au bon gars
-    - Checker que les notifications ont ete vues (onclick #('notification_box'))
-    - Afficher si nouvelles notifications au login
 - Du front, on a bientot fini
 
 ## Required packages

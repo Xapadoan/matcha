@@ -78,6 +78,8 @@
 			var lng = document.getElementById('lng').innerHTML;
 			console.log('Location with ip: lat : ' + lat + '; long = ' + lng);
 		}
+
+		let loc_req = [];
 	</script>
 	<%- include('header.ejs') %>
 	<section id='matches'>
@@ -109,6 +111,28 @@
 			<img src='spices.png' height="75" width="75" title="#pqr" />
 			<% break;
 			} %>
+			<% if (typeof locals.matchs[i].lat != 'undefined' && locals.matchs[i].lat != null && typeof locals.matchs[i].lng != 'undefined' && locals.matchs[i].lng != null) { %>
+					<script>
+						loc_req['<%= matchs[i].id %>'] = new XMLHttpRequest();
+						loc_req['<%= matchs[i].id %>'].open('GET', '/get_address/<%= matchs[i].lat %>/<%= matchs[i].lng %>');
+						loc_req['<%= matchs[i].id %>'].responseType = 'json';
+						loc_req['<%= matchs[i].id %>'].onload = function () {
+							if (loc_req['<%= matchs[i].id %>'].status != 200) {
+								console.log('AJAX Failed: status (' + loc_req['<%= matchs[i].id %>'].status + ')')
+							} else if (loc_req['<%= matchs[i].id %>'].response.found != 0) {
+								//Put location
+								document.getElementById('userbio<%= matchs[i].id %>').innerHTML = loc_req['<%= matchs[i].id %>'].response.city + ', ' + loc_req['<%= matchs[i].id %>'].response.country;
+							}
+						}
+						loc_req['<%= matchs[i].id %>'].onerror = function () {
+							console.log('AJAX Error');
+						}
+						loc_req['<%= matchs[i].id %>'].onprogress = function () {
+
+						}
+						loc_req['<%= matchs[i].id %>'].send();
+					</script>
+				<% } %>
 			<p class='bio'><%= matchs[i].bio %></p>
 		</article>
 		<% } %>

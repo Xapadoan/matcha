@@ -417,7 +417,22 @@ module.exports = {
 			this.getUserExtended(username).then((result) => {
 				if (result.gender == null && result.orientation == null && result.age == null && result.bio == null && result.interests == null) {
 					//extended profile doesn't exists, we have to create it
-					let interests = getInterests(bio);
+					let interests;
+					if (typeof gender == 'undefined' || gender == "") {
+						gender = "Both";
+					}
+					if (typeof orientation == 'undefined' || orientation == "") {
+						orientation = "Both"
+					}
+					if (typeof age == 'undefined' || age == "") {
+						age = 18;
+					}
+					if (typeof bio == 'undefined' || bio == "") {
+						bio = null;
+						interests = null;
+					} else {
+						interests = getInterests(bio);
+					}
 					digestInterests(result.id, interests);
 					connection.query('INSERT INTO matcha.users_extended (user, age, gender, orientation, bio, interests) VALUES (?, ?, ?, ?, ?, ?)', [
 						result.id,
@@ -427,9 +442,15 @@ module.exports = {
 						bio,
 						interests
 					], (err) => {
+						console.log('id: ' + result.id);
+						console.log('age: ' + age);
+						console.log('gender: ' + gender);
+						console.log('orientation: ' + orientation);
+						console.log('bio: ' + bio);
+						console.log('interests: ' + interests);
 						if (err) {
-							console.log(err.stack);
-							reject('Something went wrong, we are trying to solve it');
+							console.log('SQL Error:\n' + err.stack);
+							reject('SQL Error');
 						} else {
 							console.log('access 1')
 							checkCompleteProfile(username).then((result) => {

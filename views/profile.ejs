@@ -27,6 +27,29 @@
 	<p>Age :<% if (typeof locals.profile != 'undefined' && locals.profile != null) { %><%= profile.age %><% } %></p>
 	<p>Genre :<% if (typeof locals.profile != 'undefined') { %><%= profile.gender %><% } %></p>
 	<p>Orientation :<% if (typeof locals.profile != 'undefined') { %><%= profile.orientation %><% } %></p>
+	<% if (typeof locals.profile.lat != 'undefined' && locals.profile.lat != null && typeof locals.profile.lng != 'undefined' && locals.profile.lng != null) { %>
+		<p id='address'> </p>
+					<script>
+						let loc_req = new XMLHttpRequest();
+						loc_req.open('GET', '/get_address/<%= profile.lat %>/<%= profile.lng %>');
+						loc_req.responseType = 'json';
+						loc_req.onload = function () {
+							if (loc_req.status != 200) {
+								console.log('AJAX Failed: status (' + loc_req.status + ')')
+							} else if (loc_req.response.found != 0) {
+								//Put location
+								document.getElementById('address').innerHTML = loc_req.response.city + ', ' + loc_req.response.country;
+							}
+						}
+						loc_req.onerror = function () {
+							console.log('AJAX Error');
+						}
+						loc_req.onprogress = function () {
+
+						}
+						loc_req.send();
+					</script>
+				<% } %>
 	<p>Bio
 		:<% if (typeof locals.profile != 'undefined' && locals.profile.bio != null) { %><%= profile.bio %><% } %></textarea>
 		<% if (typeof locals.profile != 'undefined' && locals.profile.image1 != null) { %>

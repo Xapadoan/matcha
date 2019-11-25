@@ -81,15 +81,15 @@
 				<% } %>>Homme</option>
 		</select>
 		Orientation : <select name="orientation">
+			<option value="Both"
+				<% if (typeof locals.user_extended != 'undefined' && locals.user_extended.orientation == 'Both') { %>
+				selected <% } %>>Les deux</option>
 			<option value="Women"
 				<% if (typeof locals.user_extended != 'undefined' && locals.user_extended.orientation == 'Women') { %>
 				selected <% } %>>Femmes</option>
 			<option value="Men"
 				<% if (typeof locals.user_extended != 'undefined' && locals.user_extended.orientation == 'Men') { %>
 				selected <% } %>>Hommes</option>
-			<option value="Both"
-				<% if (typeof locals.user_extended != 'undefined' && locals.user_extended.orientation == 'Both') { %>
-				selected <% } %>>Les deux</option>
 			<option value="Others"
 				<% if (typeof locals.user_extended != 'undefined' && locals.user_extended.gender == 'Others') { %>
 				selected <% } %>>Autres</option>
@@ -157,6 +157,9 @@
 		<% } %>
 	</section>
 	<% } %>
+	<script>
+		let loc_req = [];
+	</script>
 	<section id='likesnmatches'>
 		<% if (typeof locals.profiles != 'undefined' && locals.profiles.length > 0) { %>
 		<h3>Vous avez liké :</h3>
@@ -188,7 +191,30 @@
                     case ('#pqr'): %>
 				<img src='spices.png' height="75" width="75" title="#pqr" />
 				<% break;
-                    } %>
+					} %>
+				<p id='address<%= profiles[i].id %>'> </p>
+				<% if (typeof locals.profiles[i].lat != 'undefined' && locals.profiles[i].lat != null && typeof locals.profiles[i].lng != 'undefined' && locals.profiles[i].lng != null) { %>
+					<script>
+						loc_req['<%= profiles[i].id %>'] = new XMLHttpRequest();
+						loc_req['<%= profiles[i].id %>'].open('GET', '/get_address/<%= profiles[i].lat %>/<%= profiles[i].lng %>');
+						loc_req['<%= profiles[i].id %>'].responseType = 'json';
+						loc_req['<%= profiles[i].id %>'].onload = function () {
+							if (loc_req['<%= profiles[i].id %>'].status != 200) {
+								console.log('AJAX Failed: status (' + loc_req['<%= profiles[i].id %>'].status + ')')
+							} else if (loc_req['<%= profiles[i].id %>'].response.found != 0) {
+								//Put location
+								document.getElementById('address<%= profiles[i].id %>').innerHTML = loc_req['<%= profiles[i].id %>'].response.city + ', ' + loc_req['<%= profiles[i].id %>'].response.country;
+							}
+						}
+						loc_req['<%= profiles[i].id %>'].onerror = function () {
+							console.log('AJAX Error');
+						}
+						loc_req['<%= profiles[i].id %>'].onprogress = function () {
+
+						}
+						loc_req['<%= profiles[i].id %>'].send();
+					</script>
+				<% } %>
 				<p class='bio'><%= profiles[i].bio %></p>
 			</article>
 			<% } %>

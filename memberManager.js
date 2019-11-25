@@ -978,7 +978,6 @@ module.exports = {
 	},
 	getNotifications: function getNotifications(username) {
 		return (new Promise((resolve, reject) => {
-			console.log('getNotifs');
 			connection.query('SELECT user, title, body FROM matcha.users_notifications WHERE user = ? AND seen = \'0\' ORDER BY time DESC LIMIT 10', [
 				username
 			], (err, results) => {
@@ -1021,7 +1020,6 @@ module.exports = {
 	},
 	newNotification: function newNotification(notif) {
 		return (new Promise((resolve, reject) => {
-			console.log('new_notf')
 			connection.query('INSERT INTO matcha.users_notifications (user, title, body) VALUES (?, ?, ?);', [
 				notif.dest,
 				notif.title,

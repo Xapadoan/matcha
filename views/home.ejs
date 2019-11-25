@@ -197,43 +197,7 @@
 	</section>
 	<% if (typeof locals.user != 'undefined') { %>
 	<a href="/delete_user"><img src="https://img.icons8.com/small/32/000000/gear.png"></a>
-	<% }
-	if (locals.just_logged == true) { %>
-		<script>
-			let mess_req2 = new XMLHttpRequest();
-			let notif_req2 = new XMLHttpRequest();
-
-			mess_req2.open('GET', '/count_messages');
-			notif_req2.open('GET', '/count_notifications');
-			mess_req2.responseType = 'json';
-			notif_req2.responseType = 'json';
-
-			mess_req2.onload = function() {
-				if (mess_req2.status != 200) {
-					console.log('AJAX Error: status (' + mess_req2.status + ')');
-				} else if (mess_req2.response.count > 0) {
-					document.getElementById('message_box').style.border = "solid red 1px";
-				}
-			}
-            notif_req2.onload = function() {
-				if (notif_req2.status != 200) {
-					console.log('AJAX Error: status (' + notif_req2.status + ')');
-				} else if (notif_req2.response.count > 0) {
-					document.getElementById('notification_box').style.border = "solid red 1px";
-				}
-			}
-
-			mess_req2.onerror = function() {
-				console.log('AJAX Error');
-			}
-			notif_req2.onerror = function() {
-				console.log('AJAX Error');
-			}
-
-			mess_req2.send();
-			notif_req2.send();
-		</script>
-		<% } %>
+	<% } %>
 </body>
 
 </html>

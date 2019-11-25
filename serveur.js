@@ -12,6 +12,14 @@ var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 
 io.on('connection', (socket) => {
+	socket.on('disconnect', function () {
+		io.sockets.emit('logged', {
+			logged: false,
+			user: socket.username
+		});
+		socket.leave(socket.username);
+	})
+
 	socket.on('message', (message) => {
 		io.sockets.in(socket.room).emit('message', message);
 	});
@@ -43,12 +51,15 @@ io.on('connection', (socket) => {
 	})
 
 	socket.on('is_logged', (user) => {
-		let clients = Object.keys(io.sockets.sockets);
-		if (clients.includes(user)) {
-			socket.emit('logged', {
-				logged: true,
-				user: user
-			})
+		let i = Object.values(io.sockets.sockets);
+		for (const temp of i) {
+			if (temp.rooms[user] == user) {
+				socket.emit('logged', {
+					logged: true,
+					user: user
+				})
+				return ;
+			}
 		}
 	});
 })
@@ -186,7 +197,6 @@ app.get('/', csrfProtection, (req, res) => {
 	if (typeof req.session.username != 'undefined') {
 		memberManager.getProfilesLikesUser(req.session.username).then((results) => {
 			memberManager.getUserMatchs(req.session.username).then((matchs) => {
-				console.log(matchs);
 				res.render('index.ejs', {
 					user: req.session.username,
 					error: error,
@@ -376,18 +386,15 @@ app.post('/login', csrfProtection, (req, res) => {
 						req.session.lat = result.lat,
 						req.session.lng = result.lng
 						req.session.notification = 'Bienvenue ' + req.session.username + " !";
-						req.session.just_logged = true;
 						res.redirect('/home');
 					}
 				}).catch((reason) => {
 					console.log(reason);
 					req.session.notification = 'Bienvenue ' + req.session.username + " !";
-					req.session.just_logged = true;
 					res.redirect('/home');
 				})
 			} else {
 				req.session.notification = 'Bienvenue ' + req.session.username + " !";
-				req.session.just_logged = true;
 				res.redirect('/home');
 			}
 		} else {
@@ -507,7 +514,7 @@ app.post('/new_photo', csrfProtection, (req, res) => {
 			if (type == 'image/png') {
 				if (imageChecker.checkPNG(image.data) !== true) {
 					console.log('FakeImage');
-					req.session.error = 'Cette image n\'est ppas valide';
+					req.session.error = 'Cette image n\'est pas valide';
 					res.redirect(301, '/home');
 					return;
 				}
@@ -613,9 +620,14 @@ app.get('/profile/:id', (req, res) => {
 			memberManager.visit(req.session.username, req.params.id).then((result) => {
 				if (result == true) {
 					memberManager.getUserName(req.params.id).then((name) => {
+						memberManager.newNotification({
+							dest: name,
+							title: 'Nouvelle Visite !',
+							body: req.session.username + ' a vu votre profil'
+						})
 						io.sockets.emit('new_notification', {
 							dest: name,
-							type: 'visit',
+							type: 'Nouvelle Visite !',
 							body: req.session.username + ' a vu votre profil'
 						});
 					}).catch((reason) => {
@@ -692,8 +704,6 @@ app.get('/like/:id', (req, res) => {
 									dest: name,
 									title: 'Noubeau Match !',
 									body: req.session.username + ' vous matche'
-								}).then((result) => {
-									//console.log('Notif stored in db: ' + req.session.username + ' vous matche')
 								}).catch((reason) => {
 									console.log('Failed to store newNotification:\n\t' + reason);
 								});
@@ -706,17 +716,15 @@ app.get('/like/:id', (req, res) => {
 							} else {
 								memberManager.newNotification({
 									dest: name,
-									title: 'Nouveau Match !',
+									title: 'Nouveau Like !',
 									body: req.session.username + ' vous aime'
-								}).then((result) => {
-									//console.log('Notif stored in db: ' + req.session.username + ' vous aime')
 								}).catch((reason) => {
 									console.log('Failed to store newNotification:\n\t' + reason);
 								})
 								req.session.notification = 'Vous aimez cette personne'
 								io.sockets.emit('new_notification', {
 									dest: name,
-									type: 'like',
+									type: 'Nouveau Like !',
 									body: req.session.username + ' likes you !'
 								})
 							}
@@ -740,15 +748,15 @@ app.get('/like/:id', (req, res) => {
 			}).catch((err) => {
 				console.log('Failed to like:\n\t' + err)
 				req.session.error = 'Echec lors du like';
-				res.redirect(301, req.headers.referer);
+				res.redirect(301, req.header.referer);
 			});
 		} else {
 			req.session.notification = 'Vous devez être connecté avec un compte valide';
-			res.redirect(301, req.header.referer);
+			res.redirect(301, '/login');
 		}
 	}).catch((reason) => {
 		req.session.error = 'Nous n\'avonspas pu vérifier vos authorizations';
-		res.redirect(req.header.referer);
+		res.redirect(301, '/');
 	})
 });
 
@@ -770,11 +778,11 @@ app.get('/report/:id', csrfProtection, (req, res) => {
 			})
 		} else {
 			req.session.notification = 'Vous devez être connecté avec un compte valide'
-			res.redirect(301, req.header.referer)
+			res.redirect(301, '/login')
 		}
 	}).catch((reason) => {
-		req.session.error = 'Nous n\'avonspas pu vérifier vos authorizations';
-		res.redirect(req.header.referer);
+		req.session.error = 'Nous n\'avonspas pu vérifier vos authorisations';
+		res.redirect(301, '/');
 	})
 })
 
@@ -847,6 +855,8 @@ app.get('/unlike/:id', (req, res) => {
 									dest: name,
 									title: 'Plus de Match',
 									body: req.session.username + ' ne vous aime plus'
+								}).catch((reason) => {
+									console.log('Failed to store newNotification:\n\t' + reason)
 								})
 								io.sockets.emit('new_notification', {
 									dest: name,
@@ -988,23 +998,25 @@ app.post('/update_location', csrfProtection, (req, res) => {
 					memberManager.updateLatLng(req.session.username, location.lat, location.lng).then((result) => {
 						req.session.lat = result.lat;
 						req.session.lng = result.lng;
-						res.end();
+						req.session.notification = 'otre geolocalisation a ete mise a jour'
+						res.redirect('/home');
 					}).catch((reason) => {
 						req.session.error = 'Quelque chose cloche, nous enquêtons';
-						console.log(reason);
-						res.end();
+						console.log('Failed to update lat lng:\n\t' + reason);
+						res.redirect('/home');
 					});
 					return;
 				}).catch((reason) => {
 					req.session.error = 'Quelque chose cloche, nous enquêtons';
-					console.log(reason);
-					res.end();
+					console.log('Failed to getLatLngFrom Location:\n\t' + reason);
+					res.redirect('/home');
 					return;
 				})
 			}
 		} else {
 			req.session.notification = 'Vous devez être connecté avec un compte valide'
-			res.redirect(301, req.header.referer);
+			res.redirect(301, '/login');
+			return ;
 		}
 	})
 });
@@ -1032,12 +1044,12 @@ app.post('/complete', csrfProtection, (req, res) => {
 			});
 		} else {
 			req.session.notification = 'Vous devez étre connecté avec un compte valide';
-			res.redirect(301, req.header.referer);
+			res.redirect(301, '/login');
 			return ;
 		}
 	}).catch((reason) => {
 		req.session.error = 'Nous n\'avonspas pu vérifier vos authorizations';
-		res.redirect(req.header.referer);
+		res.redirect(301, '/');
 		retunr ;
 	})
 });
@@ -1065,11 +1077,11 @@ app.post('/update', csrfProtection, (req, res) => {
 			});
 		} else {
 			req.session.notification = 'Vous devez étre connecté avec un compte valide';
-			res.redirect(301, req.header.referer);
+			res.redirect(301, '/login');
 		}
 	}).catch((reason) => {
 		req.session.error = 'Nous n\'avonspas pu vérifier vos authorizations';
-		res.redirect(req.header.referer);
+		res.redirect(301, '/');
 	})
 })
 
@@ -1118,7 +1130,7 @@ app.post('/signup', csrfProtection, (req, res) => {
 			});
 		}
 	}).catch((reason) => {
-		console.log(reason);
+		console.log('Failed to createUser:\n\t' + reason);
 		res.render('signup.ejs', {
 			user: req.session.username,
 			error: 'Quelque chose cloche, nous enquêtons',

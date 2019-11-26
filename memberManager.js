@@ -1525,9 +1525,7 @@ module.exports = {
 			query_values.push(fetcher.location[0], fetcher.location[0], fetcher.location[1], fetcher.location[1], fetcher.id, fetcher.id, fetcher.username);
 			//add sort options
 			if (typeof fetcher.sort != 'undefined' && fetcher.sort != 'none') {
-				if (fetcher.sort == 'pop_score') {
-					query += ' ORDER BY likes';
-				} else if (fetcher.sort == 'ASC') {
+				if (fetcher.sort == 'ASC') {
 					query += ' ORDER BY ' + connection.escapeId(fetcher.sort) + ' ASC';
 				} else {
 					query += ' ORDER BY ' + connection.escapeId(fetcher.sort) + ' DESC'

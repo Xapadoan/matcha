@@ -1531,8 +1531,8 @@ module.exports = {
 					query += ' ORDER BY ' + connection.escapeId(fetcher.sort) + ' DESC'
 				}
 			}
-			query += ' LIMIT ?, 5';
-			query_values.push(0);
+			//query += ' LIMIT ?, 5';
+			//query_values.push(0);
 			console.log(query)
 			connection.query(query, query_values, (err, results) => {
 				if (err) {

@@ -1454,7 +1454,7 @@ module.exports = {
 	//	}
 	fetchMembers: function fetchMembers(options, fetcher) {
 		return (new Promise((resolve, reject) => {
-			query = 'SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1, ((u.lat - ?) * (u.lat - ?) + (u.lng - ?) * (u.lng - ?)) AS distance, COUNT(l.liked) AS likes FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_interests n ON u.id = n.user RIGHT JOIN matcha.users_likes l ON u.id = l.liked'
+			query = 'SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1, ((u.lat - ?) * (u.lat - ?) + (u.lng - ?) * (u.lng - ?)) AS distance, COUNT(l.liked) AS likes FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_interests n ON u.id = n.user LEFT OUTER JOIN matcha.users_likes l ON u.id = l.liked'
 			query += ' WHERE u.username <> ?';
 			query_values = [fetcher.location[0], fetcher.location[0], fetcher.location[1], fetcher.location[1], fetcher.username];
 			//use age

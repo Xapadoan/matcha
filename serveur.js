@@ -973,6 +973,7 @@ app.post('/search', csrfProtection, (req, res) => {
 			});
 		}
 	} else if (typeof req.body.min_age != 'undefined' && typeof req.body.max_age != 'undefined' && typeof req.body.gender != 'undefined' && typeof req.body.distance != 'undefined') {
+		console.log(req.body);
 		memberManager.getUserInfos(req.body.username).then((result) => {
 			memberManager.fetchMembers({
 				age: [req.body.min_age, req.body.max_age],

@@ -1540,7 +1540,7 @@ module.exports = {
 					console.log(err.stack);
 					reject('Failed to fetch users');
 				} else {
-					console.log(results.distance)
+					console.log(results[0].distance)
 					resolve(results);
 				}
 			})

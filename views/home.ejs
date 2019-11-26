@@ -195,6 +195,7 @@
 				<p id='address<%= profiles[i].id %>'> </p>
 				<% if (typeof locals.profiles[i].lat != 'undefined' && locals.profiles[i].lat != null && typeof locals.profiles[i].lng != 'undefined' && locals.profiles[i].lng != null) { %>
 					<script>
+						console.log('OK');
 						loc_req['<%= profiles[i].id %>'] = new XMLHttpRequest();
 						loc_req['<%= profiles[i].id %>'].open('GET', '/get_address/<%= profiles[i].lat %>/<%= profiles[i].lng %>');
 						loc_req['<%= profiles[i].id %>'].responseType = 'json';

@@ -442,17 +442,10 @@ module.exports = {
 						bio,
 						interests
 					], (err) => {
-						console.log('id: ' + result.id);
-						console.log('age: ' + age);
-						console.log('gender: ' + gender);
-						console.log('orientation: ' + orientation);
-						console.log('bio: ' + bio);
-						console.log('interests: ' + interests);
 						if (err) {
 							console.log('SQL Error:\n' + err.stack);
 							reject('SQL Error');
 						} else {
-							console.log('access 1')
 							checkCompleteProfile(username).then((result) => {
 								if (typeof result == 'undefined' || Object.keys(result).length == 0) {
 									connection.query('UPDATE matcha.users SET status=\'Complete\' WHERE username = ?', [

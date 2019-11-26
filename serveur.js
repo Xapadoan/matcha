@@ -314,6 +314,7 @@ app.get('/get_notifications', (req, res) => {
 })
 
 app.get('/get_address/:lat/:lng', (req, res) => {
+	console.log('get address')
 	locationFinder.getLocationFromLatLng(req.params.lat, req.params.lng).then((results) => {
 		if (results != false || results != 'Not found') {
 			res.end(JSON.stringify(results));

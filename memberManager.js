@@ -1454,7 +1454,7 @@ module.exports = {
 	//	}
 	fetchMembers: function fetchMembers(options, fetcher) {
 		return (new Promise((resolve, reject) => {
-			query = 'SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1, ((u.lat - ?) * (u.lat - ?) + (u.lng - ?) * (u.lng - ?)) AS distance, COUNT(l.liked) AS likes, (SELECT COUNT(*) FROM matcha.users_likes WHERE liked = ?) AS llikes, (SELECT COUNT(*) FROM matcha.users_visits WHERE visited = ?) AS visits FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_interests n ON u.id = n.user INNER JOIN matcha.users_likes l ON u.id = l.liked'
+			query = 'SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1, ((u.lat - ?) * (u.lat - ?) + (u.lng - ?) * (u.lng - ?)) AS distance, COUNT(l.liked) AS likes, (SELECT COUNT(*) FROM matcha.users_likes WHERE liked = ?) AS llikes, (SELECT COUNT(*) FROM matcha.users_visits WHERE visited = ?) AS visits FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_interests n ON u.id = n.user LEFT JOIN matcha.users_likes l ON u.id = l.liked'
 			query += ' WHERE u.username <> ?';
 			query_values = [fetcher.location[0], fetcher.location[0], fetcher.location[1], fetcher.location[1], fetcher.id, fetcher.id, fetcher.username];
 			//use age
@@ -1539,6 +1539,7 @@ module.exports = {
 					console.log(err.stack);
 					reject('Failed to fetch users');
 				} else {
+					console.log(results);
 					console.log(results[0].likes);
 					console.log(results[1].likes);
 					console.log(results[2].likes);

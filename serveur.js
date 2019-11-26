@@ -985,7 +985,8 @@ app.post('/search', csrfProtection, (req, res) => {
 				location: [req.session.lat, req.session.lng],
 				username: req.session.username,
 				sort: req.body.sort,
-				order: req.body.order
+				order: req.body.order,
+				id: req.session.userid
 			}).then((results) => {
 				res.render('public_profile.ejs', {
 					search: req.body,

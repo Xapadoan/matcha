@@ -1539,7 +1539,11 @@ module.exports = {
 					console.log(err.stack);
 					reject('Failed to fetch users');
 				} else {
-					console.log(results[1].likes)
+					console.log(results[0].likes);
+					console.log(results[1].likes);
+					console.log(results[2].likes);
+					console.log(results[3].likes);
+					console.log(results[4].likes);
 					resolve(results);
 				}
 			})

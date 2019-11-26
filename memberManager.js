@@ -1521,9 +1521,10 @@ module.exports = {
 			if (fetcher.sort != 'none') {
 				if (fetcher.sort == 'pop_score') {
 					query += ' ORDER BY (5 * likes + visits)'
+				} else if (fetcher.sort == 'ASC') {
+					query += ' ORDER BY ' + connection.escapeId(fetcher.sort) + ' ASC';
 				} else {
-					query += ' ORDER BY ' + connection.escapeId(fetcher.sort) + ' ?';
-					query_values.push(fetcher.order);
+					query += ' ORDER BY ' + connection.escapeId(fetcher.sort) + ' DESC'
 				}
 			}
 			if (typeof options.allow_dislikes != 'undefined' && options.allow_dislikes != true) {

@@ -74,6 +74,7 @@ module.exports = {
 							resolve(false)
 						}
 					} else {
+						console.log(body)
 						reject('Failed to get Geo-locaion from Latitude and Longitude');
 					}
 				}

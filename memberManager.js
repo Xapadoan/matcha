@@ -1525,9 +1525,9 @@ module.exports = {
 			query_values.push(fetcher.location[0], fetcher.location[0], fetcher.location[1], fetcher.location[1], fetcher.id, fetcher.id, fetcher.username);
 			//add sort options
 			if (typeof fetcher.sort != 'undefined' && fetcher.sort != 'none') {
-				console.log('fetcher : ' + fetcher.location[0]);
 				if (fetcher.sort == 'pop_score') {
-					query += ' ORDER BY (5 * likes + visits)'
+					console.log('sort pop');
+					query += ' ORDER BY (5 * likes + visits)';
 				} else if (fetcher.sort == 'ASC') {
 					query += ' ORDER BY ' + connection.escapeId(fetcher.sort) + ' ASC';
 				} else {
@@ -1541,7 +1541,7 @@ module.exports = {
 					console.log(err.stack);
 					reject('Failed to fetch users');
 				} else {
-					console.log(results[0].distance)
+					console.log(results[0].distance);
 					resolve(results);
 				}
 			})

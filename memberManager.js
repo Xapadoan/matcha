@@ -1517,6 +1517,7 @@ module.exports = {
 				}
 			}
 			//add sort options
+			console.log(query);
 			if (fetcher.sort != 'none') {
 				query += ' ORDER BY ' + connection.escapeId(fetcher.sort) + ' ' + connection.escapeId(fetcher.order);
 				console.log(query);

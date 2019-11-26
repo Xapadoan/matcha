@@ -1,6 +1,6 @@
 {
-    "name": "localhost",
-    "root": "/home/xavier/Documents/42/matcha",
+    "name": "10.12.223.254",
+    "root": "/root/matcha",
     "port": 80,
     "neutrino_id": "Holl",
     "neutrino_api": "SMaDCpvO5aUu8wgjelURQsgqMWLQwj1QTMUmWdENTWoNlcAB"

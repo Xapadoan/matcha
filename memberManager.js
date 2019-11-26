@@ -1517,7 +1517,6 @@ module.exports = {
 				}
 			}
 			//add sort options
-			console.log(query);
 			if (fetcher.sort != 'none') {
 				query += ' ORDER BY ' + connection.escapeId(fetcher.sort) + ' ' + connection.escapeId(fetcher.order);
 				console.log(query);
@@ -1530,6 +1529,7 @@ module.exports = {
 			query_values.push(fetcher.username);
 			query += ' LIMIT ?, 5';
 			query_values.push(0);
+			console.log(query);
 			connection.query(query, query_values, (err, results) => {
 				if (err) {
 					console.log(err.stack);

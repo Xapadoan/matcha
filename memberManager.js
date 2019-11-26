@@ -1533,6 +1533,7 @@ module.exports = {
 			}
 			query += ' LIMIT ?, 5';
 			query_values.push(0);
+			console.log(query)
 			connection.query(query, query_values, (err, results) => {
 				if (err) {
 					console.log(err.stack);

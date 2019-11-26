@@ -1454,7 +1454,7 @@ module.exports = {
 	//	}
 	fetchMembers: function fetchMembers(options, fetcher) {
 		return (new Promise((resolve, reject) => {
-			query = 'SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1, (u.lat - 2) AS distance, (SELECT COUNT(*) FROM matcha.users_likes WHERE liked = ?) AS likes, (SELECT COUNT(*) FROM matcha.users_visits WHERE visited = ?) AS visits FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_interests n ON u.id = n.user'
+			query = 'SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1, (u.lat - 2.3) AS distance, (SELECT COUNT(*) FROM matcha.users_likes WHERE liked = ?) AS likes, (SELECT COUNT(*) FROM matcha.users_visits WHERE visited = ?) AS visits FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_interests n ON u.id = n.user'
 			query += ' WHERE u.username <> ?';
 			query_values = [fetcher.id, fetcher.id, fetcher.username];
 			//use age
@@ -1518,10 +1518,10 @@ module.exports = {
 				}
 			}
 			if (typeof options.allow_dislikes != 'undefined' && options.allow_dislikes != true) {
-				query += ' EXCEPT SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1, ((u.lat - 2)) AS distance, (SELECT COUNT(*) FROM matcha.users_likes WHERE liked = ?) AS likes, (SELECT COUNT(*) FROM matcha.users_visits WHERE visited = ?) AS visits FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_interests n ON u.id = n.user INNER JOIN matcha.users_dislikes d ON u.id = d.disliked WHERE d.disliker = (SELECT id FROM matcha.users WHERE username = ?)';
+				query += ' EXCEPT SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1, ((u.lat - 2.3)) AS distance, (SELECT COUNT(*) FROM matcha.users_likes WHERE liked = ?) AS likes, (SELECT COUNT(*) FROM matcha.users_visits WHERE visited = ?) AS visits FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_interests n ON u.id = n.user INNER JOIN matcha.users_dislikes d ON u.id = d.disliked WHERE d.disliker = (SELECT id FROM matcha.users WHERE username = ?)';
 				query_values.push(fetcher.id, fetcher.id, fetcher.username);
 			}
-			query += ' EXCEPT SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1, ((u.lat - 2)) AS distance, (SELECT COUNT(*) FROM matcha.users_likes WHERE liked = ?) AS likes, (SELECT COUNT(*) FROM matcha.users_visits WHERE visited = ?) AS visits FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_interests n ON u.id = n.user INNER JOIN matcha.users_blocks b ON u.id = b.blocked WHERE b.blocker = (SELECT id FROM matcha.users WHERE username = ?)';
+			query += ' EXCEPT SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1, ((u.lat - 2.3)) AS distance, (SELECT COUNT(*) FROM matcha.users_likes WHERE liked = ?) AS likes, (SELECT COUNT(*) FROM matcha.users_visits WHERE visited = ?) AS visits FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_interests n ON u.id = n.user INNER JOIN matcha.users_blocks b ON u.id = b.blocked WHERE b.blocker = (SELECT id FROM matcha.users WHERE username = ?)';
 			query_values.push(fetcher.id, fetcher.id, fetcher.username);
 			//add sort options
 			if (typeof fetcher.sort != 'undefined' && fetcher.sort != 'none') {

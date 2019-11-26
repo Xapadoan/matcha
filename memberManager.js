@@ -1526,8 +1526,7 @@ module.exports = {
 			//add sort options
 			if (typeof fetcher.sort != 'undefined' && fetcher.sort != 'none') {
 				if (fetcher.sort == 'pop_score') {
-					console.log('sort pop');
-					query += ' ORDER BY (5 * likes + visits)';
+					query += ' ORDER BY likes';
 				} else if (fetcher.sort == 'ASC') {
 					query += ' ORDER BY ' + connection.escapeId(fetcher.sort) + ' ASC';
 				} else {
@@ -1541,7 +1540,6 @@ module.exports = {
 					console.log(err.stack);
 					reject('Failed to fetch users');
 				} else {
-					console.log(results[0].distance);
 					resolve(results);
 				}
 			})

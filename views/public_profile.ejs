@@ -79,9 +79,10 @@
 		Fruit :
 		<%- include('fruits_boxes.ejs') %><br />
 		Trier par : <select name="sort">
-			<option value="age">Age</option>
+			<option value="none">Pas de tri</option>
+			<option value="e.age">Age</option>
 			<option value="distance">Distance</option>
-			<option value="pop_score">Score de Popularité</option>
+			<option value="e.pop_score">Score de Popularité</option>
 		</select>
 		<div id="sort_asc_desc"></div>
 		<input type='hidden' name='order' value="ASC" id='sort_asc_desc_value' />

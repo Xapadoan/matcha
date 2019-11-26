@@ -938,7 +938,6 @@ app.get('/search', csrfProtection, (req, res) => {
 })
 
 app.post('/search', csrfProtection, (req, res) => {
-	console.log('POST OK')
 	if (typeof req.body.terms != 'undefined') {
 		let terms = req.body.terms;
 		if (terms[0] == '#') {
@@ -974,7 +973,6 @@ app.post('/search', csrfProtection, (req, res) => {
 			});
 		}
 	} else if (typeof req.body.min_age != 'undefined' && typeof req.body.max_age != 'undefined' && typeof req.body.gender != 'undefined' && typeof req.body.distance != 'undefined') {
-		console.log('OK')
 		console.log(req.body);
 		memberManager.getUserInfos(req.body.username).then((result) => {
 			memberManager.fetchMembers({
@@ -985,7 +983,9 @@ app.post('/search', csrfProtection, (req, res) => {
 				interests: getIntersetsTab(req.body.interests)
 			}, {
 				location: [req.session.lat, req.session.lng],
-				username: req.session.username
+				username: req.session.username,
+				sort: req.body.sort,
+				order: req.body.order
 			}).then((results) => {
 				res.render('public_profile.ejs', {
 					search: req.body,

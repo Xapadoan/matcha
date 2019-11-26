@@ -1453,8 +1453,8 @@ module.exports = {
 	//	}
 	fetchMembers: function fetchMembers(options, fetcher) {
 		return (new Promise((resolve, reject) => {
-			query = 'SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_interests n ON u.id = n.user'
-			query_values = [fetcher.username];
+			query = 'SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1, ((e.lat - ?) * (e.lat - ?) + (e.lng - ?) * (e.lng - ?)) AS distance, (SELECT COUNT(*) FROM matcha.users_likes WHERE liked = ?) AS likes, (SELECT COUNT(*) FROM matcha.users_visits WHERE visited = ?) AS visits, (SUM(5 * likes, visits)) AS pop_score FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_interests n ON u.id = n.user'
+			query_values = [fetcher.username, fetcher.location.lat, fetcher.location.lat, fetcher.location.lng, fetcher.location.lng];
 			query += ' WHERE u.username <> ?';
 			//use age
 			if (typeof options.age != 'undefined') {
@@ -1515,6 +1515,10 @@ module.exports = {
 					query += ' AND gender = ?';
 					query_values.push('Woman');
 				}
+			}
+			//add sort options
+			if (fetcher.sort != 'none') {
+				query += ' ORDER BY ' + connection.escapeId(fetcher.sort) + ' ' + connection.escapeId(fetcher.order);
 			}
 			if (typeof options.allow_dislikes != 'undefined' && options.allow_dislikes != true) {
 				query += ' EXCEPT SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_interests n ON u.id = n.user INNER JOIN matcha.users_dislikes d ON u.id = d.disliked WHERE d.disliker = (SELECT id FROM matcha.users WHERE username = ?)';

@@ -345,6 +345,9 @@ app.get('/match', (req, res) => {
 						orientation: user_profile.orientation,
 						gender: user_profile.gender,
 						location: [req.session.lat, req.session.lng],
+						interests: user_profile.interests,
+						sort: 'interests',
+						order: 'DESC'
 					}).then((results) => {
 						res.render('match.ejs', {
 							user: req.session.username,
@@ -986,6 +989,7 @@ app.post('/search', csrfProtection, (req, res) => {
 				username: req.session.username,
 				sort: req.body.sort,
 				order: req.body.order,
+				interests: getIntersetsTab(result.interests),
 				id: req.session.userid
 			}).then((results) => {
 				res.render('public_profile.ejs', {

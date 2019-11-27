@@ -682,7 +682,7 @@ module.exports = {
 	//On error : Formated error string : <level>:<message>
 	getUserInfos: function getUserInfos(username) {
 		return (new Promise((resolve, reject) => {
-			connection.query('SELECT * FROM matcha.users WHERE username = ?', [
+			connection.query('SELECT matcha.users.*, e.interests FROM matcha.users INNER JOIN matcha.users_extended e ON u.id = e.user WHERE username = ?', [
 				username
 			], (err, results) => {
 				if (err) {
@@ -1450,13 +1450,20 @@ module.exports = {
 	//		username: username (requiered)
 	//		gender: string,
 	//		location: [lat, lng],
-	//		id
+	//		id: id,
+	//		interests: [tag1, tag2, tag3, ...],
+	//		sort: key to order by,
+	//		order: sort order ('ASC' or 'DESC')
 	//	}
 	fetchMembers: function fetchMembers(options, fetcher) {
 		return (new Promise((resolve, reject) => {
-			query = 'SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1, ((u.lat - ?) * (u.lat - ?) + (u.lng - ?) * (u.lng - ?)) AS distance, l.llikes AS likes FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_interests n ON u.id = n.user LEFT JOIN (SELECT liked, count(*) AS llikes FROM matcha.users_likes GROUP BY liked) l ON u.id = l.liked'
-			query += ' WHERE u.username <> ?';
+			query = 'SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1, ((u.lat - ?) * (u.lat - ?) + (u.lng - ?) * (u.lng - ?)) AS distance, l.llikes AS likes FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_interests n ON u.id = n.user';
 			query_values = [fetcher.location[0], fetcher.location[0], fetcher.location[1], fetcher.location[1], fetcher.username];
+			if (typeof fetcher.interests != 'undefined') {
+				query += ' LEFT JOIN (SELECT user, count(*) AS interests FROM matcha.users_interests GROUP BY user) n ON n.name in (?) LEFT JOIN (SELECT liked, count(*) AS llikes FROM matcha.users_likes GROUP BY liked) l ON u.id = l.liked'
+				query_values.push(fetcher.interests);
+			}
+			query += ' WHERE u.username <> ?';
 			//use age
 			if (typeof options.age != 'undefined') {
 				query += ' AND e.age BETWEEN ? and ?';

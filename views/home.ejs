@@ -63,6 +63,7 @@
 		<br />
 		<h3>Fruit: </h3>
 		<%- include('fruits.ejs') %>
+		<input type="hidden" name="_csrf" value=<%= csrfToken %> />
 		<button>Mettre a jour</button>
 	</form>
 	<form id='extended_infos' method="POST" name='extended_infos' action='/complete'>

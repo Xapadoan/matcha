@@ -21,12 +21,22 @@ io.on('connection', (socket) => {
 	})
 
 	socket.on('message', (message) => {
-		io.sockets.in(socket.room).emit('message', message);
+		io.sockets.in(socket.room).emit('message', {
+			author: message.author,
+			dest: message.dest,
+			title: message.title,
+			body: escapeHtml(message.body)
+		});
 	});
 
 	socket.on('new_message', (message) => {
 		memberManager.newMessage(message).then((result) => {
-			io.sockets.in(message.dest).emit('new_message', message);
+			io.sockets.in(message.dest).emit('new_message', {
+				author: message.author,
+				dest: message.dest,
+				title: message.title,
+				body: escapeHtml(message.body)
+			});
 		}).catch((reason) => {
 			console.log('Failed to store new message:\n\t' + reason);
 		})
@@ -119,6 +129,18 @@ function getIntersetsTab(interests) {
 	}
 	return (tab);
 }
+
+function escapeHtml(text) {
+	var map = {
+	  '&': '&amp;',
+	  '<': '&lt;',
+	  '>': '&gt;',
+	  '"': '&quot;',
+	  "'": '&#039;'
+	};
+  
+	return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+  }
 
 app.get('/home', csrfProtection, (req, res) => {
 	if (req.session.username) {

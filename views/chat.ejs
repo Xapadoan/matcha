@@ -36,13 +36,13 @@
 			socket.emit('message', {
 				author: '<%= user %>',
 				dest: '<%= dest %>',
-				body: message.value
+				body: _.escape(message.value)
 			});
 			socket.emit('new_message', {
 				author: '<%= user %>',
 				dest: '<%= dest %>',
 				title: 'New Message',
-				body: message.value
+				body: _.escape(message.value);
 			})
 			message.value = '';
 		});

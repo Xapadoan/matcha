@@ -315,7 +315,6 @@ module.exports = {
 	updateUser: function updateUser(username, firstname, lastname, mail, password, fruit) {
 		return (new Promise((resolve, reject) => {
 			//Get user info
-			console.log('update');
 			this.getUserInfos(username).then((results) => {
 				if (results === false) {
 					resolve("L'utilisateur n'a pas été reconnu");
@@ -331,7 +330,6 @@ module.exports = {
 					if (typeof lastname != 'undefined' && lastname != "") {
 						results.lastname = lastname;
 					}
-					console.log('OK')
 					if (typeof mail != 'undefined' && mail != "" && mail != results.email) {
 						if (validateMail(mail) !== true) {
 							resolve('L\'adresse e-mail doit être valide : ' + mail);
@@ -407,8 +405,12 @@ module.exports = {
 								reject('Failed to mark profile as complete');
 							} else {
 								resolve(true);
+								return ;
 							}
 						})
+					} else {
+						resolve(true);
+						return ;
 					}
 				}).catch((reason) => {
 					console.log('Failed to checkCompleteProfile');

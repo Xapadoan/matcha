@@ -1457,6 +1457,7 @@ module.exports = {
 	//	}
 	fetchMembers: function fetchMembers(options, fetcher) {
 		return (new Promise((resolve, reject) => {
+			console.log(fetcher.interests)
 			query = 'SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1, ((u.lat - ?) * (u.lat - ?) + (u.lng - ?) * (u.lng - ?)) AS distance, l.llikes AS likes';
 			query_values = [fetcher.location[0], fetcher.location[0], fetcher.location[1], fetcher.location[1], fetcher.username];
 			if (typeof fetcher.interests != 'undefined') {

@@ -1469,7 +1469,7 @@ module.exports = {
 		return (new Promise((resolve, reject) => {
 			console.log(fetcher.interests)
 			query = 'SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1, ((u.lat - ?) * (u.lat - ?) + (u.lng - ?) * (u.lng - ?)) AS distance, l.llikes AS likes';
-			query_values = [fetcher.location[0], fetcher.location[0], fetcher.location[1], fetcher.location[1], fetcher.username];
+			query_values = [fetcher.location[0], fetcher.location[0], fetcher.location[1], fetcher.location[1]];
 			if (typeof fetcher.interests != 'undefined') {
 				query += ', n.interests';
 			}
@@ -1479,6 +1479,7 @@ module.exports = {
 				query_values.push(getInterestsTab(fetcher.interests));
 			}
 			query += ' WHERE u.username <> ?';
+			query_values.push('Hollyol')
 			//use age
 			if (typeof options.age != 'undefined') {
 				query += ' AND e.age BETWEEN ? and ?';

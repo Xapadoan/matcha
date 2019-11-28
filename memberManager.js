@@ -193,6 +193,16 @@ function getInterests(bio) {
 	return (interests);
 }
 
+function getInterestsTab(interests) {
+	var tab = [];
+	let regex = new RegExp("#[A-Za-z0-9]+", "g");
+	let match;
+	while ((match = regex.exec(interests)) != null) {
+		tab.push(match[0]);
+	}
+	return (tab);
+}
+
 function validatePassword(password) {
 	if (typeof password == 'undefined') {
 		return (false);

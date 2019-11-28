@@ -1470,7 +1470,7 @@ module.exports = {
 			query = 'SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1, ((u.lat - ?) * (u.lat - ?) + (u.lng - ?) * (u.lng - ?)) AS distance, l.llikes AS likes';
 			query_values = [fetcher.location[0], fetcher.location[0], fetcher.location[1], fetcher.location[1]];
 			if (typeof fetcher.interests != 'undefined') {
-				query += ', n.iinterests AS interests';
+				query += ', n.interests AS interests';
 			}
 			query += ' FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user';
 			if (typeof fetcher.interests != 'undefined') {
@@ -1543,14 +1543,14 @@ module.exports = {
 			if (typeof options.allow_dislikes != 'undefined' && options.allow_dislikes != true) {
 				query += ' EXCEPT SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1, ((u.lat - ?) * (u.lat - ?) + (u.lng - ?) * (u.lng - ?)) AS distance, COUNT(l.liked) AS likes';
 				if (typeof fetcher.interests != 'undefined') {
-					query += ', COUNT (n.iinterests) AS interests';
+					query += ', COUNT (n.interests) AS interests';
 				}
 				query += ' FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_dislikes d ON u.id = d.disliked INNER JOIN matcha.users_likes l ON u.id = l.liked INNER JOIN matcha.users_interests n ON u.id = n.user WHERE d.disliker = (SELECT id FROM matcha.users WHERE username = ?)';
 				query_values.push(fetcher.location[0], fetcher.location[0], fetcher.location[1], fetcher.location[1], fetcher.username);
 			}
 			query += ' EXCEPT SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1, ((u.lat - ?) * (u.lat - ?) + (u.lng - ?) * (u.lng - ?)) AS distance, COUNT(l.liked) AS likes';
 			if (typeof fetcher.interests != 'undefined') {
-				query += ', COUNT (n.iinterests) AS interests';
+				query += ', COUNT (n.interests) AS interests';
 			}
 			query += ' FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_interests n ON u.id = n.user INNER JOIN matcha.users_blocks b ON u.id = b.blocked INNER JOIN matcha.users_likes l ON u.id = l.liked WHERE b.blocker = (SELECT id FROM matcha.users WHERE username = ?)';
 			query_values.push(fetcher.location[0], fetcher.location[0], fetcher.location[1], fetcher.location[1], fetcher.username);

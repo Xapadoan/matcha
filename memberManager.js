@@ -321,7 +321,6 @@ module.exports = {
 					resolve("L'utilisateur n'a pas été reconnu");
 					return;
 				} else {
-					console.log('OK')
 					//Replace with new if existing
 					if (typeof firstname != 'undefined' && firstname != "") {
 						results.firstname = firstname;
@@ -332,6 +331,7 @@ module.exports = {
 					if (typeof lastname != 'undefined' && lastname != "") {
 						results.lastname = lastname;
 					}
+					console.log('OK')
 					if (typeof mail != 'undefined' && mail != "" && mail != results.email) {
 						if (validateMail(mail) !== true) {
 							resolve('L\'adresse e-mail doit être valide : ' + mail);
@@ -395,6 +395,7 @@ module.exports = {
 						}
 					});
 				}
+				console.log('complete ?')
 				checkCompleteProfile(username).then((results) => {
 					if (typeof results == 'undefined') {
 						//Profile is complete

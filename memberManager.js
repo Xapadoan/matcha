@@ -1464,7 +1464,7 @@ module.exports = {
 			}
 			query += ' FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user';
 			if (typeof fetcher.interests != 'undefined') {
-				query += ' LEFT JOIN (SELECT user, count(*) AS interests FROM matcha.users_interests GROUP BY user) n ON matcha.users_interests.name in (?) LEFT JOIN (SELECT liked, count(*) AS llikes FROM matcha.users_likes GROUP BY liked) l ON u.id = l.liked'
+				query += ' LEFT JOIN (SELECT user, name, count(*) AS interests FROM matcha.users_interests GROUP BY user) n ON n.name in (?) LEFT JOIN (SELECT liked, count(*) AS llikes FROM matcha.users_likes GROUP BY liked) l ON u.id = l.liked'
 				query_values.push(fetcher.interests);
 			}
 			query += ' WHERE u.username <> ?';

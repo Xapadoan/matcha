@@ -330,9 +330,7 @@ module.exports = {
 					if (typeof lastname != 'undefined' && lastname != "") {
 						results.lastname = lastname;
 					}
-					if (typeof mail != 'undefined' && mail != "") {
-						console.log(mail);
-						console.log(results.email);
+					if (typeof mail != 'undefined' && mail != "" && mail != results.email) {
 						if (validateMail(mail) !== true) {
 							resolve('L\'adresse e-mail doit être valide : ' + mail);
 							return;

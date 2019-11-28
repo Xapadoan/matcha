@@ -1473,7 +1473,7 @@ module.exports = {
 				console.log(fetcher.interests)
 				query += ', n.user';
 			}
-			query += ' FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user';
+			query += ' FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_interests no ON u.id = no.user';
 			if (typeof fetcher.interests != 'undefined' && fetcher.interests.length != 0) {
 				query += ' LEFT JOIN (SELECT user, name, count(*) AS iinterests FROM matcha.users_interests GROUP BY user) n ON n.name IN (?)';
 				query_values.push(getInterestsTab(fetcher.interests));
@@ -1511,7 +1511,7 @@ module.exports = {
 
 			//use interests
 			if (typeof options.interests != 'undefined' && options.interests != [] && options.interests.length) {
-				query += ' AND n.name IN (?)';
+				query += ' AND no.name IN (?)';
 				query_values.push(options.interests);
 			}
 			//use fetcher's gender

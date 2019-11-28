@@ -682,7 +682,7 @@ module.exports = {
 	//On error : Formated error string : <level>:<message>
 	getUserInfos: function getUserInfos(username) {
 		return (new Promise((resolve, reject) => {
-			connection.query('SELECT matcha.users.*, e.interests FROM matcha.users INNER JOIN matcha.users_extended e ON u.id = e.user WHERE username = ?', [
+			connection.query('SELECT u.*, e.interests FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user WHERE username = ?', [
 				username
 			], (err, results) => {
 				if (err) {
@@ -1492,6 +1492,7 @@ module.exports = {
 				query += ' AND u.fruit IN (?)';
 				query_values.push(options.fruit);
 			}
+
 			//use interests
 			if (typeof options.interests != 'undefined' && options.interests != [] && options.interests.length) {
 				query += ' AND n.name IN (?)';

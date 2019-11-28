@@ -1475,11 +1475,11 @@ module.exports = {
 			}
 			query += ' FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user';
 			if (typeof fetcher.interests != 'undefined') {
-				query += ' LEFT JOIN (SELECT user, name, count(*) AS interests FROM matcha.users_interests GROUP BY user) n ON n.name in (?) LEFT JOIN (SELECT liked, count(*) AS llikes FROM matcha.users_likes GROUP BY liked) l ON u.id = l.liked'
+				query += ' LEFT JOIN (SELECT user, name, count(*) AS interests FROM matcha.users_interests GROUP BY user) n ON n.name in (?)';
 				query_values.push(getInterestsTab(fetcher.interests));
 			}
-			query += ' WHERE u.username <> ?';
-			query_values.push('Hollyol')
+			query += ' LEFT JOIN (SELECT liked, count(*) AS llikes FROM matcha.users_likes GROUP BY liked) l ON u.id = l.liked WHERE u.username <> ?';
+			query_values.push(fetcher.username)
 			//use age
 			if (typeof options.age != 'undefined') {
 				query += ' AND e.age BETWEEN ? and ?';
@@ -1565,9 +1565,9 @@ module.exports = {
 			}
 			query += ' LIMIT ?, 5';
 			query_values.push(0);
-			console.log(query)
 			connection.query(query, query_values, (err, results) => {
 				if (err) {
+					console.log(query.sql);
 					console.log(err.stack);
 					reject('Failed to fetch users');
 				} else {

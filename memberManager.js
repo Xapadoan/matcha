@@ -321,6 +321,7 @@ module.exports = {
 					resolve("L'utilisateur n'a pas été reconnu");
 					return;
 				} else {
+					console.log('OK')
 					//Replace with new if existing
 					if (typeof firstname != 'undefined' && firstname != "") {
 						results.firstname = firstname;

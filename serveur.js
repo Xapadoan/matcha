@@ -21,6 +21,7 @@ io.on('connection', (socket) => {
 	})
 
 	socket.on('message', (message) => {
+		console.log('message')
 		io.sockets.in(socket.room).emit('message', {
 			author: message.author,
 			dest: message.dest,
@@ -30,6 +31,7 @@ io.on('connection', (socket) => {
 	});
 
 	socket.on('new_message', (message) => {
+		console.log('new message')
 		memberManager.newMessage(message).then((result) => {
 			io.sockets.in(message.dest).emit('new_message', {
 				author: message.author,

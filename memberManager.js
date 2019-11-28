@@ -1469,12 +1469,12 @@ module.exports = {
 		return (new Promise((resolve, reject) => {
 			query = 'SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1, ((u.lat - ?) * (u.lat - ?) + (u.lng - ?) * (u.lng - ?)) AS distance, l.llikes AS likes';
 			query_values = [fetcher.location[0], fetcher.location[0], fetcher.location[1], fetcher.location[1]];
-			if (typeof fetcher.interests != 'undefined') {
+			if (typeof fetcher.interests != 'undefined' && fetcher.interests != []) {
 				console.log(fetcher.interests)
 				query += ', n.user';
 			}
 			query += ' FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user';
-			if (typeof fetcher.interests != 'undefined') {
+			if (typeof fetcher.interests != 'undefined' && fetcher.interests != []) {
 				query += ' LEFT JOIN (SELECT user, name, count(*) AS iinterests FROM matcha.users_interests GROUP BY user) n ON n.name IN (?)';
 				query_values.push(getInterestsTab(fetcher.interests));
 			}
@@ -1550,7 +1550,7 @@ module.exports = {
 				query_values.push(fetcher.location[0], fetcher.location[0], fetcher.location[1], fetcher.location[1], fetcher.username);
 			}
 			query += ' EXCEPT SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1, ((u.lat - ?) * (u.lat - ?) + (u.lng - ?) * (u.lng - ?)) AS distance, COUNT(l.liked) AS likes';
-			if (typeof fetcher.interests != 'undefined') {
+			if (typeof fetcher.interests != 'undefined' && fetcher.interests != []) {
 				query += ', n.user';
 			}
 			query += ' FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_interests n ON u.id = n.user INNER JOIN matcha.users_blocks b ON u.id = b.blocked INNER JOIN matcha.users_likes l ON u.id = l.liked WHERE b.blocker = (SELECT id FROM matcha.users WHERE username = ?)';

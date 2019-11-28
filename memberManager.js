@@ -1567,7 +1567,7 @@ module.exports = {
 			query_values.push(0);
 			let ret = connection.query(query, query_values, (err, results) => {
 				if (err) {
-					console.log(req.sql);
+					console.log(ret.sql);
 					console.log(err.stack);
 					reject('Failed to fetch users');
 				} else {

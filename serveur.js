@@ -21,23 +21,21 @@ io.on('connection', (socket) => {
 	})
 
 	socket.on('message', (message) => {
-		console.log('message')
 		io.sockets.in(socket.room).emit('message', {
 			author: message.author,
 			dest: message.dest,
 			title: message.title,
-			body: escapeHtml(message.body)
+			body: escapeHtml(message.body).slice(0, 200)
 		});
 	});
 
 	socket.on('new_message', (message) => {
-		console.log('new message')
 		memberManager.newMessage(message).then((result) => {
 			io.sockets.in(message.dest).emit('new_message', {
 				author: message.author,
 				dest: message.dest,
 				title: message.title,
-				body: escapeHtml(message.body)
+				body: escapeHtml(message.body).slice(0, 200)
 			});
 		}).catch((reason) => {
 			console.log('Failed to store new message:\n\t' + reason);
@@ -415,7 +413,7 @@ app.get('/login', csrfProtection, (req, res) => {
 });
 
 app.post('/login', csrfProtection, (req, res) => {
-	memberManager.logg_user(req.body.username, req.body.password).then((result) => {
+	memberManager.logg_user(req.body.username.slice(0, 100), req.body.password).then((result) => {
 		if (result !== false) {
 			req.session.username = result.username;
 			req.session.lat = result.lat;
@@ -609,7 +607,7 @@ app.post('/new_photo', csrfProtection, (req, res) => {
 
 app.post('/reset_password', csrfProtection, (req, res) => {
 	let newpass = req.body.password;
-	let username = req.body.username;
+	let username = req.body.username.slice(0, 100);
 	let token = req.body.token;
 	memberManager.changePasswordOf(username, newpass, token).then((result) => {
 		if (result == true) {
@@ -698,8 +696,8 @@ app.get('/profile/:id', (req, res) => {
 })
 
 app.post('/recover', csrfProtection, (req, res) => {
-	let username = req.body.username;
-	let mail = req.body.mail;
+	let username = req.body.username.slice(0, 100);
+	let mail = req.body.mail.slice(0, 255);
 	memberManager.sendpasswordRecoveryMail(username, mail).then((result) => {
 		res.render('recover.ejs', {
 			user: req.session.username,
@@ -1001,13 +999,13 @@ app.post('/search', csrfProtection, (req, res) => {
 		}
 	} else if (typeof req.body.min_age != 'undefined' && typeof req.body.max_age != 'undefined' && typeof req.body.gender != 'undefined' && typeof req.body.distance != 'undefined') {
 		console.log(req.body);
-		memberManager.getUserInfos(req.body.username).then((result) => {
+		memberManager.getUserInfos(req.body.username.slice(0, 100)).then((result) => {
 			memberManager.fetchMembers({
 				age: [req.body.min_age, req.body.max_age],
 				gender: req.body.gender,
 				distance: req.body.distance,
 				fruit: req.body.fruit,
-				interests: getIntersetsTab(req.body.interests)
+				interests: getIntersetsTab(req.body.interests.slice(0, 100))
 			}, {
 				location: [req.session.lat, req.session.lng],
 				username: req.session.username,

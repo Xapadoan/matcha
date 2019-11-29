@@ -12,6 +12,30 @@
 		<a href='/block/<%= profile.id %>'>Bloquer</a>
 		<a href='/report/<%= profile.id %>'>Signaler</a>
 	</nav>
+	<style>
+		#user_infos {
+			background-color: rgba(160, 160, 160, 0.4);
+			border-radius: 20px;
+			padding: 20px 20px;
+			width: 30%;
+			min-width: 200px;
+			display: inline-block;
+			margin: 20px 0px;
+		}
+
+		#user_images {
+			background-color: rgba(160, 160, 160, 0.4);
+			border-radius: 20px;
+			padding: 20px 20px;
+			width: 60%;
+			display: inline-block;
+			position: absolute;
+			right: 20px;
+			top: 0px;
+			margin: 20px 0px;
+		}
+	</style>
+	<section id='user_infos'>
 	<h1 id='pseudo_title'><%= profile.username %> (<%= profile.pop_score %>)</h1>
 	<% if (typeof locals.user_info != 'undefined' && locals.user_info.fruit == '#pasdecoupdunsoir') { %><img
 		id='coco_img' src='/coconut.png' width="75" height="75" title="#pasdecoupdunsoir" />
@@ -21,8 +45,7 @@
 		src='/cherry.png' width="75" height="75" title="#serieux" />
 	<% } else { %><img src='/spices.png' width="75" height="75" title="#pqr" /><% } %>
 	<br />
-	<p><% if (typeof locals.profile != 'undefined') { %><%= profile.firstname %><% } %></p>
-	<p><% if (typeof locals.profile != 'undefined') { %><%= profile.lastname %><% } %></p>
+	<p><% if (typeof locals.profile != 'undefined') { %><%= profile.firstname %><% } %> <% if (typeof locals.profile != 'undefined') { %><%= profile.lastname %><% } %></p>
 	<br />
 	<p>Age :<% if (typeof locals.profile != 'undefined' && locals.profile != null) { %><%= profile.age %><% } %></p>
 	<p>Genre :<% if (typeof locals.profile != 'undefined') { %><%= profile.gender %><% } %></p>
@@ -51,7 +74,8 @@
 					</script>
 				<% } %>
 	<p>Bio
-		:<% if (typeof locals.profile != 'undefined' && locals.profile.bio != null) { %><%= profile.bio %><% } %></textarea>
+		: <% if (typeof locals.profile != 'undefined' && locals.profile.bio != null) { %><%= profile.bio %><% } %>
+	</section>
 		<% if (typeof locals.profile != 'undefined' && locals.profile.image1 != null) { %>
 		<section id='user_images'>
 			<h2>Photos</h2>
@@ -85,8 +109,7 @@
  				document.getElementById('pseudo_title').style.color = 'red';
  			}
  		})
- 	</script>
-
+	 </script>
 </body>
 
 </html>

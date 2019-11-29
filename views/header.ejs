@@ -57,7 +57,7 @@
 
 	header {
 		display: inline-block;
-		background-color: #d33;
+		background-color: rgba(116, 33, 67, 0.5);
 		height: 50px;
 		border-bottom: solid #800 2px;
 		position: fixed;
@@ -156,8 +156,8 @@
 		<a href="/search" title="Rechercher"><img src='/google.png' width="48" height="48" /></a>
 	</nav>
 
-	<div id='notification_box'><aside id='tiny_notifications'></aside></div>
-	<div id='message_box'><aside id = 'tiny_messages'></aside></div>
+	<div id='notification_box' title="Notifications"><aside id='tiny_notifications'></aside></div>
+	<div id='message_box' title = "Messages"><aside id = 'tiny_messages'></aside></div>
 
 	<% if (typeof locals.user != 'undefined') { %>
 	<script>

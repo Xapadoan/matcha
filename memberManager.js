@@ -393,7 +393,6 @@ module.exports = {
 						}
 					});
 				}
-				console.log('complete ?')
 				checkCompleteProfile(username).then((results) => {
 					if (typeof results == 'undefined') {
 						//Profile is complete

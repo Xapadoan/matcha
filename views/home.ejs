@@ -46,8 +46,14 @@
 		.button {
 			position:absolute;
 		}
+
+		#likenmatchs {
+			width: 60%;
+			display: inline-block;
+		}
 	</style>
 	<%- include('header.ejs') %>
+	<section id='home_forms'>
 	<form id='user_infos' method="POST" name='user_infos' action='/update'>
 		<h1><%= user %></h1>
 		<input name='Firstname' type="text" maxlength="100" minlength="1"
@@ -155,9 +161,13 @@
 				<img src="/user_images/<%= images.image5 %>"  width="200" ,
 				height="150" />
 		</figure>
+		<% }
+		if (typeof locals.user != 'undefined') { %>
+			<a href="/delete_user"><img src="https://img.icons8.com/small/32/000000/gear.png"></a>
 		<% } %>
 	</section>
 	<% } %>
+	</section>
 	<script>
 		let loc_req = [];
 	</script>
@@ -222,9 +232,7 @@
 		</div>
 		<% } %>
 	</section>
-	<% if (typeof locals.user != 'undefined') { %>
-	<a href="/delete_user"><img src="https://img.icons8.com/small/32/000000/gear.png"></a>
-	<% } %>
+
 </body>
 
 </html>

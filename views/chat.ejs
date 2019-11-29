@@ -1,16 +1,53 @@
 <!DOCTYPE html>
 <html>
 	<%- include('head.ejs') %>
- 
+	<style>
+		#chat {
+			background-color: rgba(160, 160, 160, 0.4);
+			border-radius: 20px;
+			width: 60%;
+			margin-left: 20%;
+		}
+
+		#chat_room {
+			position: relative;
+		}
+
+		#message_form {
+			background-color: rgba(160, 160, 160, 0.4);
+			border-radius: 20px;
+			width: 60%;
+			margin-left: 20%;
+		}
+
+		p {
+			max-width: 70%;
+			padding: 5px;
+			border-radius: 5px;
+		}
+
+		.sent {
+			position: absolute;
+			right: 10px;
+			background-color: cyan;
+		}
+
+		.recieved {
+			position: absolute;
+			left: 10px;
+			background-color: aliceblue;
+		}
+	</style>
 	<body>
 		<%- include('header.ejs') %>
+		<section id='chat'>
+			<section id='chat_room'>
+			</section>
 		<form id='message_form'>
 			<input id='message' type='text' maxlength="255" width="50" />
 			<button id='poke'>Post</button>
 		</form>
-
-		<section id='chat_room'>
-		</section>
+	</section>
 
 		<script>
 		socket.emit('create', {
@@ -26,6 +63,11 @@
 
 		socket.on('message', function(message) {
 			let entry = document.createElement('p');
+			if (message.author == '<%= user %>') {
+				entry.className = 'sent'
+			} else {
+				entry.className = 'recieved'
+			}
 			entry.innerHTML = '<span>' + message.author + '</span> : ' + message.body;
 			document.getElementById('chat_room').appendChild(entry);
 		});

@@ -1471,14 +1471,18 @@ module.exports = {
 		return (new Promise((resolve, reject) => {
 			query = 'SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1, ((u.lat - ?) * (u.lat - ?) + (u.lng - ?) * (u.lng - ?)) AS distance, l.llikes AS likes';
 			query_values = [fetcher.location[0], fetcher.location[0], fetcher.location[1], fetcher.location[1]];
+			/*
 			if (typeof fetcher.interests != 'undefined' && fetcher.interests.length != 0) {
 				query += ', n.*';
 			}
+			*/
 			query += ' FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_interests no ON u.id = no.user';
+			/*
 			if (typeof fetcher.interests != 'undefined' && fetcher.interests.length != 0) {
 				query += ' LEFT JOIN (SELECT id, user, count(name) AS interests FROM matcha.users_interests WHERE name IN (?) GROUP BY user) n ON n.user = u.id';
 				query_values.push(getInterestsTab(fetcher.interests));
 			}
+			*/
 			query += ' LEFT JOIN (SELECT liked, count(*) AS llikes FROM matcha.users_likes GROUP BY liked) l ON u.id = l.liked WHERE u.username <> ?';
 			query_values.push(fetcher.username)
 			//use age

@@ -1565,15 +1565,13 @@ module.exports = {
 			query += ' FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_interests n ON u.id = n.user INNER JOIN matcha.users_blocks b ON u.id = b.blocked INNER JOIN matcha.users_likes l ON u.id = l.liked WHERE b.blocker = (SELECT id FROM matcha.users WHERE username = ?)';
 			query_values.push(fetcher.location[0], fetcher.location[0], fetcher.location[1], fetcher.location[1], fetcher.username);
 			//add sort options
-			/*
-			if (typeof fetcher.sort != 'undefined' && fetcher.sort != 'none') {
+			if (typeof fetcher.sort != 'undefined' && fetcher.sort != 'none' && fetcher.sort != 'interests') {
 				if (fetcher.order == 'ASC') {
 					query += ' ORDER BY ' + connection.escapeId(fetcher.sort) + ' ASC';
 				} else {
 					query += ' ORDER BY ' + connection.escapeId(fetcher.sort) + ' DESC'
 				}
 			}
-			*/
 			query += ' LIMIT ?, 5';
 			query_values.push(0);
 			let ret = connection.query(query, query_values, (err, results) => {

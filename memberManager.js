@@ -1471,6 +1471,7 @@ module.exports = {
 		return (new Promise((resolve, reject) => {
 			query = 'SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1, ((u.lat - ?) * (u.lat - ?) + (u.lng - ?) * (u.lng - ?)) AS distance, l.llikes AS likes';
 			query_values = [fetcher.location[0], fetcher.location[0], fetcher.location[1], fetcher.location[1]];
+			console.log(fetcher.interest);
 			if (typeof fetcher.interests != 'undefined' && fetcher.interests.length != 0) {
 				console.log(
 					"interesrssd"

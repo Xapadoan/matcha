@@ -1472,6 +1472,9 @@ module.exports = {
 			query = 'SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1, ((u.lat - ?) * (u.lat - ?) + (u.lng - ?) * (u.lng - ?)) AS distance, l.llikes AS likes';
 			query_values = [fetcher.location[0], fetcher.location[0], fetcher.location[1], fetcher.location[1]];
 			if (typeof fetcher.interests != 'undefined' && fetcher.interests.length != 0) {
+				console.log(
+					"interesrssd"
+				)
 				query += ', n.*';
 			}
 			query += ' FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_interests no ON u.id = no.user';

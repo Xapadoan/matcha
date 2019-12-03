@@ -999,13 +999,13 @@ app.post('/search', csrfProtection, (req, res) => {
 		}
 	} else if (typeof req.body.min_age != 'undefined' && typeof req.body.max_age != 'undefined' && typeof req.body.gender != 'undefined' && typeof req.body.distance != 'undefined') {
 		console.log(req.body);
-		memberManager.getUserInfos(req.body.username.slice(0, 100)).then((result) => {
+		memberManager.getUserInfos(req.body.username).then((result) => {
 			memberManager.fetchMembers({
 				age: [req.body.min_age, req.body.max_age],
 				gender: req.body.gender,
 				distance: req.body.distance,
 				fruit: req.body.fruit,
-				interests: getIntersetsTab(req.body.interests.slice(0, 100))
+				interests: getIntersetsTab(req.body.interests)
 			}, {
 				location: [req.session.lat, req.session.lng],
 				username: req.session.username,

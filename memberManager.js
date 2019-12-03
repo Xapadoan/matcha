@@ -277,8 +277,6 @@ module.exports = {
 								if (err) {
 									console.log(err);
 									reject('Error : Failed to send registration mail');
-								} else {
-									resolve(true);
 								}
 							});
 							//Save in db

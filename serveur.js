@@ -804,7 +804,7 @@ app.get('/like/:id', (req, res) => {
 
 app.get('/report/:id', csrfProtection, (req, res) => {
 	//We need authorization
-	memberManager.checkAuthorization(username, ['Confirmed', 'Complete']).then((result) => {
+	memberManager.checkAuthorization(req.session.username, ['Confirmed', 'Complete']).then((result) => {
 		if (result == true) {
 			memberManager.getUserName(req.params.id).then((name) => {
 				res.render('report.ejs', {

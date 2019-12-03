@@ -292,8 +292,10 @@ module.exports = {
 								if (err) {
 									console.log('Mysql : query failed : ' + err.stack);
 									reject("Fatal Error : User creation failed");
+								} else {
+									console.log('User OK')
+									resolve(true);
 								}
-								resolve(true);
 							});
 						}
 					});

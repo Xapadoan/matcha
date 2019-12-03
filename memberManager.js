@@ -694,7 +694,7 @@ module.exports = {
 	//On error : Formated error string : <level>:<message>
 	getUserInfos: function getUserInfos(username) {
 		return (new Promise((resolve, reject) => {
-			connection.query('SELECT u.*, e.interests FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user WHERE username = ?', [
+			connection.query('SELECT u.*, e.interests FROM matcha.users u LEFT JOIN matcha.users_extended e ON u.id = e.user WHERE u.username = ?', [
 				username
 			], (err, results) => {
 				if (err) {

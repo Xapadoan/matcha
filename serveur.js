@@ -143,6 +143,7 @@ function escapeHtml(text) {
   }
 
 app.get('/home', csrfProtection, (req, res) => {
+	console.log(req.session.username);
 	if (req.session.username) {
 		memberManager.getUserImages(req.session.username).then((images) => {
 			memberManager.getUserInfos(req.session.username).then((user_info) => {

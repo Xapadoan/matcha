@@ -147,6 +147,7 @@ app.get('/home', csrfProtection, (req, res) => {
 	if (req.session.username) {
 		memberManager.getUserImages(req.session.username).then((images) => {
 			memberManager.getUserInfos(req.session.username).then((user_info) => {
+				console.log(user_info);
 				memberManager.getUserExtended(req.session.username).then((user_extended) => {
 					memberManager.getUserLikedProfiles(req.session.username).then((profiles) => {
 						res.render('home.ejs', {

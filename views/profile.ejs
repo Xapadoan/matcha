@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<%- include('head.ejs'); %>
+<body>
+	<%- include('header.ejs') %>
+	<nav id='bad_profile_nav'>
+		<% if (locals.profile.liked) {%>
+			<a href='/unlike/<%= profile.id %>'>Ne plus aimer</a>
+			<% } else { %>
+				<a href='/like/<%= profile.id %>'>Aimer</a>
+		<% } %>
+		<a href='/block/<%= profile.id %>'>Bloquer</a>
+		<a href='/report/<%= profile.id %>'>Signaler</a>
+	</nav>
+	<style>
+		#user_infos {
+			background-color: rgba(160, 160, 160, 0.4);
+			border-radius: 20px;
+			padding: 20px 20px;
+			width: 30%;
+			min-width: 200px;
+			display: inline-block;
+			margin: 20px 0px;
+			font-size: 20px;
+		}
+
+		#user_infos img {
+			float: right;
+		}
+
+		#user_images {
+			background-color: rgba(160, 160, 160, 0.4);
+			border-radius: 20px;
+			padding: 20px 20px;
+			width: 60%;
+			display: inline-block;
+			position: absolute;
+			right: 20px;
+			top: 0px;
+			margin: 5px 0px;
+			margin-left: 20px;
+		}
+	</style>
+	<section id='user_infos'>
+	<h1 id='pseudo_title'><%= profile.username %> (<%= profile.pop_score %>)</h1>
+	<% if (typeof locals.user_info != 'undefined' && locals.user_info.fruit == '#pasdecoupdunsoir') { %><img
+		id='coco_img' src='/coconut.png' width="75" height="75" title="#pasdecoupdunsoir" />
+	<% } else if (typeof locals.user_info != 'undefined' && locals.user_info.fruit == '#unsoir') { %><img
+		src='/peach.png' width="75" height="75" title="#unsoir" />
+	<% } else if (typeof locals.user_info != 'undefined' && locals.user_info.fruit == '#serieux') { %><img
+		src='/cherry.png' width="75" height="75" title="#serieux" />
+	<% } else { %><img src='/spices.png' width="75" height="75" title="#pqr" /><% } %>
+	<br />
+	<p><% if (typeof locals.profile != 'undefined') { %><%= profile.firstname %><% } %> <% if (typeof locals.profile != 'undefined') { %><%= profile.lastname %><% } %></p>
+	<br />
+	<p>Age :<% if (typeof locals.profile != 'undefined' && locals.profile != null) { %><%= profile.age %><% } %></p>
+	<p>Genre :<% if (typeof locals.profile != 'undefined') { %><%= profile.gender %><% } %></p>
+	<p>Orientation :<% if (typeof locals.profile != 'undefined') { %><%= profile.orientation %><% } %></p>
+	<% if (typeof locals.profile.lat != 'undefined' && locals.profile.lat != null && typeof locals.profile.lng != 'undefined' && locals.profile.lng != null) { %>
+		<p id='address'> </p>
+					<script>
+						let loc_req = new XMLHttpRequest();
+						loc_req.open('GET', '/get_address/<%= profile.lat %>/<%= profile.lng %>');
+						loc_req.responseType = 'json';
+						loc_req.onload = function () {
+							if (loc_req.status != 200) {
+								console.log('AJAX Failed: status (' + loc_req.status + ')')
+							} else if (loc_req.response.found != 0) {
+								//Put location
+								document.getElementById('address').innerHTML = loc_req.response.city + ', ' + loc_req.response.country;
+							}
+						}
+						loc_req.onerror = function () {
+							console.log('AJAX Error');
+						}
+						loc_req.onprogress = function () {
+
+						}
+						loc_req.send();
+					</script>
+				<% } %>
+	<p>Bio
+		: <% if (typeof locals.profile != 'undefined' && locals.profile.bio != null) { %><%= profile.bio %><% } %>
+	</section>
+		<% if (typeof locals.profile != 'undefined' && locals.profile.image1 != null) { %>
+		<section id='user_images'>
+			<h2>Photos</h2>
+			<% if (locals.profile.image1 != null) { %>
+			<figure>
+				<img src='/user_images/<%= profile.image1 %>' width="200" , height="150">
+				<figcaption>Photo de profil</figcaption>
+			</figure>
+			<% }
+			if (locals.profile.image2 != null) { %>
+			<img src='/user_images/<%= profile.image2 %>' width="200" , height="150">
+			<% }
+			if (locals.profile.image3 != null) { %>
+			<img src='/user_images/<%= profile.image3 %>' width="200" , height="150">
+			<% }
+			if (locals.profile.image4 != null) { %>
+			<img src='/user_images/<%= profile.image4 %>' width="200" , height="150">
+			<% }
+			if (locals.profile.image5 != null) { %>
+			<img src='/user_images/<%= profile.image5 %>' width="200" , height="150">
+			<% } %>
+		</section>
+		<% } %>
+		<script>
+ 		socket.emit('is_logged', '<%= profile.username %>');
+ 
+ 		socket.on('logged', (result) => {
+ 			if (result.logged == true && result.user == '<%= profile.username %>') {
+ 				document.getElementById('pseudo_title').style.color = 'green';
+ 			} else {
+ 				document.getElementById('pseudo_title').style.color = 'red';
+ 			}
+ 		})
+	 </script>
+</body>
+
+</html>

@@ -1,12 +1,13 @@
 <style>
 	body {
+		position: relative;
 		font-size: 18px;
 		width: 100vw;
 		margin: 0px;
 		margin-top: 60px;
 		top: 0px;
 		left: 0px;
-		background-image: url('background.png');
+		background-image: url('/background.png');
 		background-attachment: fixed;
 		background-repeat: no-repeat;
 		background-position: center;
@@ -21,6 +22,7 @@
 		color: rgb(240, 204, 3);
 		text-decoration: none;
 		font-weight: bold;
+		margin: 2, 2;
 	}
 
 	input[type=text], input[type=email], input[type=password], input[type=file], select, button, textarea {
@@ -54,7 +56,8 @@
 	}
 
 	header {
-		background-color: #d33;
+		display: inline-block;
+		background-color: rgba(116, 33, 67, 0.5);
 		height: 50px;
 		border-bottom: solid #800 2px;
 		position: fixed;
@@ -69,7 +72,7 @@
 	}
 
 	#user_notification {
-		background-color: #d33;
+		background-color: #3cd;
 		position: absolute;
 		left: 5%;
 		top: calc(5% + 50px);
@@ -77,8 +80,27 @@
 		min-width: 200px;
 		width: 20%;
 		text-align: center;
-		border: solid #800 3px;
+		border: solid #37d 3px;
 		border-radius: 5px;
+		z-index: 39;
+	}
+
+	#notification_box {
+		position: relative;
+		background-image: url('/bell.png');
+		width: 48px;
+		height: 48px;
+		display: inline-block;
+		background-size: cover;
+	}
+
+	#message_box {
+		position: relative;
+		background-image: url('/bubble.png');
+		width: 48px;
+		height: 48px;
+		display: inline-block;
+		background-size: cover;
 	}
 
 	#user_error {
@@ -92,20 +114,204 @@
 		text-align: center;
 		border: solid #800 3px;
 		border-radius: 5px;
+		z-index: 40;
+	}
+
+	#tiny_notifications, #tiny_messages {
+		position: absolute;
+		top: 50px;
+		background-color: seashell;
+		width: 20%;
+		min-width: 300px;
+		display: none;
+		border: solid salmon 2px;
+		border-top: 0px;
+		border-radius: 0px 0px 15px 15px;
+		z-index: -1;
 	}
 </style>
+<script src='/socket.io/socket.io.js'></script>
+<% if (typeof locals.user != 'undefined') { %>
+<script>
+	var socket = io.connect();
+	socket.emit('login', '<%= user %>')
+	
+	socket.on('new_notification', (notif) => {
+		if (notif.dest == '<%= user %>') {
+			document.getElementById('notification_box').style.border = "red solid 2px";
+		}
+	});
+	
+	socket.on('new_message', (message) => {
+		if (message.dest == '<%= user %>') {
+			document.getElementById('message_box').style.border = "red solid 2px";
+	}
+	});
+	</script>
+<% } %>
 <header>
 	<nav class="adaptative_nav_bar">
-		<a href="/" title="Accueil">Accueil</a>
-		<a href="/match" title="Match">Match</a>
+		<a href="/" title="Accueil"><img src='/home.png' width="48" height="48" /></a>
+		<a href="/match" title="Match"><img src='/match.png' width="48" height="48" /></a>
+		<a href="/search" title="Rechercher"><img src='/google.png' width="48" height="48" /></a>
 	</nav>
+
+	<div id='notification_box' title="Notifications"><aside id='tiny_notifications'></aside></div>
+	<div id='message_box' title = "Messages"><aside id = 'tiny_messages'></aside></div>
+
+	<% if (typeof locals.user != 'undefined') { %>
+	<script>
+		let m_box = document.getElementById('message_box');
+		let n_box = document.getElementById('notification_box');
+		let mess_req = new XMLHttpRequest();
+		let notif_req = new XMLHttpRequest();
+		let mess_req2 = new XMLHttpRequest();
+		let notif_req2 = new XMLHttpRequest();
+		mess_req.open('GET', '/get_messages');
+		notif_req.open('GET', '/get_notifications');
+		mess_req2.open('GET', '/count_messages');
+		notif_req2.open('GET', '/count_notifications');
+		mess_req.responseType = 'json';
+		notif_req.responseType = 'json';
+		mess_req2.responseType = 'json';
+		notif_req2.responseType = 'json';
+		
+		mess_req.onload = function () {
+			if (mess_req.status != 200) {
+				console.log('AJAX Error: status (' + mess_req.status + ')');
+			} else {
+				//Print message
+				for (let i = 0; i < mess_req.response.length; i++) {
+					let mess_p = document.createElement('p')
+					let mess_span = document.createElement('span')
+					let box = document.getElementById('tiny_messages');
+					mess_span.innerHTML = mess_req.response[i].author;
+					mess_p.appendChild(mess_span);
+					mess_p.innerHTML += ' : ' + mess_req.response[i].body;
+					mess_p.innerHTML += '<a href="/chat/' + mess_req.response[i].id + '">See</a>'
+					box.appendChild(mess_p);
+					box.style.display = "block";
+				}
+				console.log(mess_req.response);
+			}
+		}
+		notif_req.onload = function () {
+			if (notif_req.status != 200) {
+				console.log('AJAX Error: status (' + notif_req.status + ')');
+			} else {
+				//Print notifs
+				for (let i = 0; i < notif_req.response.length; i++) {
+					let notif_p = document.createElement('p');
+					let notif_span = document.createElement('span');
+					let box = document.getElementById('tiny_notifications');
+					notif_span.innerHTML = notif_req.response[i].title;
+					notif_p.appendChild(notif_span);
+					notif_p.innerHTML += '<br />' + notif_req.response[i].body;
+					box.appendChild(notif_p);
+					box.style.display = 'block';
+				}
+				console.log(notif_req.response)
+			}
+		}
+		mess_req2.onload = function() {
+			if (mess_req2.status != 200) {
+				console.log('AJAX Error: status (' + mess_req2.status + ')');
+			} else if (mess_req2.response.count > 0) {
+				m_box.style.border = "solid red 1px";
+			}
+		}
+		notif_req2.onload = function() {
+			if (notif_req2.status != 200) {
+				console.log('AJAX Error: status (' + notif_req2.status + ')');
+			} else if (notif_req2.response.count > 0) {
+				n_box.style.border = "solid red 1px";
+			}
+		}
+		
+		mess_req.onprogress = function () {
+			//Prints loading
+		}
+		notif_req.onprogress = function () {
+			
+		}
+		mess_req2.onprogress = function () {
+			
+		}
+		notif_req2.onprogress = function () {
+			
+		}
+		
+		mess_req.onerror = function () {
+			console.log('AJAX Error');
+		}
+		notif_req.onerror = function () {
+			console.log('AJAX Error');
+		}
+		mess_req2.onerror = function() {
+			console.log('AJAX Error');
+		}
+		notif_req2.onerror = function() {
+			console.log('AJAX Error');
+		}
+		
+		mess_req2.send();
+		notif_req2.send();
+
+		m_box.addEventListener('click', sendMessReq);
+		n_box.addEventListener('click', sendNotifReq);
+		
+		function sendMessReq () {
+			m_box.style.border = "none";
+			m_box.removeEventListener('click', sendMessReq);
+			m_box.addEventListener('click', hideMessages);
+			mess_req.send();
+		}
+		function sendNotifReq () {
+			n_box.style.border = "none";
+			n_box.removeEventListener('click', sendNotifReq);
+			n_box.addEventListener('click', hideNotifications);
+			notif_req.send();
+		}
+		
+		function hideMessages() {
+			let t_mess = document.getElementById('tiny_messages');
+			t_mess.style.display = "none";
+			t_mess.innerHTML = "";
+			m_box.removeEventListener('click', hideMessages);
+			m_box.addEventListener('click', sendMessReq);
+			mess_req.open('GET', '/get_messages');
+		}
+		function hideNotifications() {
+			let t_notif = document.getElementById('tiny_notifications');
+			t_notif.style.display = "none";
+			t_notif.innerHTML = "";
+			n_box.removeEventListener('click', hideNotifications);
+			n_box.addEventListener('click', sendNotifReq);
+			notif_req.open('GET', '/get_notifications');
+		}
+
+		function escapeHtml(text) {
+			var map = {
+			  '&': '&amp;',
+			  '<': '&lt;',
+			  '>': '&gt;',
+			  '"': '&quot;',
+			  "'": '&#039;'
+			};
+  
+		return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+		}
+		
+		</script>
+		<% } %>
+	
 	<nav>
 		<% if (typeof locals.user == 'undefined') { %>
-		<a href="/signup" title="Créer un compte">Créer un compte</a>
-		<a href="/login" title="Se connecter">Se connecter</a>
+			<a href="/signup" title="Créer un compte"><img src='/signup.png' width="48" height="48" /></a>
+		<a href="/login" title="Se connecter"><img src='/login.png' width="48" height="48" /></a>
 		<% } else { %>
-		<a href="/home" title="Espace Personnel"><%= user %></a>
-		<a href="/logout" title="Déconnexion">Se deconnecter</a>
+		<a href="/home" title="Espace Personnel"><img src='/personal_space.png' width="48" height="48" /></a>
+		<a href="/logout" title="Déconnexion" onclick="socket.disconnect();"><img src='/logout.png' width="48" height="48" /></a>
 		<% } %>
 	</nav>
 </header>
@@ -123,7 +329,7 @@
 		</script><%
 } %>
 
-<% if (typeof locals.notification != 'undefined' && locals.error != null) {
+<% if (typeof locals.notification != 'undefined' && locals.notification != null) {
 	%><p id="user_notification"><%= locals.notification %></p>
 	<script>
 	window.setTimeout(function() {

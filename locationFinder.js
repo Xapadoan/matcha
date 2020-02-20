@@ -31,11 +31,14 @@ module.exports = {
 				}, (error, response, body) => {
 					if (!error && response.statusCode == 200) {
 						let result = JSON.parse(body);
-						console.log(result);
-						resolve({
-							lat: result['locations'][0]['latitude'],
-							lng: result['locations'][0]['longitude']
-						});
+						if (result.found == 0 || result.locations.length == 0) {
+							resolve('Not found');
+						} else {
+							resolve({
+								lat: result['locations'][0]['latitude'],
+								lng: result['locations'][0]['longitude']
+							});
+						}
 					} else {
 						reject('Failed to get Latitude and Longitude');
 					}
@@ -59,11 +62,19 @@ module.exports = {
 				function (error, response, body) {
 					if (!error && response.statusCode == 200) {
 						var result = JSON.parse(body);
-						resolve({
-							country: result['country'],
-							city: result['city']
-						});
+						if (result.found == false) {
+							resolve('Not found');
+						} else if (typeof result['country'] != 'undefined' && typeof result['city'] != 'undefined'){
+							resolve({
+								found: 1,
+								country: result['country'],
+								city: result['city']
+							});
+						} else {
+							resolve(false)
+						}
 					} else {
+						console.log(body)
 						reject('Failed to get Geo-locaion from Latitude and Longitude');
 					}
 				}

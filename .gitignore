@@ -1,7 +1,9 @@
 node_modules
 resources
+!resources/socket_scripts.js
 mail_data.json
 database.json
+server_settings.json
 LICENSE_LITE.TXT
 IP2LOCATION-LITE-DB5*
 README_LITE.TXT

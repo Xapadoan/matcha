@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="fr">
-    <%- include('head.ejs'); %>
-    <body>
-        <%- include('header.ejs'); %>
-        <h1>Connexion :</h1>
-        <form action="login" method="POST">
-            <p>Vous pouvez vous connecter ici !</p>
-            <input type="text" name="username" placeholder="Pseudo" required />
-            <input type="password" name="password" placeholder="Mot de passe" required /><br />
-            <input type="hidden" name="_csrf" value=<%= csrfToken %> />
-            <a href='/recover'>Mot de passe oublié ?</a>
-            <button>Se connecter</button>
-        </form>
-    </body>
+	<%- include('head.ejs'); %>
+	<body>
+		<%- include('header.ejs'); %>
+		<h1>Connexion :</h1>
+		<form id='login_form' action="login" method="POST">
+			<p>Vous pouvez vous connecter ici !</p>
+			<input type="text" name="username" placeholder="Pseudo" id='name_field' required />
+			<input type="password" name="password" placeholder="Mot de passe" required /><br />
+			<input type="hidden" name="_csrf" value=<%= csrfToken %> />
+			<a href='/recover'>Mot de passe oublié ?</a>
+			<button>Se connecter</button>
+		</form>
+	</body>
 </html>

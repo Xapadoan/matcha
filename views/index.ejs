@@ -1,17 +1,191 @@
 <!DOCTYPE html>
 <html lang='fr'>
-	<%- include('head.ejs'); %>
-	<body>
-		<%- include('header.ejs'); %>
-		<h1>Matcha</h1>
-		<p>Voila l'accueil du site.</p>
-		<% if (typeof locals.user != 'undefined') { %>
-			<form method="POST" action='/search' id='search_bar' name='search_bar' >
-				<p>Rechercher un utilisateur :</p>
-				<input type="search" name='terms' />
-				<input type="hidden" name="_csrf" value=<%= csrfToken %> />
-				<button>OK</button>
-			</form>
+<%- include('head.ejs'); %>
+
+<body>
+	<style>
+		#matchs {
+			margin-left: 25px;
+			margin-top: 5px;
+			overflow-x: auto;
+			overflow-y: unset;
+			height: 600px;
+			white-space: nowrap;
+		}
+
+		#profiles {
+			margin-left: 25px;
+			margin-top: 5px;
+			overflow-x: auto;
+			overflow-y: unset;
+			height: 600px;
+			white-space: nowrap;
+		}
+
+		.public_profile_mini p {
+			margin-left: 20px;
+			display: inline-block;
+		}
+
+		#profiles img, #matchs img {
+			float: right;
+		}
+
+		.public_profile_mini {
+			display: inline-block;
+			border: 2px solid #f00;
+			background-size: cover;
+			width: 400px;
+			height: 550px;
+			color: white;
+			text-shadow: 0 0 10px black;
+			position: relative;
+		}
+
+		.public_profile_mini .bio {
+			margin-left: 0px;
+			position: absolute;
+			width: 390px;
+			max-height: 300px;
+			bottom: 0px;
+			left: 0px;
+			white-space: normal;
+		}
+	</style>
+
+	<%- include('header.ejs'); %>
+	<h1>Matcha</h1>
+	<p>Voila l'accueil du site.</p>
+	<% if (typeof locals.user !='undefined') {
+			%><form method="POST" action='/search' id='search_bar' name='search_bar'>
+		<p>Rechercher un utilisateur: </p> <input type="search" name='terms' /> <input type="hidden" name="_csrf"
+			value=<%=csrfToken %> /> <button>OK</button>
+	</form> <%
+		}
+
+		if (typeof locals.profiles !='undefined' && locals.profiles.length > 0) {
+			%><section id='matches'>
+			
+				<script>
+					let loc_req = [];
+					let loc_req2 = [];
+				</script>
+				<% for (var i in locals.profiles) {
+				%><style>
+			#user<%=profiles[i].id %> {
+				background-image: url('user_images/<%= profiles[i].image1 %>');
+			}
+		</style>
+		<h3>Vous ont liké :</h3>
+		<article id='user<%= profiles[i].id %>' class='public_profile_mini'>
+			<p>
+				<a href='/profile/<%= profiles[i].id %>' title='Voir le profil'>
+					<%= profiles[i].firstname %> <%= profiles[i].lastname %>
+				</a>, <%= profiles[i].age %>
+			</p>
+			<p>(<%= profiles[i].gender %>)</p><br />
+			<a href='/like/<%= profiles[i].id %>' title='Aimer' ><img src="/like.png" /></a>
+			<% switch (profiles[i].fruit) {
+                        case ('#pasdecoupdunsoir'): %>
+			<img src='coconut.png' height="75" width="75" title="#pasdecoupdunsoir" />
+			<% break;
+                    case ('#unsoir'): %>
+			<img src='peach.png' height="75" width="75" title="#unsoir" />
+			<% break;
+                    case ('#serieux'): %>
+			<img src='cherry.png' height="75" width="75" title="#serieux" />
+			<% break;
+                    case ('#pqr'): %>
+			<img src='spices.png' height="75" width="75" title="#pqr" />
+			<p id='p_address<%= profiles[i].id %>'> </p>
+			<% break;
+					} %>
+				<% if (typeof locals.profiles[i].lat != 'undefined' && locals.profiles[i].lat != null && typeof locals.profiles[i].lng != 'undefined' && locals.profiles[i].lng != null) { %>
+					<script>
+						loc_req['<%= profiles[i].id %>'] = new XMLHttpRequest();
+						loc_req['<%= profiles[i].id %>'].open('GET', '/get_address/<%= profiles[i].lat %>/<%= profiles[i].lng %>');
+						loc_req['<%= profiles[i].id %>'].responseType = 'json';
+						loc_req['<%= profiles[i].id %>'].onload = function () {
+							if (loc_req['<%= profiles[i].id %>'].status != 200) {
+								console.log('AJAX Failed: status (' + loc_req['<%= profiles[i].id %>'].status + ')')
+							} else if (loc_req['<%= profiles[i].id %>'].response.found != 0) {
+								//Put location
+								document.getElementById('p_address<%= profiles[i].id %>').innerHTML = loc_req['<%= profiles[i].id %>'].response.city + ', ' + loc_req['<%= profiles[i].id %>'].response.country;
+							}
+						}
+						loc_req['<%= profiles[i].id %>'].onerror = function () {
+							console.log('AJAX Error');
+						}
+						loc_req['<%= profiles[i].id %>'].onprogress = function () {
+
+						}
+						loc_req['<%= profiles[i].id %>'].send();
+					</script>
+				<% } %>
+			<p class='bio'><%= profiles[i].bio %></p>
+		</article>
 		<% } %>
-	</body>
+	</section>
+	<% } %>
+	<% if (typeof locals.matchs != 'undefined' && locals.matchs.length > 0) { %>
+	<section id='matches'>
+		<h3>Matchs :</h3>
+		<% for (var i in locals.matchs) { %>
+		<style>
+			#userm<%=matchs[i].id %> {
+				background-image: url('user_images/<%= matchs[i].image1 %>');
+			}
+		</style>
+		<article id='userm<%= matchs[i].id %>' class='public_profile_mini'>
+			<p>
+				<a href='/profile/<%= matchs[i].id %>' title='Voir le profil'>
+					<%= matchs[i].firstname %> <%= matchs[i].lastname %>
+				</a>, <%= matchs[i].age %>
+			</p>
+			<p>(<%= matchs[i].gender %>)</p><br />
+			<a href='/chat/<%= matchs[i].id %>' title="Chat" ><img src="/bubble.png" /></a>
+			<% switch (matchs[i].fruit) {
+                        case ('#pasdecoupdunsoir'): %>
+			<img src='coconut.png' height="75" width="75" title="#pasdecoupdunsoir" />
+			<% break;
+                    case ('#unsoir'): %>
+			<img src='peach.png' height="75" width="75" title="#unsoir" />
+			<% break;
+                    case ('#serieux'): %>
+			<img src='cherry.png' height="75" width="75" title="#serieux" />
+			<% break;
+                    case ('#pqr'): %>
+			<img src='spices.png' height="75" width="75" title="#pqr" />
+			<% break;
+					} %>
+				<p id='m_address<%= matchs[i].id %>'> </p>
+				<% if (typeof locals.matchs[i].lat != 'undefined' && locals.matchs[i].lat != null && typeof locals.matchs[i].lng != 'undefined' && locals.matchs[i].lng != null) { %>
+					<script>
+						loc_req2['<%= matchs[i].id %>'] = new XMLHttpRequest();
+						loc_req2['<%= matchs[i].id %>'].open('GET', '/get_address/<%= matchs[i].lat %>/<%= matchs[i].lng %>');
+						loc_req2['<%= matchs[i].id %>'].responseType = 'json';
+						loc_req2['<%= matchs[i].id %>'].onload = function () {
+							if (loc_req2['<%= matchs[i].id %>'].status != 200) {
+								console.log('AJAX Failed: status (' + loc_req2['<%= matchs[i].id %>'].status + ')')
+							} else if (loc_req['<%= matchs[i].id %>'].response.found != 0) {
+								//Put location
+								document.getElementById('m_address<% matchs[i].id %>').innerHTML = loc_req2['<%= matchs[i].id %>'].response.city + ', ' + loc_req2['<%= matchs[i].id %>'].response.country;
+							}
+						}
+						loc_req2['<%= matchs[i].id %>'].onerror = function () {
+							console.log('AJAX Error');
+						}
+						loc_req2['<%= matchs[i].id %>'].onprogress = function () {
+
+						}
+						loc_req2['<%= matchs[i].id %>'].send();
+					</script>
+				<% } %>
+			<p class='bio'><%= matchs[i].bio %></p>
+		</article>
+		<% } %>
+	</section>
+	<% } %>
+</body>
+
 </html>

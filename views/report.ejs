@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <%- include('head.ejs') %>
+    <body>
+        <%- include('header.ejs') %>
+        <form id='report_form' name='report_form' action='#' method="POST">
+            <p>Vous êtes sur le point de signaler un comportement indésirable de la part de <%= name %>. Veuillez décrire la nature du désagrément : </p>
+            <textarea name='message' form='report_form' maxlength="200"></textarea>
+            <input type="hidden" name="_csrf" value=<%= csrfToken %> />
+            <button>Signaler</button>
+        </form>
+    </body>
+</html>

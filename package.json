@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
-        "bcrypt": "^3.0.6",
+        "bcrypt": "^3.0.8",
         "csurf": "^1.10.0",
         "ejs": "~2.1.4",
         "ent": "~2.2.0",
@@ -23,7 +23,12 @@
         "type": "git",
         "url": "git://github.com/Hollyol/matcha.git"
     },
-    "author": "X&J",
+    "scripts": {
+        "start": "./start.sh",
+        "restart": "./stop.sh && ./start.sh",
+        "stop": "./stop.sh"
+    },
+    "author": "Xapadoan;Jcammas",
     "license": "None",
     "description": "Lust = $"
 }

@@ -1,19 +1,16 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
     <%- include('head.ejs'); %>
     <body>
         <%- include('header.ejs'); %>
-        <h1>Récupération du mot de passe</h1>
+        <h2>You forgot your password ?</h2>
         <% if (typeof locals.mail_sent != 'undefined' && locals.mail_sent == true) { %>
-        <p>Un mail vous a été envoyé, il contient un lien qui vous permettra de récuperer
-            votre mot de passe</p>
+        <p>We sent you an e-mail. Click on the link in it and you will be able to create a new password</p>
         <% } else { %>
-        <p>Vous avez oublié votre mot de passe ?<br />Pas de panique, vous pouvez
-        le récuperer ou en utiliser un nouveau en renseignant votre nom
-        d'utilisateur et votre addresse e-mail:</p>
+        <p>Don't panic, your will be allowed to create a new one. We just need you to tell us who you are:</p>
         <form id='recover_password' name="recover_password" method="POST" action='/recover'>
-            <input type="text" name="username" placeholder="Pseudo" required />
-            <input type="email" name='mail' placeholder="Email" required />
+            <input type="text" name="username" placeholder="Pseudo" required autofocus />
+            <input type="email" name='mail' placeholder="Email" required /><br />
             <input type="hidden" name="_csrf" value=<%= csrfToken %> />
             <button>OK</button>
         </form>

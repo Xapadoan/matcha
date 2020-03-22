@@ -3,23 +3,29 @@
 	<%- include('head.ejs') %>
 	<style>
 		#chat {
+			position: relative;
 			background-color: rgba(160, 160, 160, 0.4);
 			border-radius: 20px;
-			width: 70%;
-			margin-left: 15%;
+			width: 80vw;
+			margin-left: 10vw;
 			height: 85vh;
 		}
 
 		#chat_room {
 			position: relative;
+			overflow-y: scroll;
+			max-height: 80vh;
 		}
 
 		#message_form {
+			margin-left: 0px;
 			border-radius: 20px;
 			position: absolute;
 			bottom: 5px;
-			left: 20%;
-			width: 55%;
+			left: 10vw;
+			right: 10vw;
+			width: auto;
+			min-width: 0px;
 		}
 
 		#message_form input {
@@ -35,7 +41,6 @@
 		}
 
 		.sent {
-			position: relative;
 			background-color: cyan;
 			width: 70%;
 			margin-left: calc(30% - 20px);
@@ -46,19 +51,32 @@
 			background-color: aliceblue;
 			margin-left: 10px;
 		}
+
+		@media screen and (max-width: 600px) {
+			#chat {
+				width: 90vw;
+				margin-left: 5vw;
+			}
+
+			#message_form {
+				left: 5vw;
+				right: 5vw;
+			}
+		}
 	</style>
 	<body>
 		<%- include('header.ejs') %>
 		<section id='chat'>
 			<section id='chat_room'>
 			</section>
-		<form id='message_form'>
-			<input id='message' type='text' maxlength="200" width="50" />
-			<button id='poke'>Post</button>
-		</form>
-	</section>
+			<form id='message_form'>
+				<input id='message' type='text' maxlength="200" width="50" autofocus />
+				<button id='poke'>Post</button>
+			</form>
+		</section>
 
 		<script>
+		var dest_username = '<%= destname %>';
 		socket.emit('create', {
 			room: '<%= room %>',
 			username: '<%= user %>'
@@ -67,35 +85,58 @@
 		socket.on('join', (data) => {
 			let entry = document.createElement('p');
 			entry.innerHTML = data;
-			document.getElementById('chat_room').appendChild(entry);
-		})
+			let div = document.getElementById('chat_room');
+			div.appendChild(entry);
+			div.scrollTop = div.scrollHeight;
+		});
 
 		socket.on('message', function(message) {
 			let entry = document.createElement('p');
-			if (message.author == '<%= user %>') {
-				entry.className = 'sent'
+			let auth = dest_username;
+			if (message.author == '<%= userid %>') {
+				entry.className = 'sent';
+				auth = '<%= user %>';
 			} else {
-				entry.className = 'recieved'
+				entry.className = 'recieved';
 			}
-			entry.innerHTML = '<span>' + message.author + '</span> : ' + message.body;
-			document.getElementById('chat_room').appendChild(entry);
+			entry.innerHTML = '<span>' + auth + '</span> : ' + message.body;
+			let div = document.getElementById('chat_room');
+			div.appendChild(entry);
+			div.scrollTop = div.scrollHeight;
 		});
 
 		document.getElementById('message_form').addEventListener('submit', function (event) {
 			event.preventDefault();
 			let message = document.getElementById('message');
 			socket.emit('message', {
-				author: '<%= user %>',
+				author: '<%= userid %>',
 				dest: '<%= dest %>',
 				body: escapeHtml(message.value)
 			});
 			socket.emit('new_message', {
-				author: '<%= user %>',
+				author: '<%= userid %>',
 				dest: '<%= dest %>',
 				title: 'New Message',
 				body: escapeHtml(message.value)
 			})
 			message.value = '';
+		});
+
+		get('/get_discution/<%= dest %>', null, document.getElementById('chat_room'), (anchor, data) => {
+			//Put messages
+			for (i = 0; i < data.length; i++) {
+				let entry = document.createElement('p');
+				let auth = dest_username;
+				if (data[i].author == '<%= userid %>') {
+					entry.className = 'sent';
+					auth = '<%= user %>';
+				} else {
+					entry.className = 'recieved';
+				}
+				entry.innerHTML = '<span>' + auth + '</span> : ' + data[i].body;
+				anchor.appendChild(entry);
+				anchor.scrollTop = anchor.scrollHeight;
+			}
 		});
 		</script>
 	</body>

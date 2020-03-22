@@ -1,7 +1,7 @@
 var request = require('request');
 
 function generateFruit() {
-    fruits = ['#pasdecoupdunsoir', '#unsoir', '#serieux', '#pqr'];
+    fruits = ['#JustHangingOut', '#BootyCall', '#SeriousRelationship', '#SexFriends'];
     key = Math.floor(Math.random() * 4);
     return(fruits[key]);
 }
@@ -20,25 +20,44 @@ function generateMail(Firstname, Lastname) {
 }
 
 function generateOrientation () {
-    i = Math.floor(Math.random() * 3);
+    i = Math.floor(Math.random() * 4);
     if (i == 1) {
         return ('Women');
     } else if (i == 2) {
         return ('Men');
+    } else if (i == 3) {
+        return ('Trans');
     } else {
         return ('Both');
     }
 }
 
 function affectionSentence() {
-    sentences = ["j'adore", "j'aime", "j'aime beaucoup", "j'apprécie", "je suis fan", "je kiffe"];
+    sentences = ["I love", "I enjoy", "I like", "I'm fond of"];
     return (sentences[Math.floor(Math.random() * sentences.length)]);
 }
 
+function middleSentence() {
+    mid = [', I also like', 'and', '. But I\'m better at', ', in addition to'];
+    return (mid[Math.floor(Math.random() * mid.length)]);
+}
+
 function generateBio () {
-    sports = ['rugby', 'foot', 'football', 'danse', 'natation', 'equitation', 'athletisme', 'courseapied', 'slackline', 'escalade', 'gymnastique', 'velo', 'ski', 'snowboard', 'surf', 'tennis', 'skateboard'];
+    sports = ['rugby', 'soccer', 'football', 'dance', 'swimming', 'horseriding', 'athletism', 'running', 'slackline', 'climbing', 'gymnastic', 'bikeriding', 'bouldering', 'trekking', 'ski', 'snowboard', 'horrormovies', 'mangas', 'music', 'walking', 'reading', 'surf', 'tennis', 'skateboard'];
     sports_key = Math.floor(Math.random() * sports.length);
-    return(affectionSentence() + ' #' + sports[sports_key]);
+    current = sports[sports_key];
+    ret = affectionSentence() + ' #' + current;
+    if (Math.floor(Math.random() * 3) == 1) {
+        return(ret);
+    }
+    else {
+        sports_key = Math.floor(Math.random() * sports.length);
+        if (sports[sports_key] == current) {
+            sports_key = Math.floor(Math.random() * sports.length);
+        }
+        ret += ' ' + middleSentence() + ' #' + sports[sports_key];
+        return (ret);
+    }
 }
 
 function generateMale() {

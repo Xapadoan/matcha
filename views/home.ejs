@@ -1,16 +1,31 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <%- include('head.ejs'); %>
 
 <body>
 	<style>
-		#matches {
-			margin-left: 25px;
-			margin-top: 5px;
-			overflow-x: auto;
-			overflow-y: unset;
-			height: 600px;
-			white-space: nowrap;
+		#home_forms {
+			height: 650px;
+			overflow-y: auto;
+		}
+
+		#user_infos {
+			margin-top: 0px;
+		}
+
+		#user_infos, #update_location, #new_photo {
+			width: calc(40vw - 25px);
+		}
+
+		#user_images {
+			background-color: rgba(160, 160, 160, 0.4);
+			border-radius: 20px;
+			text-align: center;
+		}
+
+		#user_images figure {
+			margin: 0px;
+			display: inline-block;
 		}
 
 		.public_profile_mini p {
@@ -18,7 +33,7 @@
 			display: inline-block;
 		}
 
-		#likes img {
+		#likesnmatches img {
 			float: right;
 		}
 
@@ -50,13 +65,76 @@
 		#likesnmatches {
 			background-color: rgba(160, 160, 160, 0.4);
 			border-radius: 20px;
-			padding: 20px 20px;
-			width: 60%;
-			display: inline-block;
+			padding-bottom: 20px;
+			width: calc(60vw - 60px);
+			height: 650px;
 			position: absolute;
 			right: 20px;
 			top: 0px;
-			margin: 20px 0px;
+			margin: 0px;
+			text-align: center;
+			overflow-x: auto;
+			white-space: nowrap;
+		}
+
+		.user_img {
+			max-height: 330px;
+			width: auto;
+			height: auto;
+		}
+
+		@media screen and (max-width: 850px) {
+			#likesnmatches, #user_images {
+				position: static;
+				margin: 3px 0px;
+				width: 100vw;
+				margin-left: 0px;
+				margin-top: 0px;
+				overflow-y: auto;
+			}
+
+			#user_infos, #update_location, #new_photo {
+				padding: 5vw;
+				width: 90vw;
+				margin-left: 0px;
+			}
+
+			.public_profile_mini {
+				margin-top: 5px;
+				display: block;
+				width: 400px;
+				height: 500px;
+				left: calc(50% - 200px);
+			}
+
+			.public_profile_mini .bio {
+				width: 400px;
+			}
+		}
+
+		@media screen and (max-width: 420px) {
+			#search_filters {
+				margin: auto;
+			}
+
+			#likesnmatches, #user_images {
+				width: 100vw;
+				margin-left: 0px;
+				margin-top: 0px;
+				overflow-y: auto;
+			}
+
+			.public_profile_mini {
+				margin-top: 5px;
+				display: block;
+				width: 300px;
+				height: 325px;
+				left: calc(50% - 150px);
+			}
+
+			.public_profile_mini .bio {
+				width: 300px;
+			}
 		}
 	</style>
 	<%- include('header.ejs') %>
@@ -65,123 +143,115 @@
 		<h1><%= user %></h1>
 		<input name='Firstname' type="text" maxlength="100" minlength="1"
 			<% if (typeof locals.user_info != 'undefined') { %> value='<%= user_info.firstname %>' <% } else { %>
-			placeholder="Prénom" <% } %> />
+			placeholder="Firstname" <% } %> />
 		<input name='Lastname' type="text" maxlength="100" minlength="1"
 			<% if (typeof locals.user_info != 'undefined') { %> value='<%= user_info.lastname %>' <% } else { %>
-			placeholder="Nom de Famille" <% } %> />
+			placeholder="Lastname" <% } %> />
 		<input name='Mail' type="email" maxlength="100" minlength="5"
 			<% if (typeof locals.user_info != 'undefined') { %> value='<%= user_info.email %>' <% } else { %>
 			placeholder="E-Mail" <% } %> />
-		<input name='Password' type='password' maxlength="32" minlength="1" placeholder="Mot de passe" />
+		<input name='Password' type='password' maxlength="32" minlength="1" placeholder="Password" />
 		<br />
 		<h3>Fruit: </h3>
 		<%- include('fruits.ejs') %>
-		<input type="hidden" name="_csrf" value=<%= csrfToken %> />
-		<button>Mettre a jour</button>
-	</form>
-	<form id='extended_infos' method="POST" name='extended_infos' action='/complete'>
-		Age : <input name="age" type='number'
-			<% if (typeof locals.user_extended != 'undefined' && locals.user_extended != null) { %>
-			value=<%= user_extended.age %> <% } else { %> value=20 <% } %> max="77" min='18' />
-		Genre : <select name="gender">
+		<label for='Age'>Age : </label><input name="Age" type='number' size=2
+			<% if (typeof locals.user_info != 'undefined' && locals.user_info != null) { %>
+			value=<%= user_info.age %> <% } else { %> value=20 <% } %> max="77" min='18' /><br />
+		<label for='Gender'>Gender : </label>
+		<select name="Gender">
 			<option value="Both"
-				<% if (typeof locals.user_extended != 'undefined' && locals.user_extended.gender == 'Both') { %>
-				selected <% } %>>Les deux</option>
+				<% if (typeof locals.user_info != 'undefined' && locals.user_info.gender == 'Both') { %>
+				selected <% } %>>Both</option>
 			<option value="Woman"
-				<% if (typeof locals.user_extended != 'undefined' && locals.user_extended.gender == 'Woman') { %>
-				selected <% } %>>Femme</option>
+				<% if (typeof locals.user_info != 'undefined' && locals.user_info.gender == 'Woman') { %>
+				selected <% } %>>Woman</option>
 			<option value="Man"
-				<% if (typeof locals.user_extended != 'undefined' && locals.user_extended.gender == 'Man') { %> selected
-				<% } %>>Homme</option>
-		</select>
-		Orientation : <select name="orientation">
+				<% if (typeof locals.user_info != 'undefined' && locals.user_info.gender == 'Man') { %> selected
+				<% } %>>Man</option>
+		</select><br />
+		<label for='Orientation'>Orientation : </label>
+		<select name="Orientation">
 			<option value="Both"
-				<% if (typeof locals.user_extended != 'undefined' && locals.user_extended.orientation == 'Both') { %>
-				selected <% } %>>Les deux</option>
+				<% if (typeof locals.user_info != 'undefined' && locals.user_info.orientation == 'Both') { %>
+				selected <% } %>>Both</option>
 			<option value="Women"
-				<% if (typeof locals.user_extended != 'undefined' && locals.user_extended.orientation == 'Women') { %>
-				selected <% } %>>Femmes</option>
+				<% if (typeof locals.user_info != 'undefined' && locals.user_info.orientation == 'Women') { %>
+				selected <% } %>>Women</option>
 			<option value="Men"
-				<% if (typeof locals.user_extended != 'undefined' && locals.user_extended.orientation == 'Men') { %>
-				selected <% } %>>Hommes</option>
-			<option value="Others"
-				<% if (typeof locals.user_extended != 'undefined' && locals.user_extended.gender == 'Others') { %>
-				selected <% } %>>Autres</option>
-		</select>
-		Bio : <textarea name='bio'
-			form="extended_infos"><% if (typeof locals.user_extended != 'undefined' && locals.user_extended.bio != null) { %><%= user_extended.bio %><% } %></textarea>
+				<% if (typeof locals.user_info != 'undefined' && locals.user_info.orientation == 'Men') { %>
+				selected <% } %>>Men</option>
+			<option value="Trans"
+				<% if (typeof locals.user_info != 'undefined' && locals.user_info.orientation == 'Trans') { %>
+				selected <% } %>>Transexual</option>
+		</select><br />
+		<label for='Bio'>Bio : </label><br />
+		<textarea name='Bio' form="user_infos"><% if (typeof locals.user_info != 'undefined' && locals.user_info.bio != null) {
+			%><%= user_info.bio %><% } %></textarea>
 		<input type="hidden" name="_csrf" value=<%= csrfToken %> />
-		<button>OK</button>
+		<button>Update profile</button>
 	</form>
 	<form method="POST" id='new_photo' name="new_photo" action='/new_photo' enctype="multipart/form-data">
-		Photo : <input type="file" name="image" />
+		Picture : <input type="file" name="image" />
 		<input type="hidden" name="_csrf" value=<%= csrfToken %> />
 		<button>OK</button>
 	</form>
 	<form method="POST" id='update_location' name='update_location' action="/update_location">
-		<p>Où êtes vous actuellement ?<br />Nous chercherons les utilisateurs près de vous</p>
-		<input type='text' name='street' placeholder="Nom de la rue" />
-		<input type='text' name='city' placeholder="Nom de la ville" />
-		Pays : <select name='country'>
+		<p>Where are you now ?<br />We will find people near you</p>
+		<input type='text' name='street' placeholder="Street name" /><br />
+		<input type='text' name='city' placeholder="City name" /><br />
+		Country : <select name='country'>
 			<option value="BE">Belgique</option>
+			<option value='CA'>Canada</option>
 			<option value="DE">Deutschland</option>
 			<option value="EN">England</option>
 			<option value='FR' selected>France</option>
 			<option value='US'>United States</option>
 		</select>
 		<input type="hidden" name="_csrf" value=<%= csrfToken %> />
-		<button>Mettre à jour</button>
+		<button>Update</button>
 	</form>
+	<% if (typeof locals.user != 'undefined') { %>
+		<a href="/delete_user" >Delete Account</a>
+	<% } %>
+	</section>
 	<% if (typeof locals.images != 'undefined' && locals.images.image1 != null) { %>
 	<section id='user_images'>
-		<h2>Vos photos</h2>
+		<h2>Your pictures</h2>
 		<% if (locals.images.image1 != null) { %>
 		<figure>
-			<a href="/delete_image/1" title="Supprimer"><img class='button' src='/dump.png'></a>
-					<img src="/user_images/<%= images.image1 %>" width="200" ,
-					height="150" />
+			<a href="/delete_image/1" title="Delete"><img class='button' src='/dump.png' alt='delete_icon'></a>
+			<img src="/user_images/<%= images.image1 %>" class='user_img' alt='profile_picture' title='profile_picture' />
 		</figure>
 		<% }
-			if (locals.images.image2 != null) { %>
+		if (locals.images.image2 != null) { %>
 		<figure>
-			<a href="/delete_image/2" title="Supprimer"><img class='button' src='/dump.png'></a>
-					<img src="/user_images/<%= images.image2 %>" />
+			<a href="/delete_image/2" title="Delete"><img class='button' src='/dump.png'></a>
+			<img src="/user_images/<%= images.image2 %>" class='user_img' />
 		</figure>
 		<% }
-			if (locals.images.image3 != null) { %>
+		if (locals.images.image3 != null) { %>
 		<figure>
-			<a href="/delete_image/3" title="Supprimer"><img class='button' src='/dump.png'></a>
-					<img src="/user_images/<%= images.image3 %>" width="200" ,
-					height="150" />
+			<a href="/delete_image/3" title="Delete"><img class='button' src='/dump.png'></a>
+			<img src="/user_images/<%= images.image3 %>" class='user_img' />
 		</figure>
 		<% }
-			if (locals.images.image4 != null) { %>
+		if (locals.images.image4 != null) { %>
 		<figure>
-			<a href="/delete_image/4" title="Supprimer"><img class='button' src='/dump.png'></a>
-					<img src="/user_images/<%= images.image4 %>" width="200" ,
-					height="150" />
+			<a href="/delete_image/4" title="Delete"><img class='button' src='/dump.png'></a>
+			<img src="/user_images/<%= images.image4 %>" class='user_img' />
 		</figure>
 		<% }
-			if (locals.images.image5 != null) { %>
+		if (locals.images.image5 != null) { %>
 		<figure>
-			<a href="/delete_image/5" title="Supprimer"><img class='button' src='/dump.png'></a>
-				<img src="/user_images/<%= images.image5 %>"  width="200" ,
-				height="150" />
+			<a href="/delete_image/5" title="Delete"><img class='button' src='/dump.png'></a>
+			<img src="/user_images/<%= images.image5 %>"  class='user_img' />
 		</figure>
-		<% }
-		if (typeof locals.user != 'undefined') { %>
-			<a href="/delete_user"><img src="https://img.icons8.com/small/32/000000/gear.png"></a>
 		<% } %>
 	</section>
 	<% } %>
-	</section>
-	<script>
-		let loc_req = [];
-	</script>
+	<% if (typeof locals.profiles != 'undefined' && locals.profiles.length > 0) { %>
 	<section id='likesnmatches'>
-		<% if (typeof locals.profiles != 'undefined' && locals.profiles.length > 0) { %>
-		<h2>Vous avez liké :</h2>
-		<div id='likes'>
+		<h2>You liked:</h2>
 			<% for (var i in locals.profiles) { %>
 			<style>
 				#user<%=profiles[i].id %> {
@@ -190,55 +260,40 @@
 			</style>
 			<article id='user<%= profiles[i].id %>' class='public_profile_mini'>
 				<p>
-					<a href='/profile/<%= profiles[i].id %>' title='Voir le profil'>
+					<a href='/profile/<%= profiles[i].id %>' title='See profile'>
 						<%= profiles[i].firstname %> <%= profiles[i].lastname %>
 					</a>, <%= profiles[i].age %>
 				</p>
 				<p>(<%= profiles[i].gender %>)</p><br />
-				<a href='/like/<%= profiles[i].id %>' title="Aimer" ><img src='/like.png' title="Like" /></a>
 				<% switch (profiles[i].fruit) {
-                        case ('#pasdecoupdunsoir'): %>
-				<img src='coconut.png' height="75" width="75" title="#pasdecoupdunsoir" />
+                        case ('#JustHangingOut'): %>
+				<img src='coconut.png' height="75" width="75" title="#JustHangingOut" />
 				<% break;
-                    case ('#unsoir'): %>
-				<img src='peach.png' height="75" width="75" title="#unsoir" />
+                    case ('#BootyCall'): %>
+				<img src='peach.png' height="75" width="75" title="#BootyCall" />
 				<% break;
-                    case ('#serieux'): %>
-				<img src='cherry.png' height="75" width="75" title="#serieux" />
+                    case ('#SeriousRelationship'): %>
+				<img src='cherry.png' height="75" width="75" title="#SeriousRelationship" />
 				<% break;
-                    case ('#pqr'): %>
-				<img src='spices.png' height="75" width="75" title="#pqr" />
+                    case ('#SexFriends'): %>
+				<img src='ginger.png' height="75" width="75" title="#SexFriends" />
 				<% break;
 					} %>
 				<p id='address<%= profiles[i].id %>'> </p>
 				<% if (typeof locals.profiles[i].lat != 'undefined' && locals.profiles[i].lat != null && typeof locals.profiles[i].lng != 'undefined' && locals.profiles[i].lng != null) { %>
 					<script>
-						loc_req['<%= profiles[i].id %>'] = new XMLHttpRequest();
-						loc_req['<%= profiles[i].id %>'].open('GET', '/get_address/<%= profiles[i].lat %>/<%= profiles[i].lng %>');
-						loc_req['<%= profiles[i].id %>'].responseType = 'json';
-						loc_req['<%= profiles[i].id %>'].onload = function () {
-							if (loc_req['<%= profiles[i].id %>'].status != 200) {
-								console.log('AJAX Failed: status (' + loc_req['<%= profiles[i].id %>'].status + ')')
-							} else if (loc_req['<%= profiles[i].id %>'].response.found != 0) {
-								//Put location
-								document.getElementById('address<%= profiles[i].id %>').innerHTML = loc_req['<%= profiles[i].id %>'].response.city + ', ' + loc_req['<%= profiles[i].id %>'].response.country;
+						get('/get_address/<%= profiles[i].lat %>/<%= profiles[i].lng %>', null, document.getElementById('address<%= profiles[i].id %>'), (anchor, data) => {
+							if (data.city != undefined && data.country != undefined) {
+								anchor.innerText = data.city + ', ' + data.country;
 							}
-						}
-						loc_req['<%= profiles[i].id %>'].onerror = function () {
-							console.log('AJAX Error');
-						}
-						loc_req['<%= profiles[i].id %>'].onprogress = function () {
-
-						}
-						loc_req['<%= profiles[i].id %>'].send();
+						});
 					</script>
 				<% } %>
 				<p class='bio'><%= profiles[i].bio %></p>
 			</article>
 			<% } %>
-		</div>
-		<% } %>
 	</section>
+	<% } %>
 
 </body>
 

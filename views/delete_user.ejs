@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
    <%- include('head.ejs'); %>
    <body>
        <%- include('header.ejs'); %>
        <form action="delete_user" method="POST">
-           <p>Veuillez renseigner votre pseudo et votre mot de passe pour supprimer votre compte !</p><br>
-           <input type="text" name="username" placeholder="Pseudo" required /><br>
-           <input type="password" name="password" placeholder="Mot de passe" required /><br />
+           <p>We need to check who you are before deleting your account</p><br>
+           <input type="text" name="username" placeholder="Pseudo" required autofocus /><br>
+           <input type="password" name="password" placeholder="Password" required /><br />
            <input type="hidden" name="_csrf" value=<%= csrfToken %> /><br>
         <p>La suppression d'un compte est définitive.</p><br>
            <button>Supprimer mon compte</button>

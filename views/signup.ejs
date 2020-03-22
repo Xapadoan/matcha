@@ -1,22 +1,22 @@
 <!DOCTYPE html>
-<html lang='fr'>
+<html lang='en'>
     <%- include('head.ejs'); %>
     <body>
         <%- include('header.ejs'); %>
-        <h1>Créer un compte !</h1>
+        <h2>Create your account !</h2>
         <form id='signup_form' name='signup_form' method="POST">
-            <p>Vous pouvez créer votre compte ici !</p><br />
+            <p>You can create an account here !</p><br />
             <input name='Username' type='text' maxlength="100" minlength="1" placeholder="Pseudo" /><br />
-            <input name='Firstname' type="text" maxlength="100" minlength="1" placeholder="Prénom" /><br />
-            <input name='Lastname' type="text" maxlength="100" minlength="1" placeholder="Nom de Famille" /><br />
+            <input name='Firstname' type="text" maxlength="100" minlength="1" placeholder="Firstname" /><br />
+            <input name='Lastname' type="text" maxlength="100" minlength="1" placeholder="Lastname" /><br />
             <input name='Mail' type="email" maxlength="100" minlength="5" placeholder="E-Mail" /><br />
-            <input name='Password' type='password' maxlength="32" minlength="1" placeholder="Mot de passe"/>
+            <input name='Password' type='password' maxlength="32" minlength="1" placeholder="Password"/>
             <br />
             <h3>Fruit: </h3>
-            <p>Le fruit sert a savoir le type de relation que vous cherchez</p><br />
+            <p>What kind of relationship are you looking for ?</p><br />
             <%- include('fruits.ejs') %>
             <input type="hidden" name="_csrf" value=<%= csrfToken %> /><br />
-            <button>Créer un compte</button>
+            <button>Register</button>
         </form>
     </body>
 </html>

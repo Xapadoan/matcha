@@ -35,7 +35,8 @@ function is_member_unique(username, mail) {
 	return (new Promise((resolve, reject) => {
 		if (typeof username == 'undefined' || typeof mail == 'undefined') {
 			console.log('Unique : undefined username or mail');
-			return reject('Undefined username or mail');
+			reject('Undefined username or mail');
+			return ;
 		}
 		connection.query("SELECT COUNT(*) FROM " + data['name'] + ".users WHERE username = ? OR email = ?;", [
 			username,
@@ -46,24 +47,20 @@ function is_member_unique(username, mail) {
 				reject('Error while querying the database');
 			} else if (res) {
 				let count = res[0]['COUNT(*)'];
-				if (count == 0) {
-					resolve(true);
-				} else {
-					resolve(false);
-				}
+				resolve (count == 0);
 			}
 		});
 	}));
 }
 
 function validateFruit(fruit) {
-	if (fruit == '#pasdecoupdunsoir') {
+	if (fruit == '#JustHangingOut') {
 		return (true);
-	} else if (fruit == '#unsoir') {
+	} else if (fruit == '#BootyCall') {
 		return (true);
-	} else if (fruit == '#serieux') {
+	} else if (fruit == '#SeriousRelationship') {
 		return (true);
-	} else if (fruit == '#pqr') {
+	} else if (fruit == '#SexFriends') {
 		return (true);
 	} else {
 		return (false);
@@ -72,7 +69,7 @@ function validateFruit(fruit) {
 
 function checkCompleteProfile(username) {
 	return (new Promise((resolve, reject) => {
-		connection.query('SELECT u.id, u.username, u.firstname, u.lastname, u.fruit, u.email, e.age, e.gender, e.orientation, e.bio, i.image1 FROM matcha.users u LEFT JOIN matcha.users_extended e ON u.id = e.user LEFT JOIN matcha.users_images i ON u.id = i.user WHERE u.username = ?', [
+		connection.query('SELECT u.id, u.username, u.firstname, u.lastname, u.fruit, u.email, u.age, u.gender, u.orientation, u.bio, i.image1 FROM matcha.users u LEFT JOIN matcha.users_images i ON u.id = i.user WHERE u.username = ?', [
 			username
 		], (err, result) => {
 			if (err) {
@@ -82,94 +79,171 @@ function checkCompleteProfile(username) {
 				console.log('Failed to checkCompleteProfile:\n\tSeveral accounts with same user name');
 				reject('Several accounts with same username');
 			} else {
-				let missing = {};
+				let missing = [];
 				if (result[0].id == null) {
-					missing.id = 1;
+					missing.push('User was not found');
 				}
 				if (result[0].username == null) {
-					missing.username = 1;
+					missing.push('Please provide Username to complete your profile')
 				}
 				if (result[0].firstname == null) {
-					missing.firstname = 1;
+					missing.push('Please provide Firstname to complete your profile');
 				}
 				if (result[0].lastname == null) {
-					missing.lastname = 1;
+					missing.push('Please provide Lastname to complete your profile');
 				}
 				if (result[0].fruit == null) {
-					missing.fruit = 1;
+					missing.push('Please provide Fruit to complete your profile');
 				}
 				if (result[0].email == null) {
-					missing.email = 1;
+					missing.push('Please provide E-mail to complete your profile');
 				}
 				if (result[0].age == null) {
-					missing.age = 1;
+					missing.push('Please provide Age to complete your profile');
 				}
 				if (result[0].gender == null) {
-					missing.gender = 1;
+					missing.push('Please provide Gender to complete your profile');
 				}
 				if (result[0].orientation == null) {
-					missing.orientation = 1;
+					missing.push('Please provide Orientation to complete your profile');
 				}
 				if (result[0].bio == null) {
-					missing.bio = 1;
+					missing.push('Please provide Bio to complete your profile');
 				}
 				if (result[0].image1 == null) {
-					missing.image1 = 1;
+					missing.push('Please provide Image to complete your profile');
 				}
+				if (missing.length === 0) {
+					resolve(true);
+					return ;
+				}
+				missing.forEach(field => {
+					field = 'Please provide ' + field + ' to complete your profile';
+				})
 				resolve(missing);
 			}
 		})
 	}));
 }
 
-function update_user_extended(userid, age, gender, orientation, bio, interests) {
+function updateUserDb(username, data) {
+	//Expects data to be safe and checked
+	//update db
 	return (new Promise((resolve, reject) => {
-		connection.query('UPDATE matcha.users_extended SET age = ?, gender = ?, orientation = ?, bio = ?, interests = ? WHERE user = ?', [
-			age,
-			gender,
-			orientation,
-			bio,
-			interests,
-			userid
-		], (err) => {
+		connection.query('UPDATE matcha.users SET firstname=?, lastname=?, email=?, status=?, fruit=?, age=?, gender=?, orientation=?, bio=? WHERE username=?', [
+			data['Firstname'],
+			data['Lastname'],
+			data['Mail'],
+			data['Status'],
+			data['Fruit'],
+			data['Age'],
+			data['Gender'],
+			data['Orientation'],
+			data['Bio'],
+			username
+		], (err, results) => {
 			if (err) {
-				console.log(err.stack);
-				reject('Something went wrong, we are trying to solve it');
-			} else {
-				resolve(true);
+				console.log('update user failed : ' + err.stack);
+				reject('Error : Failed to update user informations');
+			} else if (results.affectedRows != 1) {
+				resolve(['We can\'t find this account']);
+				return;
 			}
+			checkCompleteProfile(username).then((results) => {
+				if (results == true) {
+					//Profile is complete
+					connection.query('UPDATE matcha.users SET status=\'Complete\' WHERE username = ?', [
+						username
+					], (err) => {
+						if (err) {
+							console.log('Failed to mark profile as complete:\n' + err.stack);
+							reject('Failed to mark profile as complete');
+						} else {
+							if (data['Password'] != undefined && data['Password'] != "") {
+								resolve(['You can\'t update both e-mail and password']);
+								return ;
+							}
+							resolve(true);
+							return ;
+						}
+					});
+				} else {
+					resolve(results);
+					return ;
+				}
+			}).catch((reason) => {
+				console.log('Failed to checkCompleteProfile');
+				reject('Error : Failed to markprofile as complete')
+			});
 		});
 	}));
 }
 
-function digestInterests(userid, interests) {
-	let regex = RegExp("#[A-Za-z0-9]+", "g");
-	let interest;
-	//remove all user's, interests
-	connection.query("DELETE FROM matcha.users_interests WHERE user = ?", [
-		userid
-	], (err) => {
+function digestInterests(username, interests) {
+	connection.query('SELECT id FROM matcha.users WHERE username = ?', [
+		username
+	], (err, result) => {
 		if (err) {
-			console.log('Error : Failed to erase user\'s interests');
+			console.log('Failed to get user id');
 			console.log(err.stack);
-			return (false);
 		}
-	});
-	while ((interest = regex.exec(interests)) != null) {
-		//add interest
-		connection.query("INSERT INTO matcha.users_interests (name, user) VALUES (?, ?);", [
-			interest,
+		let userid = result[0].id;
+		//remove all user's, interests
+		connection.query("DELETE FROM matcha.users_interests WHERE user = ?", [
 			userid
 		], (err) => {
-			{
-				if (err) {
-					console.log('Error : Failed to set new interest');
-					console.log(err.stack);
-					return (false);
-				}
+			if (err) {
+				console.log('Error : Failed to erase user\'s interests');
+				console.log(err.stack);
+				return (false);
 			}
+			interests.forEach(interest => {
+			//search if interest already exists
+				connection.query("SELECT id FROM matcha.list_interests WHERE name=?;", [
+					interest,
+				], (err, result) => {
+					if (err) {
+						console.log('Error : Failed to search interest in list');
+						console.log(err.stack);
+						return ;;
+					}
+					if (result.length === 0) {
+						//Insert new interest
+						connection.query("INSERT INTO matcha.list_interests (name) VALUES (?)", [
+							interest
+						], (err, result) => {
+							if (err) {
+								console.log('Failed to insert new interest');
+								console.log(err.stack);
+								return ;
+							}
+							connection.query("INSERT INTO matcha.users_interests (interest, user) VALUES (?, ?)", [
+								result.insertId,
+								userid
+							], (err) => {
+								if (err) {
+									console.log("Failed to insert new user for interest");
+									console.log(err.stack);
+									return ;
+								}
+							});
+						});
+					} else {
+						connection.query("INSERT INTO matcha.users_interests (interest, user) VALUES (?, ?)", [
+							result[0].id,
+							userid
+						], (err) => {
+							if (err) {
+								console.log("Failed to insert new user for interest");
+								console.log(err.stack);
+								return ;
+							}
+						});
+					}
+				})
+			});
 		});
-	}
+	})
 }
 
 function validateMail(mail) {
@@ -181,16 +255,6 @@ function validateMail(mail) {
 		return (false);
 	}
 	return (true);
-}
-
-function getInterests(bio) {
-	var interests = new String();
-	let regex = new RegExp("#[A-Za-z0-9]+", "g");
-	let match;
-	while ((match = regex.exec(bio)) != null) {
-		interests += match[0];
-	}
-	return (interests);
 }
 
 function getInterestsTab(interests) {
@@ -231,29 +295,158 @@ function getFirstNullImgField(fields) {
 	}
 }
 
+function sendAccountCreationMail (username, mail, id) {
+	return (new Promise((resolve, reject) => {
+		if (username == undefined || mail == undefined || id == undefined) {
+			reject ('Missing data');
+		}
+		let mail_options = {
+			from: '"Matcha users" ' + servermail.address,
+			to: mail,
+			subject: 'Welcome !',
+			html: 'You just registered for a new account.<br />'
+				+ 'Please <a href=\'http://' + server.name + ':' + server.port + '/signup?token=' + id + '&user=' + username + '\'>confirm</a> the creation of your account.'
+		}
+		transporter.sendMail(mail_options, (err) => {
+			if (err) {
+				console.log(err);
+				reject('Failed to send registration mail');
+			}
+			resolve (true);
+		});
+	}));
+}
+
+function sendNewMailConfirmation (username, mail, id) {
+	return (new Promise((resolve, reject) => {
+		if (username == undefined || mail == undefined || id == undefined) {
+			reject ('Missing data');
+		}
+		let mail_options = {
+			from: '"Matcha users" ' + servermail.address,
+			to: mail,
+			subject: 'New mail',
+			html: 'You just updated your mail address.<br />'
+				+ 'Please <a href=\'http://' + server.name + ':' + server.port + '/signup?token=' + id + '&user=' + username + '\'>confirm</a> that change.'
+		}
+		transporter.sendMail(mail_options, (err) => {
+			if (err) {
+				console.log(err);
+				reject('Failed to send new mail');
+			}
+			resolve (true);
+		});
+	}));
+}
+
+function endFetchMembersQuery(connection, query, query_values, fetcher) {
+	return (new Promise((resolve, reject) => {
+		query += ' GROUP BY u.id, i.image1';
+		//add sort options
+		if (typeof fetcher.sort != 'undefined' && fetcher.sort != 'none') {
+			if (fetcher.order == 'ASC') {
+				query += ' ORDER BY ' + connection.escapeId(fetcher.sort) + ' ASC';
+			} else {
+				query += ' ORDER BY ' + connection.escapeId(fetcher.sort) + ' DESC'
+			}
+		}
+		console.log(fetcher.sort);
+		query += ' LIMIT ?, 5';
+		query_values.push(0);
+		let ret = connection.query(query, query_values, (err, results) => {
+			if (err) {
+				console.log(ret.sql);
+				console.log(err.stack);
+				reject('Failed to fetch users');
+			} else {
+				resolve(results);
+			}
+		});
+	}))
+}
+
+function endMatchAlgo(connection, query, query_values) {
+	return (new Promise((resolve, reject) => {
+		//sort by commun interests
+		query += ' GROUP BY u.id, i.image1 ORDER BY common_interests LIMIT ?, 5';
+		query_values.push(0);
+		let ret = connection.query(query, query_values, (err, results) => {
+			if (err) {
+				console.log(ret.sql);
+				console.log(err.stack);
+				reject('Failed to fetch users');
+			} else {
+				resolve(results);
+			}
+		});
+	}))
+}
+
 module.exports = {
+	checkDataConsistency: function checkDataConsistency(data, strict = false) {
+		let errors = [];
+		if (typeof data !== 'object') {
+			errors.push('No data');
+			return (errors);
+		}
+		if (data['Username'] !== undefined && (!strict || data['Username'] != '')) {
+			if (data['Username'] === null || data['Username'].length < 3 || data['Username'].length > 100) {
+				errors.push('Username must contain between 3 and 100 characters');
+			}
+		}
+		if (data['Firstname'] !== undefined && (!strict || data['Firstname'] != '')) {
+			if (data['Firstname'] === null || data['Firstname'].length < 1 || data['Firstname'].length > 100) {
+				errors.push('Firstname must contain between 1 and 100 characters');
+			}
+		}
+		if (data['Lastname'] !== undefined && (!strict || data['Lastname'] != '')) {
+			if (data['Lastname'] === null || data['Lastname'].length < 1 || data['Lastname'].length > 100) {
+				errors.push('Lastname must contain between 1 and 100 characters');
+			}
+		}
+		if (data['Password'] !== undefined && (!strict || data['Password'] != '')) {
+			if (validatePassword(data['Password']) !== true) {
+				errors.push('Password must contain at least 9 characters, lower and upper case characters, and digits');
+			}
+		}
+		if (data['Mail'] !== undefined && (!strict || data['Mail'] != '')) {
+			if (validateMail(data['Mail']) !== true) {
+				errors.push('Mail must be a valid address');
+			}
+		}
+		if (data['Fruit'] !== undefined && (!strict || data['Fruit'] != '')) {
+			if (validateFruit(data['Fruit']) !== true) {
+				errors.push('Choose a fruit !');
+			}
+		}
+		// if (data['Age'] !== undefined && (!strict || data['Age'] != '')) {
+		// 	if (parseInt(data['Age']) != data['Age'] || data['Age'] < 18 || data['Age'] > 77) {
+		// 		errors.push('Age must be a number between 18 and 77');
+		// 	}
+		// }
+		// if (data['Gender'] !== undefined && (!strict || data['Gender']))
+		if (errors.length === 0) {
+			return (true);
+		}
+		return (errors);
+	},
 	//	createUser returns :
 	//		On error, a formated string <error_level> : <message>
 	//		On succes : true
-	//		On failure : The error message to be displayed for user
+	//		On failure : An array of errors
 	createUser: function createUser(username, lastname, firstname, mail, password, fruit) {
 		return (new Promise((resolve, reject) => {
 			//Check parameters consistancy
-			if (typeof username != 'string' || username.length < 1 || typeof lastname != 'string' || lastname.length < 1 || typeof firstname != 'string' || firstname.length < 1 || typeof mail != 'string' || mail.length < 1 || typeof password != 'string' || password.length < 1) {
-				resolve('Tous les champs doivent être remplis');
-				return;
-			}
-			if (validateFruit(fruit) != true) {
-				resolve('Veuillez choisir un des champs ci dessous');
-				return;
-			}
-			if (validatePassword(password) !== true) {
-				resolve('Le mot de passe doit contenir au moins 8 caractères dont une minuscule, une majuscule et un chiffre');
-				return;
-			}
-			if (validateMail(mail) !== true) {
-				resolve('L\'adresse e-mail doit être valide : ' + mail);
-				return;
+			let errors = this.checkDataConsistency({
+				Username: username,
+				Lastname: lastname,
+				Firstname: firstname,
+				Mail: mail,
+				Password: password,
+				Fruit: fruit
+			});
+			if (errors !== true) {
+				resolve(errors);
 			}
 			//Check if Username and mail are not already used
 			is_member_unique(username, mail).then((res) => {
@@ -262,45 +455,43 @@ module.exports = {
 					bcrypt.hash(password, 10, (err, hash) => {
 						if (err) {
 							console.log('Bcrypt failed to serve hash : ' + err.stack);
-							reject('Fatal Error : Failed to serve Password');
+							reject(['Failed to serve Password']);
 						} else {
 							//Send mail
 							id = uniqid();
-							let mail_options = {
-								from: '"Matcha users" ' + servermail.address,
-								to: mail,
-								subject: 'Bienvenue !',
-								html: 'Vous venez de vous enregistrer sur Matcha.<br />'
-									+ 'veuillez <a href=\'http://' + server.name + '/signup?token=' + id + '&user=' + username + '\'>confirmer</a> la creation de votre compte'
-							}
-							transporter.sendMail(mail_options, (err) => {
-								if (err) {
-									console.log(err);
-									reject('Error : Failed to send registration mail');
+							sendAccountCreationMail(username, mail, id).then(
+								(res) => {
+									if (res !== true) {
+										reject([res]);
+									}
+									//Save in db
+									connection.query("INSERT INTO " + data['name'] + ".users (username, lastname, firstname, email, status, fruit, password) VALUES (?, ?, ?, ?, ?, ?, ?);", [
+										username,
+										lastname,
+										firstname,
+										mail,
+										id,
+										fruit,
+										hash
+									], (err) => {
+										if (err) {
+											console.log('Mysql : query failed : ' + err.stack);
+											reject("Fatal Error : User creation failed");
+										} else {
+											resolve(true);
+										}
+									});
 								}
-							});
-							//Save in db
-							connection.query("INSERT INTO " + data['name'] + ".users (username, lastname, firstname, email, status, fruit, password) VALUES (?, ?, ?, ?, ?, ?, ?);", [
-								username,
-								lastname,
-								firstname,
-								mail,
-								id,
-								fruit,
-								hash
-							], (err) => {
-								if (err) {
-									console.log('Mysql : query failed : ' + err.stack);
-									reject("Fatal Error : User creation failed");
-								} else {
-									console.log('User OK')
-									resolve(true);
+							).catch(
+								(reason) => {
+									console.log(reason);
+									reject('Failed to send confirmation mail');
 								}
-							});
+							)
 						}
 					});
 				} else {
-					resolve('Le pseudo et l\'adresse e-mail doivent être uniques.');
+					resolve(['Le pseudo et l\'adresse e-mail doivent être uniques.']);
 				}
 			}).catch((reason) => {
 				console.log('Failed to check member validity : ' + err.stack);
@@ -312,53 +503,63 @@ module.exports = {
 	//		On error : a formated string <error_level> : <message>
 	//		On succes : true
 	//		On failure : The error message to be displayed for user
-	updateUser: function updateUser(username, firstname, lastname, mail, password, fruit) {
+	updateUser: function updateUser(username, data) {
 		return (new Promise((resolve, reject) => {
+			//Check parameters consistancy
+			let errors = this.checkDataConsistency(data, true);
+			if (errors !== true) {
+				resolve(errors);
+			}
 			//Get user info
 			this.getUserInfos(username).then((results) => {
 				if (results === false) {
-					resolve("L'utilisateur n'a pas été reconnu");
+					resolve(["We can\'t find this account"]);
 					return;
 				} else {
 					//Replace with new if existing
-					if (typeof firstname != 'undefined' && firstname != "") {
-						results.firstname = firstname;
+					if (typeof data['Firstname'] != 'undefined' && data['Firstname'] != "") {
+						results.firstname = data['Firstname'];
 					}
-					if (typeof fruit != 'undefined' && fruit != "") {
-						results.fruit = fruit;
+					if (typeof data['Lastname'] != 'undefined' && data['Lastname'] != "") {
+						results.lastname = data['Lastname'];
 					}
-					if (typeof lastname != 'undefined' && lastname != "") {
-						results.lastname = lastname;
+					if (typeof data['Fruit'] != 'undefined' && data['Fruit'] != "") {
+						results.fruit = data['Fruit'];
 					}
-					if (typeof mail != 'undefined' && mail != "" && mail != results.email) {
-						if (validateMail(mail) !== true) {
-							resolve('L\'adresse e-mail doit être valide : ' + mail);
+					if (typeof data['Age'] != 'undefined' && data['Age'] != "") {
+						results.age = data['Age'];
+					}
+					if (data['Gender'] != undefined && data['Gender'] != "") {
+						results.gender = data['Gender'];
+					}
+					if (data['Orientation'] != undefined && data['Orientation'] != "") {
+						results.gender = data['Orientation'];
+					}
+					if (data['Bio'] != undefined && data['Bio'] != "") {
+						results.gender = data['Bio'];
+						digestInterests(username, getInterestsTab(data['Bio']));
+					}
+					if (typeof data['Mail'] != 'undefined' && data['Mail'] != "" && data['Mail'] != results.email) {
+						if (validateMail(data['Mail']) !== true) {
+							resolve(['This must be a valid e-ail address : ' + data['Mail']]);
 							return;
 						}
 						//Send mail to new address
 						id = uniqid();
-						results.email = mail;
-						results.status = id;
-						let mail_options = {
-							from: '"Matcha users" ' + servermail.address,
-							to: mail,
-							subject: 'Nouvelle addresse mail',
-							html: 'Vous venez d\'enregistrer une nouvelle addresse mail.<br />'
-								+ 'Veuillez <a href=\'http://' + server.name + '/signup?token=' + id + '&user=' + username + '\'>confirmer</a>'
-								+ ' ce changement.'
-						}
-						transporter.sendMail(mail_options, (err) => {
-							if (err) {
-								console.log(err);
-								reject('Error : Failed to send registration mail');
-							}
+						sendNewMailConfirmation(username, mail, id).then((result) => {
+							updateUserDb(username, data).then((result) => {
+								resolve(result);
+							}).catch((reason) => {
+								console.log('Failed to update User: ' + reason);
+								reject('Failed to update user');
+							});
+						}).catch((reason) => {
+							console.log(reason);
+							reject('Failed to send new mail confirmation');
 						});
 					}
-					if (typeof password != 'undefined' && password != "") {
-						if (validatePassword(password) !== true) {
-							resolve('Le mot de passe doit contenir au moins 8 caractères dont une minuscule, une majuscule et un chiffre');
-						}
-						bcrypt.hash(password, 10, (err, hash) => {
+					else if (typeof data['Password'] != 'undefined' && data['Password'] != "") {
+						bcrypt.hash(data['Password'], 10, (err, hash) => {
 							if (err) {
 								console.log("Bcrypt failed to hash : " + err.stack);
 								reject('Error : Failed to server hash');
@@ -371,169 +572,30 @@ module.exports = {
 										console.log('Failed to store password: ' + err.stack);
 										reject('Error : Failed to update password');
 									}
-								})
+									updateUserDb(username, data).then((result) => {
+										resolve(result);
+									}).catch((reason) => {
+										console.log('Failed to update User: ' + reason);
+										reject('Failed to update user');
+									});
+								});
 							}
 						});
-					}
-					//update db
-					connection.query('UPDATE matcha.users SET firstname=?, lastname=?, email=?, status=?, fruit=? WHERE username LIKE ?', [
-						results.firstname,
-						results.lastname,
-						results.email,
-						results.status,
-						results.fruit,
-						username
-					], (err, results) => {
-						if (err) {
-							console.log('update user failed : ' + err.stack);
-							reject('Error : Failed to update user informations');
-						} else if (results.affectedRows != 1) {
-							resolve('L\'utilisateur n\'a pas été reconnu');
-							return;
-						}
-					});
-				}
-				checkCompleteProfile(username).then((results) => {
-					if (typeof results == 'undefined') {
-						//Profile is complete
-						connection.query('UPDATE matcha.users SET status=\'Complete\' WHERE username = ?', [
-							username
-						], (err) => {
-							if (err) {
-								console.log('Failed to mark profile as complete:\n' + err.stack);
-								reject('Failed to mark profile as complete');
-							} else {
-								resolve(true);
-								return ;
-							}
-						})
 					} else {
-						resolve(true);
-						return ;
+						updateUserDb(username, data).then((result) => {
+							resolve(result);
+						}).catch((reason) => {
+							console.log('Failed to update user: ' + reason);
+							reject('Failed to update user');
+						});
 					}
-				}).catch((reason) => {
-					console.log('Failed to checkCompleteProfile');
-					reject('Error : Failed to markprofile as complete')
-				})
+				}
 			}).catch((reason) => {
 				console.log(reason);
 				reject('Error : Failed to get User infos')
 			});
 		}));
 	},
-	//create_user_extended creates a new extended profile for a user. if it already exists, it will update it with
-	//provided values
-	create_user_extended: function create_user_extended(username, age, gender, orientation, bio) {
-		return (new Promise((resolve, reject) => {
-			//get user extended profile
-			this.getUserExtended(username).then((result) => {
-				if (result.gender == null && result.orientation == null && result.age == null && result.bio == null && result.interests == null) {
-					//extended profile doesn't exists, we have to create it
-					let interests;
-					if (typeof gender == 'undefined' || gender == "") {
-						gender = "Both";
-					}
-					if (typeof orientation == 'undefined' || orientation == "") {
-						orientation = "Both"
-					}
-					if (typeof age == 'undefined' || age == "") {
-						age = 18;
-					}
-					if (typeof bio == 'undefined' || bio == "") {
-						bio = null;
-						interests = null;
-					} else {
-						interests = getInterests(bio);
-					}
-					digestInterests(result.id, interests);
-					connection.query('INSERT INTO matcha.users_extended (user, age, gender, orientation, bio, interests) VALUES (?, ?, ?, ?, ?, ?)', [
-						result.id,
-						age,
-						gender,
-						orientation,
-						bio,
-						interests
-					], (err) => {
-						if (err) {
-							console.log('SQL Error:\n' + err.stack);
-							reject('SQL Error');
-						} else {
-							checkCompleteProfile(username).then((result) => {
-								if (typeof result == 'undefined' || Object.keys(result).length == 0) {
-									connection.query('UPDATE matcha.users SET status=\'Complete\' WHERE username = ?', [
-										username
-									], (err) => {
-										if (err) {
-											console.log('Failed to mark profile as Complete');
-											reject('Failed to mark profile as complete')
-										} else {
-											resolve(true);
-										}
-									})
-								} else {
-									resolve(true);
-								}
-							}).catch((reason) => {
-								console.log('Failed to checkCompleteProfile');
-								reject('Failed to checkCompleteProfile')
-							})
-						}
-					});
-				} else {
-					//extended profile exists, we will udate it
-					if (typeof age != 'undefined' && age != "") {
-						result.age = age;
-					}
-					if (typeof gender != 'undefined' && gender != "") {
-						result.gender = gender;
-					}
-					if (typeof orientation != 'undefined' && orientation != "") {
-						result.orientation = orientation;
-					}
-					if (typeof bio != 'undefined' && bio != "") {
-						result.bio = bio;
-						result.interests = getInterests(bio);
-						digestInterests(result.id, result.interests);
-					}
-					update_user_extended(result.id, result.age, result.gender, result.orientation, result.bio, result.interests).then((result) => {
-						checkCompleteProfile(username).then((result) => {
-							if (typeof result == 'undefined' || Object.keys(result).length == 0) {
-								connection.query('UPDATE matcha.users SET status=\'Complete\' WHERE username = ?', [
-									username
-								], (err) => {
-									if (err) {
-										console.log('Failed to mark profile as complete:\n' + err.stack);
-										reject('Failed to mark profile as complete')
-									} else {
-										resolve(true);
-									}
-								});
-							} else {
-								resolve(true);
-							}
-						}).catch((reason) => {
-							console.log('Failed to checkCompleteProfile:\n' + reason)
-							reject(reason);
-						});
-					}).catch((reason) => {
-						console.log(reason);
-						reject('Une erreur est survenue');
-					});
-				}
-			}).catch((reason) => {
-				console.log('Failed to get user extended:' + reason);
-				reject('Failed to get user extended')
-			})
-		}));
-	},
-	//Pour les matchs auto, il faut:
-	//	fruit
-	//	lat
-	//	lng
-	//	orientation
-	//	genre
-	//	age
-	//	interests
 	isLikedBy: function isLikedBy(liked, liker) {
 		return (new Promise((resolve, reject) => {
 			connection.query('SELECT COUNT(*) AS count FROM matcha.users_likes WHERE liker = ? AND liked = ?', [
@@ -555,22 +617,32 @@ module.exports = {
 	},
 	getUserMatchProfile: function getUserMatchProfile(username) {
 		return (new Promise((resolve, reject) => {
-			connection.query('SELECT u.username, u.fruit, u.lat, u.lng, e.orientation, e.gender, e.age, e.interests FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user WHERE u.username = ?', [
+			connection.query('SELECT u.id, u.username, u.fruit, u.lat, u.lng, u.orientation, u.gender, u.age, u.lat, u.lng, n.interest FROM matcha.users u RIGHT JOIN matcha.users_interests n ON n.user = u.id WHERE u.username = ?', [
 				username
 			], (err, result) => {
 				if (err) {
 					console.log('Failed to getUserMatchProfile :\n' + err.stack);
 					reject('An error occured while querying database');
 				} else {
-					resolve(result[0]);
+					let profile = result[0];
+					profile.interests = [];
+					result.forEach(entry => {
+						profile.interests.push(entry.interest);
+					})
+					resolve(profile);
 				}
 			});
 		}));
 	},
-	searchInterest: function searchInterest(interest) {
+	//searchInterest return an array of users having one interest in terms
+	//	It expects terms to be a string with interests tags
+	searchInterest: function searchInterest(terms) {
 		return (new Promise((resolve, reject) => {
-			connection.query('SELECT u.id, u.username, u.firstname, u.lastname, u.fruit, u.lat, u.lng, e.age, e.gender, e.orientation, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_interests n ON u.id = n.user INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user WHERE n.name LIKE ? LIMIT 0, 5', [
-				interest
+			//Parse string
+			let interests = getInterestsTab(terms);
+			//Search
+			connection.query('SELECT u.id, u.username, u.firstname, u.lastname, u.fruit, u.lat, u.lng, u.age, u.gender, u.orientation, u.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_interests n ON u.id = n.user INNER JOIN matcha.list_interests l ON l.id = n.interest INNER JOIN matcha.users_images i ON u.id = i.user WHERE l.name IN (?) LIMIT 0, 5', [
+				interests
 			], (err, result) => {
 				if (err) {
 					console.log('Failed to searchInterests:\n' + err.stack);
@@ -583,7 +655,8 @@ module.exports = {
 	},
 	searchName: function searchName(name) {
 		return (new Promise((resolve, reject) => {
-			connection.query('SELECT u.id, u.username, u.firstname, u.lastname, u.fruit, u.lat, u.lng, e.age, e.gender, e.orientation, e.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user WHERE username LIKE ? OR firstname LIKE ? OR lastname LIKE ?', [
+			name = '%' + name + '%';
+			connection.query('SELECT u.id, u.username, u.firstname, u.lastname, u.fruit, u.lat, u.lng, u.age, u.gender, u.orientation, u.bio, i.image1 FROM matcha.users u INNER JOIN matcha.users_images i ON u.id = i.user WHERE username LIKE ? OR firstname LIKE ? OR lastname LIKE ?', [
 				name,
 				name,
 				name
@@ -669,7 +742,7 @@ module.exports = {
 	},
 	getUserFullProfile: function getUserFullProfile(userid, visitor) {
 		return (new Promise((resolve, reject) => {
-			connection.query('SELECT u.id, u.username, u.lastname, u.firstname, u.fruit, u.lat, u.lng, e.gender, e.orientation, e.age, e.bio, i.image1, i.image2, i.image3, i.image4, i.image5, (SELECT COUNT(*) FROM matcha.users_likes WHERE liked = ?) AS likes, (SELECT COUNT(*) FROM matcha.users_visits WHERE visited = ?) AS visits, (SELECT COUNT(*) FROM matcha.users_likes l INNER JOIN matcha.users u ON u.username = ? WHERE l.liked = ?) AS liked FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user WHERE u.id = ?', [
+			connection.query('SELECT u.id, u.username, u.lastname, u.firstname, u.fruit, u.lat, u.lng, u.gender, u.orientation, u.age, u.bio, i.image1, i.image2, i.image3, i.image4, i.image5, (SELECT COUNT(*) FROM matcha.users_likes WHERE liked = ?) AS likes, (SELECT COUNT(*) FROM matcha.users_visits WHERE visited = ?) AS visits, (SELECT COUNT(*) FROM matcha.users_likes l INNER JOIN matcha.users u ON u.username = ? WHERE l.liked = ?) AS liked FROM matcha.users u INNER JOIN matcha.users_images i ON u.id = i.user WHERE u.id = ?', [
 				userid,
 				userid,
 				visitor,
@@ -678,7 +751,7 @@ module.exports = {
 			], (err, results) => {
 				if (err) {
 					console.log('Failed to getUserFullProfile :\n' + err.stack);
-					reject('Une erreur est survenue, nous enquêtons');
+					reject('Something is wrong, we are trying to solve it');
 				} else if (results.length != 1) {
 					resolve(false);
 				} else {
@@ -691,10 +764,10 @@ module.exports = {
 	//This function return :
 	//On success : user object
 	//On failure : false
-	//On error : Formated error string : <level>:<message>
+	//On error : error message
 	getUserInfos: function getUserInfos(username) {
 		return (new Promise((resolve, reject) => {
-			connection.query('SELECT u.*, e.interests FROM matcha.users u LEFT JOIN matcha.users_extended e ON u.id = e.user WHERE u.username = ?', [
+			connection.query('SELECT * FROM matcha.users WHERE username = ?', [
 				username
 			], (err, results) => {
 				if (err) {
@@ -707,20 +780,6 @@ module.exports = {
 				}
 			});
 		}));
-	},
-	getUserExtended: function getUserExtended(username) {
-		return (new Promise((resolve, reject) => {
-			connection.query('SELECT u.id, u.username, e.gender, e.orientation, e.age, e.bio, e.interests FROM matcha.users_extended e RIGHT JOIN matcha.users u ON u.id = e.user WHERE u.username = ?', [
-				username
-			], (err, results) => {
-				if (err) {
-					console.log('Failed to getUserExtended : ' + err.stack);
-					reject('Echec lors de la recuperation du profils étendu');
-				} else {
-					resolve(results[0]);
-				}
-			})
-		}))
 	},
 	getUserImages: function getUserImages(username) {
 		return (new Promise((resolve, reject) => {
@@ -810,7 +869,7 @@ module.exports = {
 	},
 	getUserMatchs: function getUserMatchs(username) {
 		return (new Promise((resolve, reject) => {
-			connection.query('SELECT u.id, u.lastname, u.firstname, u.fruit, u.lat, u.lng, e.gender, e.bio, e.age, i.image1 FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_likes l ON u.id = l.liker WHERE u.id IN (SELECT l.liked FROM matcha.users_likes l INNER JOIN matcha.users u ON u.id = l.liker WHERE u.username = ?)', [
+			connection.query('SELECT DISTINCT u.id, u.lastname, u.firstname, u.fruit, u.lat, u.lng, u.gender, u.bio, u.age, i.image1 FROM matcha.users u INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_likes l ON u.id = l.liker WHERE u.id IN (SELECT l.liked FROM matcha.users_likes l INNER JOIN matcha.users u ON u.id = l.liker WHERE u.username = ?)', [
 				username
 			], (err, results) => {
 				if (err) {
@@ -824,7 +883,7 @@ module.exports = {
 	},
 	getUserLikedProfiles: function getUserLikedProfiles(username) {
 		return (new Promise((resolve, reject) => {
-			connection.query('SELECT u.id, u.lastname, u.firstname, u.fruit, e.gender, e.age, u.lat, u.lng, e.bio, i.image1 FROM matcha.users_likes l INNER JOIN matcha.users u ON u.id = l.liked INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user WHERE l.liker = (SELECT id FROM matcha.users WHERE username = ?) ORDER BY u.id DESC LIMIT 10;', [
+			connection.query('SELECT u.id, u.lastname, u.firstname, u.fruit, u.gender, u.age, u.lat, u.lng, u.bio, i.image1 FROM matcha.users_likes l INNER JOIN matcha.users u ON u.id = l.liked INNER JOIN matcha.users_images i ON u.id = i.user WHERE l.liker = (SELECT id FROM matcha.users WHERE username = ?) ORDER BY u.id DESC LIMIT 10;', [
 				username
 			], (err, results) => {
 				if (err) {
@@ -838,14 +897,14 @@ module.exports = {
 	},
 	getProfilesLikesUser: function getProfilesLikedUser(username) {
 		return (new Promise((resolve, reject) => {
-			connection.query('SELECT u.id, u.firstname, u.lastname, u.fruit, u.lat, u.lng, e.gender, e.age, e.bio, i.image1 FROM matcha.users_likes l INNER JOIN matcha.users u ON u.id = l.liker INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user WHERE l.liked = (SELECT id FROM matcha.users WHERE username = ?) ORDER BY u.id DESC LIMIT 10;', [
+			connection.query('SELECT u.id, u.firstname, u.lastname, u.fruit, u.lat, u.lng, u.gender, u.age, u.bio, i.image1 FROM matcha.users_likes l INNER JOIN matcha.users u ON u.id = l.liker INNER JOIN matcha.users_images i ON u.id = i.user WHERE l.liked = (SELECT id FROM matcha.users WHERE username = ?) ORDER BY u.id DESC LIMIT 10;', [
 				username
 			], (err, results) => {
 				if (err) {
-					console.log('Failed to getProfilesLikedUser:\n' + err.stack);
+					console.log(err.stack);
 					reject('Failed to getProfilesLiekedUser');
 				} else {
-					resolve(results)
+					resolve(results);
 				}
 			})
 		}))
@@ -854,7 +913,7 @@ module.exports = {
 		return (new Promise((resolve, reject) => {
 			this.getUserImages(username).then((results) => {
 				if (typeof results == 'undefined' || typeof results.id == 'undefined') {
-					reject('Vous n\'avez pas été reconnu');
+					reject('We can\'t fing this account');
 				} else if (results.image1 == null) {
 					//Insert new picture'
 					connection.query('INSERT INTO matcha.users_images (user, image1) VALUES (?, ?);', [
@@ -863,10 +922,10 @@ module.exports = {
 					], (err) => {
 						if (err) {
 							console.log(err.stack);
-							reject('Quelque chose cloche, nous enquêtons');
+							reject('Something is wrong, we are trying to solve it');
 						} else {
 							checkCompleteProfile(username).then((result) => {
-								if (typeof result == 'undefined' || Object.keys(result).length == 0) {
+								if (result === true) {
 									connection.query('UPDATE matcha.users SET status=\'Complete\' WHERE username = ?', [
 										username
 									], (err) => {
@@ -876,9 +935,9 @@ module.exports = {
 										} else {
 											resolve(true);
 										}
-									})
+									});
 								} else {
-									resolve(true);
+									resolve(result);
 								}
 							}).catch((reason) => {
 								console.log('Failed to checkCompleteProfile: ' + reason);
@@ -890,7 +949,7 @@ module.exports = {
 					//Select first empty field and store new path
 					let field = getFirstNullImgField(results);
 					if (field == false) {
-						resolve('Vous avez atteint le nombre maximun d\'images, veuillez en supprimer');
+						resolve(['Vous avez atteint le nombre maximun d\'images, veuillez en supprimer']);
 					} else {
 						connection.query('UPDATE matcha.users_images SET ??=? WHERE user=?', [
 							field,
@@ -902,7 +961,7 @@ module.exports = {
 								reject('Something went wrong, we are trying to solve it');
 							} else {
 								checkCompleteProfile(username).then((result) => {
-									if (typeof result == 'undefined' || Object.keys(result).length == 0) {
+									if (result === true) {
 										connection.query('UPDATE matcha.users SET status=\'Complete\' WHERE username = ?', [
 											username
 										], (err) => {
@@ -914,7 +973,7 @@ module.exports = {
 											}
 										})
 									} else {
-										resolve(true);
+										resolve(result);
 									}
 								}).catch((reason) => {
 									console.log('Failed to checkCompleteProfile: ' + reason);
@@ -948,7 +1007,7 @@ module.exports = {
 	changePasswordOf: function changePasswordOf(username, password, token) {
 		return (new Promise((resolve, reject) => {
 			if (validatePassword(password) !== true) {
-				resolve('Le mot de passe doit contenir au moins 8 caractères dont une minuscule, une majuscule et un chiffre');
+				resolve(['Password must contain at least 8 characters, lower and upper case characters, and digits']);
 			}
 			//Hash password
 			bcrypt.hash(password, 10, (err, hash) => {
@@ -965,7 +1024,7 @@ module.exports = {
 					], (err) => {
 						if (err) {
 							console.log(err.stack);
-							reject('Something went wrong, we are trying to solve');
+							reject('Something went wrong, we are trying to solve it');
 						} else {
 							resolve(true);
 						}
@@ -974,10 +1033,10 @@ module.exports = {
 			});
 		}));
 	},
-	countNotifications: function countNotifications(username) {
+	countNotifications: function countNotifications(userid) {
 		return (new Promise((resolve, reject) => {
 			connection.query('SELECT COUNT(*) AS count FROM matcha.users_notifications WHERE user = ? AND seen = \'0\'', [
-				username
+				userid
 			], (err, result) => {
 				if (err) {
 					console.log('SQL Error:\n' + err.stack);
@@ -988,10 +1047,10 @@ module.exports = {
 			})
 		}))
 	},
-	countMessages: function countMessages(username) {
+	countMessages: function countMessages(userid) {
 		return (new Promise((resolve, reject) => {
 			connection.query('SELECT COUNT(*) AS count FROM matcha.users_messages WHERE dest = ? AND seen = \'0\'', [
-				username
+				userid
 			], (err, result) => {
 				if (err) {
 					console.log('SQL Error:\n' + err.stack);
@@ -1002,17 +1061,17 @@ module.exports = {
 			})
 		}))
 	},
-	getNotifications: function getNotifications(username) {
+	getNotifications: function getNotifications(userid) {
 		return (new Promise((resolve, reject) => {
 			connection.query('SELECT user, title, body FROM matcha.users_notifications WHERE user = ? AND seen = \'0\' ORDER BY time DESC LIMIT 10', [
-				username
+				userid
 			], (err, results) => {
 				if (err) {
 					console.log('SQL Error:\n' + err.stack);
 					reject('SQL Error');
 				} else {
 					connection.query('UPDATE matcha.users_notifications SET seen = \'1\' WHERE user = ?', [
-						username
+						userid
 					], (err) => {
 						if (err) {
 							console.log('SQL Error:\n' + err.stack)
@@ -1023,17 +1082,42 @@ module.exports = {
 			})
 		}))
 	},
-	getMessages: function getMessages(username) {
+	getMessages: function getMessages(userid) {
 		return (new Promise((resolve, reject) => {
-			connection.query('SELECT u.id, m.author, m.body, m.time FROM matcha.users_messages m INNER JOIN matcha.users u ON m.author = u.username WHERE m.dest = ? AND m.seen = \'0\' ORDER BY m.time DESC LIMIT 10', [
-				username
+			connection.query('SELECT m.id, u.username AS author, m.body, m.time FROM matcha.users_messages m INNER JOIN matcha.users u ON u.id = m.author WHERE m.dest = ? AND m.seen = \'0\' ORDER BY m.time DESC LIMIT 10', [
+				userid
 			], (err, results) => {
 				if (err) {
 					console.log('Failed to getMessages:\n' + err.stack);
 					reject('Failed to get Messages');
 				} else {
 					connection.query('UPDATE matcha.users_messages SET seen = \'1\' WHERE dest = ?', [
-						username
+						userid
+					], (err) => {
+						if (err) {
+							console.log('SQL Error:\n' + err.stack);
+						}
+					});
+					resolve(results);
+				}
+			})
+		}))
+	},
+	getDiscution: function getDiscution(userid, author) {
+		return (new Promise((resolve, reject) => {
+			connection.query('SELECT id, author, body, time FROM matcha.users_messages WHERE (dest=? AND author=?) OR (dest=? AND author=?) ORDER BY time ASC LIMIT 30', [
+				userid,
+				author,
+				author,
+				userid
+			], (err, results) => {
+				if (err) {
+					console.log('Failed to getMessages:\n' + err.stack);
+					reject('Failed to get Messages');
+				} else {
+					connection.query('UPDATE matcha.users_messages SET seen = \'1\' WHERE dest = ? AND author=?', [
+						userid,
+						author
 					], (err) => {
 						if (err) {
 							console.log('SQL Error:\n' + err.stack);
@@ -1245,7 +1329,7 @@ module.exports = {
 	sendpasswordRecoveryMail: function sendpasswordRecoveryMail(username, mail) {
 		return (new Promise((resolve, reject) => {
 			if (validateMail(mail) !== true) {
-				resolve('L\'adresse mail n\'est pas bien formatée');
+				resolve(['E-mail address a not valid']);
 			}
 			id = uniqid();
 			connection.query('UPDATE matcha.users SET status = ? WHERE username = ? AND email = ?', [
@@ -1257,16 +1341,15 @@ module.exports = {
 					console.log(err.stack);
 					reject('Something went wrong, we are trying to solve it');
 				} else if (results.affectedRows != 1) {
-					resolve('L\'adresse mail et le nom d\'utilisateur ne correspondent pas');
+					resolve(['We can\'t find this account']);
 				}
 			});
-			console.log('|' + mail + '|');
 			let mail_options = {
 				from: '"Matcha users" ' + servermail.address,
 				to: mail,
-				subject: 'Recupération du mot de passe',
-				html: 'Vous avez fait une demande de récupération de mot de passe.<br />'
-					+ 'veuillez <a href=\'http://' + server.name + '/recover?token=' + id + '&user=' + username + '\'>confirmer</a> la creation de votre compte'
+				subject: 'New Password ?',
+				html: 'You asked to change your password.<br />'
+					+ 'Click <a href=\'http://' + server.name + '/recover?token=' + id + '&user=' + username + '\'>here</a> to reset it'
 			}
 			transporter.sendMail(mail_options, (err) => {
 				if (err) {
@@ -1352,19 +1435,18 @@ module.exports = {
 				], (err, result) => {
 					if (err) {
 						console.log('Failed to check username and password:\n' + err.stack);
-						reject('Quelque chose cloche, nous enquêtons');
+						reject('Something is wrong, we are trying to solve it');
 					} else if (result.length <= 0) {
-						resolve('Le pseudo et le mot de passe ne correspondent pas');
+						resolve('Username and Password don\'t match');
 					} else {
 						bcrypt.compare(password, result[0]['password'], (err, res) => {
 							if (err) {
 								console.log('Failed to compare passwords:\n' + err.stack);
-								reject('Quelque chose cloche, nous enquêtons');
+								reject('Something is wrong, we are trying to solve it');
 							} else if (res != true) {
-								resolve('Le pseudo et le mot de pass de correspondent pas');
+								resolve('Username and Password don\'t match');
 							} else {
-								let query = 'DELETE matcha.users, matcha.users_extended, matcha.users_images, matcha.users_interests, matcha.users_likes, matcha.users_dislikes, matcha.users_blocks, matcha.users_visits, matcha.users_reports FROM matcha.users';
-								query += ' LEFT JOIN matcha.users_extended ON matcha.users.id = matcha.users_extended.user';
+								let query = 'DELETE matcha.users, matcha.users_images, matcha.users_interests, matcha.users_likes, matcha.users_dislikes, matcha.users_blocks, matcha.users_visits, matcha.users_reports FROM matcha.users';
 								query += ' LEFT JOIN matcha.users_images ON matcha.users.id = matcha.users_images.user';
 								query += ' LEFT JOIN matcha.users_interests ON matcha.users.id = matcha.users_interests.user';
 								query += ' LEFT JOIN matcha.users_likes ON (matcha.users.id = matcha.users_likes.liked OR matcha.users.id = matcha.users_likes.liker)';
@@ -1378,7 +1460,7 @@ module.exports = {
 								], (err) => {
 									if (err) {
 										console.log('Failed to delete user:\n' + err.stack);
-										reject('Quelque chose cloche, nous enquêtons');
+										reject('Something is wrong, we are trying to solve it');
 									} else {
 										resolve(true);
 									}
@@ -1388,19 +1470,21 @@ module.exports = {
 					}
 				})
 			} else {
-				resolve('Le pseudo et le mot de passe ne correspondent pas');
+				resolve('Username and Password don\'t match');
 			}
 		}));
 	},
 	logg_user: function logg_user(username, password) {
 		return (new Promise((resolve, reject) => {
 			if (username && password) {
-				connection.query('SELECT id, username, password, status, lat, lng FROM matcha.users WHERE username = ?', [username], function (error, results) {
+				connection.query('SELECT id, username, password, status, lat, lng FROM matcha.users WHERE username = ?', [
+					username
+				], function (error, results) {
 					if (error) {
 						console.log(error.stack);
 						reject('Failed to connect member');
 					}
-					if (results.length > 0) {
+					if (results != undefined && results.length > 0) {
 						if (results[0].status != 'Confirmed' && results[0].status != 'Complete') {
 							resolve(false);
 						}
@@ -1469,41 +1553,28 @@ module.exports = {
 	//	}
 	fetchMembers: function fetchMembers(options, fetcher) {
 		return (new Promise((resolve, reject) => {
-			query = 'SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1, ((u.lat - ?) * (u.lat - ?) + (u.lng - ?) * (u.lng - ?)) AS distance, l.llikes AS likes';
+			query = 'SELECT u.id, u.firstname, u.lastname, u.fruit, u.age, u.gender, u.bio, i.image1, ((u.lat - ?) * (u.lat - ?) + (u.lng - ?) * (u.lng - ?)) AS distance, l.llikes AS likes, COUNT(u.id) AS common_interests';
 			query_values = [fetcher.location[0], fetcher.location[0], fetcher.location[1], fetcher.location[1]];
-			/*
-			if (typeof fetcher.interests != 'undefined' && fetcher.interests.length != 0) {
-				query += ', n.*';
+			if (fetcher.id !== undefined) {
+				query += ' FROM matcha.users u INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_interests no ON u.id = no.user LEFT JOIN matcha.users_blocks b ON b.blocker <> ?';
+				query_values.push(fetcher.id);
 			}
-			*/
-			query += ' FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_interests no ON u.id = no.user';
-			/*
-			if (typeof fetcher.interests != 'undefined' && fetcher.interests.length != 0) {
-				query += ' LEFT JOIN (SELECT id, user, count(name) AS interests FROM matcha.users_interests WHERE name IN (?) GROUP BY user) n ON n.user = u.id';
-				query_values.push(getInterestsTab(fetcher.interests));
-			}
-			*/
 			query += ' LEFT JOIN (SELECT liked, count(*) AS llikes FROM matcha.users_likes GROUP BY liked) l ON u.id = l.liked WHERE u.username <> ?';
 			query_values.push(fetcher.username)
 			//use age
 			if (typeof options.age != 'undefined') {
-				query += ' AND e.age BETWEEN ? and ?';
+				query += ' AND u.age BETWEEN ? and ?';
 				query_values.push(options.age[0], options.age[1]);
 			}
 			//use gender
 			if (typeof options.gender != 'undefined' && typeof fetcher.orientation == 'undefined') {
-				if (typeof options.gender != 'undefined') {
-					if (options.gender == 'Man') {
-						query += ' AND gender = ?';
-						query_values.push('Man');
-					} else if (options.gender == 'Woman') {
-						query += ' AND gender = ?';
-						query_values.push('Woman');
-					}
+				if (typeof options.gender != 'undefined' && (options.gender == 'Man' || options.gender == 'Woman')) {
+					query += ' AND gender = ?';
+					query_values.push(options.gender);
 				}
 			}
 			//use distance
-			if (typeof options.distance != 'undefined' && typeof fetcher.location != 'undefined') {
+			if (typeof options.distance != 'undefined' && typeof fetcher.location != 'undefined' && fetcher.location.length === 2 && typeof fetcher.location[0] !== undefined && fetcher.location[1] !== undefined) {
 				let dpos = options.distance / (2 * 3.14 * 6400) * 360;
 				query += ' AND u.lat BETWEEN ? AND ? AND u.lng BETWEEN ? AND ?';
 				query_values.push(fetcher.location[0] - dpos, fetcher.location[0] + dpos, fetcher.location[1] - dpos, fetcher.location[1] + dpos);
@@ -1513,77 +1584,94 @@ module.exports = {
 				query += ' AND u.fruit IN (?)';
 				query_values.push(options.fruit);
 			}
-
+			
 			//use interests
-			if (typeof options.interests != 'undefined' && options.interests != [] && options.interests.length) {
-				query += ' AND no.name IN (?)';
-				query_values.push(options.interests);
+			if (typeof options.interests != 'undefined' && options.interests != [] && options.interests != "") {
+				//Get array of ids
+				connection.query('SELECT id FROM matcha.list_interests WHERE name IN (?)', [
+					options.interests
+				], (err, result) => {
+					if (err) {
+						console.log(err.stack);
+						reject('Failed to get interests ids');
+						return ;
+					}
+					result = result.map(x => x.id);
+					query += ' AND no.interest IN (?)';
+					query_values.push(result);
+					endFetchMembersQuery(connection, query, query_values, fetcher).then((result) => {
+						resolve(result);
+					}).catch((reason) => {
+						reject(reason);
+					});
+				})
+			} else {
+				endFetchMembersQuery(connection, query, query_values, fetcher).then((result) => {
+					resolve(result);
+				}).catch((reason) => {
+					reject(reason);
+				});
 			}
-			//use fetcher's gender
-			if (typeof fetcher.gender != 'undefined') {
-				let orientation;
-				switch (fetcher.gender) {
-					case ('Man'):
-						orientation = 'Men';
-						break;
-					case ('Women'):
-						orientation = 'Women'
-						break;
-					default:
-						orientation = 'Both'
-						break;
-				}
-				query += ' AND (orientation = ? OR orientation = \'Both\')';
-				query_values.push(orientation);
-			}
-			//use fetcher's orientation
-			if (typeof fetcher.orientation != 'undefined') {
-				if (fetcher.orientation == 'Men') {
-					query += ' AND gender = ?';
-					query_values.push('Man');
-				} else if (fetcher.orientation == 'Women') {
-					query += ' AND gender = ?';
-					query_values.push('Woman');
-				}
-			}
-			if (typeof options.allow_dislikes != 'undefined' && options.allow_dislikes != true) {
-				query += ' EXCEPT SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1, ((u.lat - ?) * (u.lat - ?) + (u.lng - ?) * (u.lng - ?)) AS distance, COUNT(l.liked) AS likes';
-				/*
-				if (typeof fetcher.interests != 'undefined' && fetcher.interests.length != 0) {
-					query += ', n.*';
-				}
-				*/
-				query += ' FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_dislikes d ON u.id = d.disliked INNER JOIN matcha.users_likes l ON u.id = l.liked INNER JOIN matcha.users_interests n ON u.id = n.user WHERE d.disliker = (SELECT id FROM matcha.users WHERE username = ?)';
-				query_values.push(fetcher.location[0], fetcher.location[0], fetcher.location[1], fetcher.location[1], fetcher.username);
-			}
-			query += ' EXCEPT SELECT u.id, u.firstname, u.lastname, u.fruit, e.age, e.gender, e.bio, i.image1, ((u.lat - ?) * (u.lat - ?) + (u.lng - ?) * (u.lng - ?)) AS distance, COUNT(l.liked) AS likes';
-			/*
-			if (typeof fetcher.interests != 'undefined' && fetcher.interests.length != 0) {
-				query += ', n.*';
-			}
-			*/
-			query += ' FROM matcha.users u INNER JOIN matcha.users_extended e ON u.id = e.user INNER JOIN matcha.users_images i ON u.id = i.user INNER JOIN matcha.users_interests n ON u.id = n.user INNER JOIN matcha.users_blocks b ON u.id = b.blocked INNER JOIN matcha.users_likes l ON u.id = l.liked WHERE b.blocker = (SELECT id FROM matcha.users WHERE username = ?)';
-			query_values.push(fetcher.location[0], fetcher.location[0], fetcher.location[1], fetcher.location[1], fetcher.username);
-			//add sort options
-			if (typeof fetcher.sort != 'undefined' && fetcher.sort != 'none' && fetcher.sort != 'interests') {
-				if (fetcher.order == 'ASC') {
-					query += ' ORDER BY ' + connection.escapeId(fetcher.sort) + ' ASC';
-				} else {
-					query += ' ORDER BY ' + connection.escapeId(fetcher.sort) + ' DESC'
-				}
-			}
-			query += ' LIMIT ?, 5';
-			query_values.push(0);
-			let ret = connection.query(query, query_values, (err, results) => {
-				if (err) {
-					console.log(ret.sql);
-					console.log(err.stack);
-					reject('Failed to fetch users');
-				} else {
-					console.log(results)
-					resolve(results);
-				}
-			})
 		}));
+	},
+	// runAlgo will find profiles that may match with user.
+	//		user is expected to be outputed from getUserMatchProfile
+	runMatchAlgo: function runMatchAlgo (user) {
+		return (new Promise((resolve, reject) => {
+			//Data we need to fetch
+			query = 'SELECT u.id, u.firstname, u.lastname, u.fruit, u.age, u.gender, u.bio, i.image1, ((u.lat - ?) * (u.lat - ?) + (u.lng - ?) * (u.lng - ?)) AS distance, l.llikes AS likes, COUNT(u.id) AS common_interests';
+			query_values = [user.lat, user.lat, user.lng, user.lng];
+			//Apply joins and remove disliked and blocked users
+			query += ' FROM matcha.users u INNER JOIN matcha.users_images i ON u.id = i.user LEFT JOIN matcha.users_interests no ON u.id = no.user LEFT JOIN matcha.users_blocks b ON b.blocked=u.id LEFT JOIN matcha.users_dislikes d ON d.disliked = u.id';
+			query += ' LEFT JOIN (SELECT liked, count(*) AS llikes FROM matcha.users_likes GROUP BY liked) l ON u.id = l.liked';
+			query += ' WHERE u.id <> ?';
+			query_values.push(user.id);
+			query += ' AND (d.disliker IS NULL OR d.disliker <> ?) AND (b.blocker IS NULL OR b.blocker <> ?)';
+			query_values.push(user.id, user.id);
+			//use age
+			query += ' AND u.age BETWEEN ? and ?';
+			query_values.push(user.age - 5, user.age + 5);
+			//use distance
+			let dpos = 1000 / (2 * 3.14 * 6400) * 360;
+			query += ' AND u.lat BETWEEN ? AND ? AND u.lng BETWEEN ? AND ?';
+			query_values.push(user.lat - dpos, user.lat + dpos, user.lng - dpos, user.lng + dpos);
+			//use gender
+			let orientation;
+			switch (user.gender) {
+				case ('Man'):
+					orientation = 'Men';
+					break;
+				case ('Woman'):
+					orientation = 'Women'
+					break;
+				case ('Both'):
+					orientation = 'Trans';
+					break;
+				default:
+					orientation = 'Both'
+					break;
+			}
+			query += ' AND (orientation = ? OR orientation = \'Both\')';
+			query_values.push(orientation);
+			//use orientation
+			if (user.orientation == 'Men') {
+				query += ' AND gender = ?';
+				query_values.push('Man');
+			} else if (user.orientation == 'Women') {
+				query += ' AND gender = ?';
+				query_values.push('Woman');
+			} else if (user.orientation == 'Trans') {
+				query += ' AND gender = ?';
+				query_values.push('Both');
+			}
+			//use interests
+			query += ' AND no.interest IN (?)';
+			query_values.push(user.interests);
+			endMatchAlgo(connection, query, query_values).then((result) => {
+				resolve(result);
+			}).catch((reason) => {
+				reject(reason);
+			});
+		}))
 	}
 };

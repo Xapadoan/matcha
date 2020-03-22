@@ -5,22 +5,62 @@
 	<%- include('header.ejs') %>
 	<nav id='bad_profile_nav'>
 		<% if (locals.profile.liked) {%>
-			<a href='/unlike/<%= profile.id %>'>Ne plus aimer</a>
+			<button id='unlike_button'>Undo like</button>
 			<% } else { %>
-				<a href='/like/<%= profile.id %>'>Aimer</a>
+				<button id='like_button'>Like</button>
 		<% } %>
-		<a href='/block/<%= profile.id %>'>Bloquer</a>
-		<a href='/report/<%= profile.id %>'>Signaler</a>
+		<button id='block_button'>Block</button>
+		<a href='/report/<%= profile.id %>'>Report</a>
 	</nav>
+	<script type='text/javascript'>
+		const setBadProfileListeners = () => {
+			let like_button = document.getElementById('like_button');
+			if (like_button) {
+				like_button.onclick = () => {
+					get('/like/<%= profile.id %>', null, null, (anchor, data) => {
+						like_button.id = 'unlike_button';
+						like_button.innerText = 'Undo Like';
+						setBadProfileListeners();
+					});
+					console.log('Like')
+				}
+			}
+			let unlike_button = document.getElementById('unlike_button');
+			if (unlike_button) {
+				unlike_button.onclick = () => {
+					get('/unlike/<%= profile.id %>', null, null, () => {
+						unlike_button.id = 'like_button';
+						unlike_button.innerText = 'Like';
+						setBadProfileListeners();
+					});
+					console.log('Unlike')
+				}
+			}
+			let block_button = document.getElementById('block_button');
+			if (block_button) {
+				block_button.onclick = () => {
+					get('/block/<%= profile.id %>');
+					window.location.href = '/home';
+				}
+			}
+		}
+		window.addEventListener('load', setBadProfileListeners);
+	</script>
 	<style>
+		#profile_content {
+			margin-top: 5px;
+			position: relative;
+		}
+
 		#user_infos {
 			background-color: rgba(160, 160, 160, 0.4);
 			border-radius: 20px;
-			padding: 20px 20px;
-			width: 30%;
+			padding: 0px;
+			width: calc(40vw - 60px);
 			min-width: 200px;
 			display: inline-block;
-			margin: 20px 0px;
+			margin: 0px;
+			margin-left: 20px;
 			font-size: 20px;
 		}
 
@@ -31,31 +71,58 @@
 		#user_images {
 			background-color: rgba(160, 160, 160, 0.4);
 			border-radius: 20px;
-			padding: 20px 20px;
-			width: 60%;
-			display: inline-block;
+			width: calc(60vw - 20px);
 			position: absolute;
 			right: 20px;
 			top: 0px;
-			margin: 5px 0px;
-			margin-left: 20px;
+			white-space: nowrap;
+			overflow-x: auto;
+			padding: 0px 10px;
+		}
+
+		#bad_profile_nav {
+			width: 100vw;
+		}
+
+		.profile_img {
+			max-width: 300px;
+			width: 100%;
+			height: auto;
+			display: inline-block;
+		}
+
+		@media screen and (max-width: 550px) {
+			#user_images {
+				position: static;
+				padding: 0px;
+			}
+
+			#user_images, #user_infos {
+				width: calc(90vw - 40px);
+				margin: 3px 5vw;
+			}
+
+			.profile_img {
+				display: block;
+			}
 		}
 	</style>
+	<div id='profile_content'>
 	<section id='user_infos'>
-	<h1 id='pseudo_title'><%= profile.username %> (<%= profile.pop_score %>)</h1>
-	<% if (typeof locals.user_info != 'undefined' && locals.user_info.fruit == '#pasdecoupdunsoir') { %><img
-		id='coco_img' src='/coconut.png' width="75" height="75" title="#pasdecoupdunsoir" />
-	<% } else if (typeof locals.user_info != 'undefined' && locals.user_info.fruit == '#unsoir') { %><img
-		src='/peach.png' width="75" height="75" title="#unsoir" />
-	<% } else if (typeof locals.user_info != 'undefined' && locals.user_info.fruit == '#serieux') { %><img
-		src='/cherry.png' width="75" height="75" title="#serieux" />
-	<% } else { %><img src='/spices.png' width="75" height="75" title="#pqr" /><% } %>
+	<h2 id='pseudo_title'><%= profile.username %> (<%= profile.pop_score %>)</h2>
+	<% if (typeof locals.user_info != 'undefined' && locals.user_info.fruit == '#JustHangingOut') { %><img
+		id='coco_img' src='/coconut.png' width="75" height="75" title="#JustHangingOut" />
+	<% } else if (typeof locals.user_info != 'undefined' && locals.user_info.fruit == '#BootyCall') { %><img
+		src='/peach.png' width="75" height="75" title="#BootyCall" />
+	<% } else if (typeof locals.user_info != 'undefined' && locals.user_info.fruit == '#SeriousRelationship') { %><img
+		src='/cherry.png' width="75" height="75" title="#SeriousRelationship" />
+	<% } else { %><img src='/ginger.png' width="75" height="75" title="#SexFriends" /><% } %>
 	<br />
 	<p><% if (typeof locals.profile != 'undefined') { %><%= profile.firstname %><% } %> <% if (typeof locals.profile != 'undefined') { %><%= profile.lastname %><% } %></p>
 	<br />
 	<p>Age :<% if (typeof locals.profile != 'undefined' && locals.profile != null) { %><%= profile.age %><% } %></p>
-	<p>Genre :<% if (typeof locals.profile != 'undefined') { %><%= profile.gender %><% } %></p>
-	<p>Orientation :<% if (typeof locals.profile != 'undefined') { %><%= profile.orientation %><% } %></p>
+	<p>Gender :<% if (typeof locals.profile != 'undefined') { %><%= profile.gender %><% } %></p>
+	<p>Looking for :<% if (typeof locals.profile != 'undefined') { %><%= profile.orientation %><% } %></p>
 	<% if (typeof locals.profile.lat != 'undefined' && locals.profile.lat != null && typeof locals.profile.lng != 'undefined' && locals.profile.lng != null) { %>
 		<p id='address'> </p>
 					<script>
@@ -84,24 +151,21 @@
 	</section>
 		<% if (typeof locals.profile != 'undefined' && locals.profile.image1 != null) { %>
 		<section id='user_images'>
-			<h2>Photos</h2>
+			<h2>Pictures</h2>
 			<% if (locals.profile.image1 != null) { %>
-			<figure>
-				<img src='/user_images/<%= profile.image1 %>' width="200" , height="150">
-				<figcaption>Photo de profil</figcaption>
-			</figure>
+				<img src='/user_images/<%= profile.image1 %>' class='profile_img'>
 			<% }
 			if (locals.profile.image2 != null) { %>
-			<img src='/user_images/<%= profile.image2 %>' width="200" , height="150">
+			<img src='/user_images/<%= profile.image2 %>' class='profile_img'>
 			<% }
 			if (locals.profile.image3 != null) { %>
-			<img src='/user_images/<%= profile.image3 %>' width="200" , height="150">
+			<img src='/user_images/<%= profile.image3 %>' class='profile_img'>
 			<% }
 			if (locals.profile.image4 != null) { %>
-			<img src='/user_images/<%= profile.image4 %>' width="200" , height="150">
+			<img src='/user_images/<%= profile.image4 %>' class='profile_img'>
 			<% }
 			if (locals.profile.image5 != null) { %>
-			<img src='/user_images/<%= profile.image5 %>' width="200" , height="150">
+			<img src='/user_images/<%= profile.image5 %>' class='profile_img'>
 			<% } %>
 		</section>
 		<% } %>
@@ -116,6 +180,7 @@
  			}
  		})
 	 </script>
+	 </div>
 </body>
 
 </html>

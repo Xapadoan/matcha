@@ -1,142 +1,157 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <%- include('head.ejs') %>
 <style>
 	#matches {
-		margin-left: 25px;
-		margin-top: 5px;
-		overflow-x: auto;
-		overflow-y: unset;
-		height: 600px;
-		white-space: nowrap;
+		position: relative;
 	}
 
+
 	#matches p {
-		margin-left: 20px;
 		display: inline;
+		padding: 5px;
 	}
 
 	#matches img {
 		float: right;
 	}
 
+	.like_button {
+		position: absolute;
+		top : 40vh;
+		right: -20vw;
+	}
+	
+	.dislike_button {
+		position: absolute;
+		top: 40vh;
+		left: -20vw;
+	}
+
 	.public_profile_mini {
 		display: inline-block;
 		border: 2px solid #f00;
 		background-size: cover;
-		width: 400px;
-		height: 550px;
+		width: 360px;
+		height: 495px;
 		color: white;
-		text-shadow: 0 0 10px black;
-		position: relative;
+		position: absolute;
+		top: 0px;
+		left: calc(50vw - 180px);
 	}
 
 	.public_profile_mini .bio {
 		max-height: 300px;
-		width: 390px;
-		margin-left: 0px;
-		white-space: normal;
+		width: 360px;
+		margin-bottom: 0px;
+		white-space: pre-wrap;
 		display: block;
+		text-shadow: 0px 0px 2px black;
 		position: absolute;
 		bottom: 0px;
 		left: 0px;
+		overflow-y: auto;
+	}
+
+	@media screen and (max-width: 600px) {
+		.public_profile_mini {
+			width: 300px;
+			left: calc(50% - 150px);
+		}
+
+		.public_profile_mini .bio {
+			width: 300px;
+		}
+		
+		.dislike_button {
+			top: 40vh;
+			left: -20vw;
+		}
+
+		.like_button {
+			top: 40vh;
+			right: -20vw;
+		}
+	}
+
+	@media screen and (max-width: 430px) {
+		.dislike_button {
+			left: 0px;
+		}
+
+		.like_button {
+			right: 0px;
+		}
 	}
 </style>
 
 <body>
+	<%- include('header.ejs') %>
 	<script>
-		if (navigator.geolocation) {
-			navigator.geolocation.getCurrentPosition((pos) => {
-				var lat = pos.coords.latitude;
-				var lng = pos.coords.longitude;
-				console.log('lat : ' + lat + '; long = ' + lng);
-				//update lat lng
-				let request = new XMLHttpRequest('POST', '/updateLocation', true);
-				request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-				request.send('lat=' + lat + '&lng=' + lng);
-			}, (error) => {
-				switch (error.code) {
-					case (error.PERMISSION_DENIED):
-						console.log('User refused geolocation');
-						break;
-					case (error.POSITION_UNAVAILABLE):
-						console.log('Can\'t get location');
-						break;
-					case (error.TIMEOUT):
-						console.log('Timeout');
-						break;
-					default:
-						console.log('Undefined Error');
-						break;
-				}
-				var lat = document.getElementById('lat').innerHTML;
-				var lng = document.getElementById('lng').innerHTML;
-				console.log('Location with ip: lat = ' + lat + '; long = ' + lng)
+		function dislike_user(userid) {
+			get('/dislike/' + userid, null, document.getElementById('matches'), (anchor, data) => {
+				anchor.removeChild(document.getElementById('user' + userid));
+				anchor.removeChild(document.getElementsByClassName('dislike_button')[anchor.children.length]);
+				anchor.removeChild(document.getElementsByClassName('like_button')[anchor.children.length]);
 			});
-		} else {
-			var lat = document.getElementById('lat').innerHTML;
-			var lng = document.getElementById('lng').innerHTML;
-			console.log('Location with ip: lat : ' + lat + '; long = ' + lng);
 		}
 
-		let loc_req = [];
+		function like_user(userid) {
+			let anc = document.getElementById('matches');
+			console.log(anc);
+			get('/like/' + userid, null, anc, (anchor, data) => {
+				console.log('OK');
+				// anchor.removeChild(document.getElementById('user' + userid));
+				// anchor.removeChild(document.getElementsByClassName('dislike_button')[anchor.children.length]);
+				// anchor.removeChild(document.getElementsByClassName('like_button')[anchor.children.length]);
+			});
+		}
 	</script>
-	<%- include('header.ejs') %>
+
 	<section id='matches'>
-		<% for (var i in locals.matchs) { %>
+	<% for (var i in locals.matchs) { %>
+		<article id='user<%= matchs[i].id %>' class='public_profile_mini'>
 		<style>
 			#user<%=matchs[i].id %> {
 				background-image: url('user_images/<%= matchs[i].image1 %>');
 			}
 		</style>
-		<article id='user<%= matchs[i].id %>' class='public_profile_mini'>
+			<button class="dislike_button" onclick="dislike_user('<%= matchs[i].id %>');">Dislike</button>
 			<p>
 				<a href='/profile/<%= matchs[i].id %>' title='Voir le profil'>
 					<%= matchs[i].firstname %> <%= matchs[i].lastname %>
 				</a>, <%= matchs[i].age %>
 			</p>
 			<p>(<%= matchs[i].gender %>)</p><br />
-			<a href='/like/<%= matchs[i].id %>'><img src='/like.png' title="Aimer" /></a>
+			<div class="like_img_btn" user='<%= matchs[i].id %>' title="Like" onclick="triggerLike(<%= matchs[i].id %>);"></div>
 			<% switch (matchs[i].fruit) {
-				case ('#pasdecoupdunsoir'): %>
-			<img src='coconut.png' height="75" width="75" title="#pasdecoupdunsoir" />
+						case ('#JustHangingOut'): %>
+			<img src='/coconut.png' height="75" width="75" title="#JustHangingOut" />
 			<% break;
-			case ('#unsoir'): %>
-			<img src='peach.png' height="75" width="75" title="#unsoir" />
+					case ('#BootyCall'): %>
+			<img src='/peach.png' height="75" width="75" title="#BootyCall" />
 			<% break;
-			case ('#serieux'): %>
-			<img src='cherry.png' height="75" width="75" title="#serieux" />
+					case ('#SeriousRelationship'): %>
+			<img src='/cherry.png' height="75" width="75" title="#SeriousRelationship" />
 			<% break;
-			case ('#pqr'): %>
-			<img src='spices.png' height="75" width="75" title="#pqr" />
+					case ('#SexFriends'): %>
+			<img src='/ginger.png' height="75" width="75" title="#SexFriends" />
 			<% break;
-			} %>
-			<% if (typeof locals.matchs[i].lat != 'undefined' && locals.matchs[i].lat != null && typeof locals.matchs[i].lng != 'undefined' && locals.matchs[i].lng != null) { %>
+					} %>
+				<p id='address<%= matchs[i].id %>'> </p>
+				<% if (typeof locals.matchs[i].lat != 'undefined' && locals.matchs[i].lat != null && typeof locals.matchs[i].lng != 'undefined' && locals.matchs[i].lng != null) { %>
 					<script>
-						loc_req['<%= matchs[i].id %>'] = new XMLHttpRequest();
-						loc_req['<%= matchs[i].id %>'].open('GET', '/get_address/<%= matchs[i].lat %>/<%= matchs[i].lng %>');
-						loc_req['<%= matchs[i].id %>'].responseType = 'json';
-						loc_req['<%= matchs[i].id %>'].onload = function () {
-							if (loc_req['<%= matchs[i].id %>'].status != 200) {
-								console.log('AJAX Failed: status (' + loc_req['<%= matchs[i].id %>'].status + ')')
-							} else if (loc_req['<%= matchs[i].id %>'].response.found != 0) {
-								//Put location
-								document.getElementById('userbio<%= matchs[i].id %>').innerHTML = loc_req['<%= matchs[i].id %>'].response.city + ', ' + loc_req['<%= matchs[i].id %>'].response.country;
-							}
+					get('/get_address/<%= matchs[i].lat %>/<%= matchs[i].lng %>', null, document.getElementById('address<%= matchs[i].id %>'), (anchor, data) => {
+						if (data.city != undefined && data.country != undefined) {
+							anchor.innerText = data.city + ', ' + data.country;
 						}
-						loc_req['<%= matchs[i].id %>'].onerror = function () {
-							console.log('AJAX Error');
-						}
-						loc_req['<%= matchs[i].id %>'].onprogress = function () {
-
-						}
-						loc_req['<%= matchs[i].id %>'].send();
+					});
 					</script>
 				<% } %>
-			<p class='bio'><%= matchs[i].bio %></p>
+			<p id='userbio<%= matchs[i].id %>' class='bio'><%= matchs[i].bio %></p>
+			<button class="like_button" onclick="like_user('<%= matchs[i].id %>');">Like</button>
 		</article>
 		<% } %>
 	</section>
 </body>
-
 </html>

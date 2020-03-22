@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <%- include('head.ejs') %>
 <style>
 	#matches {
-		margin-left: 25px;
+		width: 80vw;
+		margin-left: 10vw;
 		margin-top: 5px;
 		overflow-x: auto;
-		overflow-y: unset;
-		height: 600px;
 		white-space: nowrap;
 	}
 
@@ -32,17 +31,25 @@
 	}
 
 	.public_profile_mini .bio {
-		margin-left: 0px;
 		position: absolute;
-		width: 390px;
+		width: 360px;
 		max-height: 300px;
 		bottom: 0px;
 		left: 0px;
-		white-space: normal;
+		margin-bottom: 0px;
+		white-space: pre-wrap;
+		display: block;
+		text-shadow: 0px 0px 2px black;
+		overflow-y: auto
 	}
 
 	#search_filters {
-		width: calc(100% - 200px);
+		width: calc(80vw - 40px);
+		margin-left: 10vw;
+	}
+
+	#age_filters, #gender_dist_filters {
+		display: inline-block;
 	}
 
 	#sort_asc_desc {
@@ -52,18 +59,63 @@
 		background-size: cover;
 		display: inline-block;
 	}
+
+	.like_img_btn {
+		cursor: pointer;
+		background: url('/like.png');
+		background-size: cover;
+		width: 48px;
+		height: 48px;
+		display: inline-block;
+	}
+
+	@media screen and (max-width: 360px) {
+		#search_filters {
+			margin: auto;
+		}
+
+		#age_filters, #gender_dist_filters {
+			display: block;
+		}
+
+		#matches {
+			width: 100vw;
+			margin-left: 0px;
+			margin-top: 0px;
+			overflow-y: auto;
+		}
+
+		.public_profile_mini {
+			margin-top: 5px;
+			display: block;
+			width: 300px;
+			left: calc(50% - 150px);
+		}
+
+		.public_profile_mini .bio {
+			width: 300px;
+		}
+	}
+		
 </style>
 
 <body>
 	<%- include('header.ejs') %>
 	<form id='search_filters' name='search_filters' method="POST">
-		Age min : <input type='number' name='min_age' min=18 max=77
-			value='<% if (typeof locals.search != "undefined" && typeof locals.search.min_age != "undefined" && locals.search.min_age != null) { %><%= search.min_age %><% } else { %>18<% } %>' />
-		Age max : <input type="number" name='max_age' min=18 max=77
+		<div id='age_filters'>
+		<label for='min_age'>Min age : </label>
+		<input type='number' name='min_age' min=18 max=77 size=2
+			value='<% if (typeof locals.search != "undefined" && typeof locals.search.min_age != "undefined" && locals.search.min_age != null) { %><%= search.min_age %><% } else { %>18<% } %>' /><br />
+		<label for='max_age'>Max age : </label>
+		<input type="number" name='max_age' min=18 max=77 size=2
 			value='<% if (typeof locals.search != "undefined" && typeof locals.search.min_age != "undefined" && locals.search.max_age != null) { %><%= search.max_age %><% } else { %>77<% } %>' />
-		Interets : <input type='search' name='interests' placeholder='#skateboard#slackline'
+		</div>
+		<label for='interests'>Interests : </label>
+		<input type='search' name='interests' placeholder='#skateboard#slackline'
 			<% if (typeof locals.search != "undefined" && typeof locals.search.interests != 'undefined' && locals.search.interests != null && locals.search.interests != '') { %>value=<%= search.interests %><% } %> />
-		Genre : <select name="gender">
+		<div id='gender_dist_filters'>
+		<label for='gender'>Gender : </label>
+		<select name="gender">
 			<option value="Both"
 				<% if (typeof locals.search != "undefined" && locals.search.gender == 'Both') { %>selected<% } %>>Les
 				deux</option>
@@ -73,97 +125,91 @@
 			<option value="Man"
 				<% if (typeof locals.search != "undefined" && locals.search.gender == 'Man') { %>selected<% } %>>Hommes
 			</option>
-		</select>
-		Distance maximale : <input type='number' name='distance' step='0.1'
-			value='<% if (typeof locals.search != "undefined" && typeof locals.search.distance != "undefined"  && locals.search.distance != null) { %><%= search.distance %><% } else { %>20<% } %>' />km<br />
-		Fruit :
+		</select><br />
+		<label for='distance'>Max distance : </label><input type='number' name='distance' step='0.1'
+			value='<% if (typeof locals.search != "undefined" && typeof locals.search.distance != "undefined"  && locals.search.distance != null) { %><%= search.distance %><% } else { %>20<% } %>' />km
+		</div><br />
+		<label for='fruit'>Fruit :</label><br />
 		<%- include('fruits_boxes.ejs') %><br />
-		Trier par : <select name="sort">
-			<option value="none">Pas de tri</option>
+		<label for='sort'>Sort by : </label><select name="sort">
+			<option value="none">No sort</option>
 			<option value="age">Age</option>
 			<option value="distance">Distance</option>
-			<option value="likes">Score de Popularité</option>
-			<option value="interests">Interets</option>
+			<option value="likes">Popularity</option>
+			<option value="common_interests">Common Interests</option>
 		</select>
 		<div id="sort_asc_desc"></div>
 		<input type='hidden' name='order' value="ASC" id='sort_asc_desc_value' />
-		<button>Affiner la recherche</button>
+		<button>Search</button>
 		<input type="hidden" name="_csrf" value=<%= csrfToken %> />
 	</form>
-	<section id='matches'>
-		<script>
-			let loc_req = [];
-			let sort_img = document.getElementById('sort_asc_desc');
-			let sort_value = document.getElementById('sort_asc_desc_value');
-
-			if (sort_value.value == 'DESC') {
-				sort_img.style.transform = 'rotate(180deg)';
+	<script>
+		let sort_img = document.getElementById('sort_asc_desc');
+		let sort_value = document.getElementById('sort_asc_desc_value');
+		if (sort_value.value == 'DESC') {
+			sort_img.style.transform = 'rotate(180deg)';
+		}
+		sort_img.addEventListener('click', (e) => {
+			if (sort_value.value == 'ASC') {
+				sort_value.value = 'DESC';
+				sort_img.style.transform = "rotate(180deg)";
+			} else {
+				sort_value.value = 'ASC';
+				sort_img.style.transform = 'rotate(0deg)';
 			}
-			sort_img.addEventListener('click', (e) => {
-				if (sort_value.value == 'ASC') {
-					sort_value.value = 'DESC';
-					sort_img.style.transform = "rotate(180deg)";
-				} else {
-					sort_value.value = 'ASC';
-					sort_img.style.transform = 'rotate(0deg)';
-				}
+		});
+		function triggerLike(userid) {
+			get('/like/' + userid, null, null, () => {
+				window.location.href = '/profile/' + userid;
 			});
-		</script>
-		<% for (var i in locals.matchs) { %>
+		}
+	</script>
+	
+	<section id='matches'>
+	<% for (var i in locals.matchs) { %>
+		<article id='user<%= matchs[i].id %>' class='public_profile_mini'>
 		<style>
 			#user<%=matchs[i].id %> {
 				background-image: url('user_images/<%= matchs[i].image1 %>');
 			}
 		</style>
-		<article id='user<%= matchs[i].id %>' class='public_profile_mini'>
 			<p>
 				<a href='/profile/<%= matchs[i].id %>' title='Voir le profil'>
 					<%= matchs[i].firstname %> <%= matchs[i].lastname %>
 				</a>, <%= matchs[i].age %>
 			</p>
 			<p>(<%= matchs[i].gender %>)</p><br />
-			<a href='/like/<%= matchs[i].id %>'><img src='/like.png' title="Aimer" /></a>
+			<div class="like_img_btn" user='<%= matchs[i].id %>' title="Like" onclick="triggerLike(<%= matchs[i].id %>);"></div>
 			<% switch (matchs[i].fruit) {
-						case ('#pasdecoupdunsoir'): %>
-			<img src='coconut.png' height="75" width="75" title="#pasdecoupdunsoir" />
+						case ('#JustHangingOut'): %>
+			<img src='/coconut.png' height="75" width="75" title="#JustHangingOut" />
 			<% break;
-					case ('#unsoir'): %>
-			<img src='peach.png' height="75" width="75" title="#unsoir" />
+					case ('#BootyCall'): %>
+			<img src='/peach.png' height="75" width="75" title="#BootyCall" />
 			<% break;
-					case ('#serieux'): %>
-			<img src='cherry.png' height="75" width="75" title="#serieux" />
+					case ('#SeriousRelationship'): %>
+			<img src='/cherry.png' height="75" width="75" title="#SeriousRelationship" />
 			<% break;
-					case ('#pqr'): %>
-			<img src='spices.png' height="75" width="75" title="#pqr" />
+					case ('#SexFriends'): %>
+			<img src='/ginger.png' height="75" width="75" title="#SexFriends" />
 			<% break;
 					} %>
 				<p id='address<%= matchs[i].id %>'> </p>
 				<% if (typeof locals.matchs[i].lat != 'undefined' && locals.matchs[i].lat != null && typeof locals.matchs[i].lng != 'undefined' && locals.matchs[i].lng != null) { %>
 					<script>
-						loc_req['<%= matchs[i].id %>'] = new XMLHttpRequest();
-						loc_req['<%= matchs[i].id %>'].open('GET', '/get_address/<%= matchs[i].lat %>/<%= matchs[i].lng %>');
-						loc_req['<%= matchs[i].id %>'].responseType = 'json';
-						loc_req['<%= matchs[i].id %>'].onload = function () {
-							if (loc_req['<%= matchs[i].id %>'].status != 200) {
-								console.log('AJAX Failed: status (' + loc_req['<%= matchs[i].id %>'].status + ')')
-							} else if (loc_req['<%= matchs[i].id %>'].response.found != 0) {
-								//Put location
-								document.getElementById('address<%= matchs[i].id %>').innerHTML = loc_req['<%= matchs[i].id %>'].response.city + ', ' + loc_req['<%= matchs[i].id %>'].response.country;
-							}
+					get('/get_address/<%= matchs[i].lat %>/<%= matchs[i].lng %>', null, document.getElementById('address<%= matchs[i].id %>'), (anchor, data) => {
+						if (data.city != undefined && data.country != undefined) {
+							anchor.innerText = data.city + ', ' + data.country;
 						}
-						loc_req['<%= matchs[i].id %>'].onerror = function () {
-							console.log('AJAX Error');
-						}
-						loc_req['<%= matchs[i].id %>'].onprogress = function () {
-
-						}
-						loc_req['<%= matchs[i].id %>'].send();
+					});
 					</script>
 				<% } %>
 			<p id='userbio<%= matchs[i].id %>' class='bio'><%= matchs[i].bio %></p>
 		</article>
 		<% } %>
 	</section>
+	<script>
+	let divs = document.get
 </body>
 
 </html>

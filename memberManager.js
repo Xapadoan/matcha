@@ -1621,13 +1621,13 @@ module.exports = {
 			//Data we need to fetch
 			query = 'SELECT u.id, u.firstname, u.lastname, u.fruit, u.age, u.gender, u.bio, i.image1, ((u.lat - ?) * (u.lat - ?) + (u.lng - ?) * (u.lng - ?)) AS distance, l.llikes AS likes, COUNT(u.id) AS common_interests';
 			query_values = [user.lat, user.lat, user.lng, user.lng];
-			//Apply joins and remove disliked and blocked users
-			query += ' FROM matcha.users u INNER JOIN matcha.users_images i ON u.id = i.user LEFT JOIN matcha.users_interests no ON u.id = no.user LEFT JOIN matcha.users_blocks b ON b.blocked=u.id LEFT JOIN matcha.users_dislikes d ON d.disliked = u.id';
+			//Apply joins and remove liked, disliked and blocked users
+			query += ' FROM matcha.users u INNER JOIN matcha.users_images i ON u.id = i.user LEFT JOIN matcha.users_interests no ON u.id = no.user LEFT JOIN matcha.users_blocks b ON b.blocked=u.id LEFT JOIN matcha.users_dislikes d ON d.disliked = u.id LEFT JOIN matcha.users_likes li ON li.liked = u.id';
 			query += ' LEFT JOIN (SELECT liked, count(*) AS llikes FROM matcha.users_likes GROUP BY liked) l ON u.id = l.liked';
 			query += ' WHERE u.id <> ?';
 			query_values.push(user.id);
-			query += ' AND (d.disliker IS NULL OR d.disliker <> ?) AND (b.blocker IS NULL OR b.blocker <> ?)';
-			query_values.push(user.id, user.id);
+			query += ' AND (d.disliker IS NULL OR d.disliker <> ?) AND (b.blocker IS NULL OR b.blocker <> ?) AND (li.liker IS NULL OR li.liker <> ?)';
+			query_values.push(user.id, user.id, user.id);
 			//use age
 			query += ' AND u.age BETWEEN ? and ?';
 			query_values.push(user.age - 5, user.age + 5);

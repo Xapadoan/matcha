@@ -16,6 +16,12 @@
 		float: right;
 	}
 
+	#no_more_matches {
+		background-color: rgba(0, 0, 0, 0.8);
+		padding: 5px;
+		padding-top: 10%;
+	}
+
 	.like_button {
 		position: absolute;
 		top : 40vh;
@@ -101,9 +107,9 @@
 			console.log(anc);
 			get('/like/' + userid, null, anc, (anchor, data) => {
 				console.log('OK');
-				// anchor.removeChild(document.getElementById('user' + userid));
-				// anchor.removeChild(document.getElementsByClassName('dislike_button')[anchor.children.length]);
-				// anchor.removeChild(document.getElementsByClassName('like_button')[anchor.children.length]);
+				anchor.removeChild(document.getElementById('user' + userid));
+				anchor.removeChild(document.getElementsByClassName('dislike_button')[anchor.children.length]);
+				anchor.removeChild(document.getElementsByClassName('like_button')[anchor.children.length]);
 			});
 		}
 	</script>
@@ -152,6 +158,10 @@
 			<button class="like_button" onclick="like_user('<%= matchs[i].id %>');">Like</button>
 		</article>
 		<% } %>
+		<article id='no_more_matches' class='public_profile_mini'>
+			<p>Hmm, it seems like we don't know more people that you could like.</br>
+			Maybe you should <a href='/search'>try a wider research</a> ?
+		</article>
 	</section>
 </body>
 </html>

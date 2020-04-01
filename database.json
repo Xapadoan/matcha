@@ -1,7 +1,7 @@
 {
 	"host": "localhost",
 	"root": "matcha_admin",
-	"root_password": "rootpass",
+	"root_password": "password",
 	"port": 3306,
 	"name": "matcha"
 }
